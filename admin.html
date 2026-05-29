@@ -1524,11 +1524,38 @@ async function loadApprovals() {
     </tr>`).join('');
 }
 
+const EMAIL_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-email`;
+
+async function adminTriggerEmail(type, data) {
+  try {
+    const token = localStorage.getItem('sb_token');
+    await fetch(EMAIL_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || SUPABASE_ANON}`
+      },
+      body: JSON.stringify({ type, data })
+    });
+  } catch(e) {
+    console.warn('Email trigger failed:', type, e);
+  }
+}
+
 async function approveClient(id) {
+  // Get client details for email
+  const clients = await sb.query('profiles', { filter: `id=eq.${id}`, select: 'full_name,email' });
   await sb.update('profiles', `id=eq.${id}`, { account_status: 'active' });
   await loadClients();
   loadApprovals();
   toast('Client freigeschaltet!', 'success');
+  // Send approval email
+  if (Array.isArray(clients) && clients.length) {
+    adminTriggerEmail('account_approved', {
+      clientName:  clients[0].full_name,
+      clientEmail: clients[0].email
+    });
+  }
 }
 
 async function blockClient(id) {
