@@ -422,10 +422,11 @@ tr:hover td { background: var(--burgundy-light); }
 /* Schedule grid */
 .schedule-grid { display: flex; flex-direction: column; gap: 8px; }
 .schedule-row {
-  display: grid; grid-template-columns: 100px 1fr 1fr 80px;
-  align-items: center; gap: 12px; padding: 10px 14px;
+  display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr 60px;
+  align-items: center; gap: 8px; padding: 10px 14px;
   background: var(--bg); border-radius: 8px; border: 1px solid var(--border);
 }
+.schedule-row .form-input { padding: 7px 8px; font-size: 13px; }
 .schedule-day { font-weight: 500; font-size: 14px; }
 
 /* ============================================================
@@ -483,7 +484,7 @@ tr:hover td { background: var(--burgundy-light); }
   .content { padding: 16px; }
   .filter-bar { flex-direction: column; align-items: stretch; }
   .search-input { min-width: unset; }
-  .schedule-row { grid-template-columns: 80px 1fr 1fr 60px; }
+  .schedule-row { grid-template-columns: 70px 1fr 1fr 1fr 1fr 44px; gap: 4px; }
 }
 @media (max-width: 480px) {
   .stats-row { grid-template-columns: 1fr; }
@@ -740,43 +741,69 @@ tr:hover td { background: var(--burgundy-light); }
       <div class="section" id="section-settings">
         <div class="settings-grid">
 
-          <!-- Buchungsregeln -->
+          <!-- Buchungsregeln — GLOBAL, no worker dropdown -->
           <div class="card">
-            <div class="card-header"><div class="card-title">Buchungsregeln</div></div>
+            <div class="card-header"><div class="card-title">Buchungsregeln</div><span style="font-size:11px;color:var(--text-muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500;">Global</span></div>
             <div class="card-body">
               <div class="settings-section-title">Zeitparameter</div>
               <div id="settings-booking-rules"></div>
             </div>
           </div>
 
-          <!-- Öffnungszeiten -->
+          <!-- Erinnerungen — GLOBAL, no worker dropdown -->
           <div class="card">
-            <div class="card-header">
-              <div class="card-title">Öffnungszeiten</div>
-              <button class="btn btn-primary btn-sm" onclick="saveSchedule()">Speichern</button>
+            <div class="card-header"><div class="card-title">Erinnerungen & E-Mails</div><span style="font-size:11px;color:var(--text-muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500;">Global</span></div>
+            <div class="card-body" id="settings-reminders"></div>
+          </div>
+
+          <!-- Öffnungszeiten — PER WORKER -->
+          <div class="card">
+            <div class="card-header" style="flex-wrap:wrap;gap:8px;">
+              <div class="card-title">Öffnungszeiten & Pausen</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                <select class="form-input" id="schedule-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadWorkerSchedule()">
+                  <option value="">Lade...</option>
+                </select>
+                <button class="btn btn-primary btn-sm" onclick="saveWorkerSchedule()">Speichern</button>
+              </div>
             </div>
             <div class="card-body">
               <div class="schedule-grid" id="schedule-grid"></div>
             </div>
           </div>
 
-          <!-- Erinnerungen -->
+          <!-- Urlaub & Feiertage — PER WORKER -->
           <div class="card">
-            <div class="card-header"><div class="card-title">Erinnerungen & E-Mails</div></div>
-            <div class="card-body" id="settings-reminders"></div>
+            <div class="card-header" style="flex-wrap:wrap;gap:8px;">
+              <div class="card-title">Urlaub & Feiertage</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                <select class="form-input" id="holiday-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadHolidays()">
+                  <option value="">Lade...</option>
+                </select>
+                <button class="btn btn-outline btn-sm" onclick="openModal('modal-holiday')">+ Hinzufügen</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="holidays-list">
+                <div class="empty-state" style="padding:24px;"><div class="empty-desc">Kein Urlaub gesetzt</div></div>
+              </div>
+            </div>
           </div>
 
-          <!-- Datum Overrides -->
+          <!-- Datum Overrides — PER WORKER (+ "Alle") -->
           <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="flex-wrap:wrap;gap:8px;">
               <div class="card-title">Datum Overrides</div>
-              <button class="btn btn-outline btn-sm" onclick="openModal('modal-override')">+ Hinzufügen</button>
+              <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                <select class="form-input" id="override-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadOverrides()">
+                  <option value="">Lade...</option>
+                </select>
+                <button class="btn btn-outline btn-sm" onclick="openModal('modal-override')">+ Hinzufügen</button>
+              </div>
             </div>
             <div class="card-body">
               <div id="overrides-list">
-                <div class="empty-state" style="padding:24px;">
-                  <div class="empty-desc">Keine Datum-Overrides gesetzt</div>
-                </div>
+                <div class="empty-state" style="padding:24px;"><div class="empty-desc">Keine Datum-Overrides gesetzt</div></div>
               </div>
             </div>
           </div>
@@ -996,6 +1023,12 @@ tr:hover td { background: var(--burgundy-light); }
     </div>
     <div class="modal-body">
       <div class="form-group">
+        <label class="form-label">Worker</label>
+        <select class="form-input" id="override-worker-modal">
+          <option value="">Alle Worker</option>
+        </select>
+      </div>
+      <div class="form-group">
         <label class="form-label">Datum *</label>
         <input type="date" class="form-input" id="override-date">
       </div>
@@ -1019,12 +1052,48 @@ tr:hover td { background: var(--burgundy-light); }
       </div>
       <div class="form-group">
         <label class="form-label">Grund</label>
-        <input type="text" class="form-input" id="override-reason" placeholder="z.B. Feiertag, Urlaub">
+        <input type="text" class="form-input" id="override-reason" placeholder="z.B. Feiertag, Sonderöffnung">
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-override')">Abbrechen</button>
       <button class="btn btn-primary" onclick="saveOverride()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Holiday Modal -->
+<div class="modal-overlay" id="modal-holiday">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Urlaub hinzufügen</div>
+      <button class="modal-close" onclick="closeModal('modal-holiday')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Worker</label>
+        <select class="form-input" id="holiday-worker-modal">
+          <option value="">Lade...</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Von *</label>
+          <input type="date" class="form-input" id="holiday-from">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bis *</label>
+          <input type="date" class="form-input" id="holiday-to">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bezeichnung</label>
+        <input type="text" class="form-input" id="holiday-label" placeholder="z.B. Sommerurlaub, Weihnachten">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-holiday')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveHoliday()">Speichern</button>
     </div>
   </div>
 </div>
@@ -1190,7 +1259,6 @@ async function bootApp() {
   ]);
 
   renderCalendar();
-  renderScheduleSettings();
   renderSettingsPanel();
   loadIntelligence();
 }
@@ -1216,6 +1284,7 @@ function showSection(name) {
   if (name === 'bookings')  loadBookings();
   if (name === 'services')  renderServicesTable();
   if (name === 'workers')   renderWorkersList();
+  if (name === 'settings')  populateSettingsWorkerDropdowns();
   if (name === 'intelligence') loadIntelligence();
 
   // close mobile sidebar
@@ -1236,6 +1305,23 @@ function toggleSidebar() {
 function openModal(id) {
   document.getElementById(id).classList.add('open');
   if (id === 'modal-booking') populateBookingModal();
+  if (id === 'modal-holiday') {
+    const holModal = document.getElementById('holiday-worker-modal');
+    const workers = state.workers.filter(w => w.is_active);
+    if (holModal) holModal.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+    const listSel = document.getElementById('holiday-worker-select');
+    if (listSel && holModal) holModal.value = listSel.value || (workers[0]?.id || '');
+  }
+  if (id === 'modal-override') {
+    const ovModal = document.getElementById('override-worker-modal');
+    const workers = state.workers.filter(w => w.is_active);
+    if (ovModal) {
+      ovModal.innerHTML = `<option value="">Alle Worker</option>` +
+        workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+    }
+    const ovSel = document.getElementById('override-worker-select');
+    if (ovSel && ovModal) ovModal.value = ovSel.value || '';
+  }
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -1855,7 +1941,55 @@ function renderSettingsPanel() {
           onclick="this.classList.toggle('on');saveSetting('${r.key}', this.classList.contains('on').toString())"></button>
       </div>`).join('');
 
-  loadOverrides();
+  // Populate worker dropdowns
+  populateSettingsWorkerDropdowns();
+}
+
+function populateSettingsWorkerDropdowns() {
+  const workers = state.workers.filter(w => w.is_active);
+
+  // Schedule dropdown — no "Alle", must pick a worker
+  const schedSel = document.getElementById('schedule-worker-select');
+  if (schedSel) {
+    const prev = schedSel.value;
+    schedSel.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+    if (prev && workers.find(w => w.id === prev)) schedSel.value = prev;
+    else if (workers.length) schedSel.value = workers[0].id;
+    loadWorkerSchedule();
+  }
+
+  // Holiday dropdown — no "Alle"
+  const holSel = document.getElementById('holiday-worker-select');
+  if (holSel) {
+    const prev = holSel.value;
+    holSel.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+    if (prev && workers.find(w => w.id === prev)) holSel.value = prev;
+    else if (workers.length) holSel.value = workers[0].id;
+    loadHolidays();
+  }
+
+  // Holiday modal dropdown
+  const holModal = document.getElementById('holiday-worker-modal');
+  if (holModal) {
+    holModal.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+  }
+
+  // Override dropdown — includes "Alle Worker"
+  const ovSel = document.getElementById('override-worker-select');
+  if (ovSel) {
+    const prev = ovSel.value;
+    ovSel.innerHTML = `<option value="">Alle Worker</option>` +
+      workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+    if (prev !== undefined) ovSel.value = prev;
+    loadOverrides();
+  }
+
+  // Override modal dropdown — includes "Alle Worker"
+  const ovModal = document.getElementById('override-worker-modal');
+  if (ovModal) {
+    ovModal.innerHTML = `<option value="">Alle Worker</option>` +
+      workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+  }
 }
 
 async function saveSetting(key, value) {
@@ -1869,63 +2003,138 @@ async function saveSetting(key, value) {
   toast('Einstellung gespeichert', 'success');
 }
 
-// Global Schedule
-function renderScheduleSettings() {
+// Per-Worker Schedule
+async function loadWorkerSchedule() {
+  const workerId = document.getElementById('schedule-worker-select')?.value;
+  if (!workerId) return;
+
   const days = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
-  sb.query('worker_schedule', { filter: 'worker_id=is.null', order: 'day_of_week.asc' }).then(data => {
-    const sched = Array.isArray(data) ? data : [];
-    document.getElementById('schedule-grid').innerHTML = days.map((d, i) => {
-      const s = sched.find(x => x.day_of_week === i);
-      return `<div class="schedule-row">
-        <span class="schedule-day">${d}</span>
-        <input type="time" class="form-input" value="${s?.open_time || '09:00'}" id="gs-${i}-open" ${!s?.is_open ? 'disabled' : ''}>
-        <input type="time" class="form-input" value="${s?.close_time || '18:00'}" id="gs-${i}-close" ${!s?.is_open ? 'disabled' : ''}>
-        <button class="toggle ${s?.is_open !== false ? 'on' : ''}" id="gs-${i}-toggle"
-          onclick="toggleGlobalDay(${i})"></button>
-      </div>`;
-    }).join('');
+  const data = await sb.query('worker_schedule', {
+    filter: `worker_id=eq.${workerId}`, order: 'day_of_week.asc'
+  });
+  const sched = Array.isArray(data) ? data : [];
+
+  document.getElementById('schedule-grid').innerHTML = days.map((d, i) => {
+    const s = sched.find(x => x.day_of_week === i);
+    const isOpen = s ? s.is_open !== false : (i < 6); // Mon–Sat open by default
+    return `<div class="schedule-row">
+      <span class="schedule-day">${d}</span>
+      <input type="time" class="form-input" value="${s?.open_time || '09:00'}" id="ws-${i}-open" ${!isOpen ? 'disabled' : ''}>
+      <input type="time" class="form-input" value="${s?.close_time || '18:00'}" id="ws-${i}-close" ${!isOpen ? 'disabled' : ''}>
+      <input type="time" class="form-input" value="${s?.break_start || ''}" id="ws-${i}-bstart" placeholder="Pause" ${!isOpen ? 'disabled' : ''} title="Pause von">
+      <input type="time" class="form-input" value="${s?.break_end || ''}" id="ws-${i}-bend" placeholder="Pause bis" ${!isOpen ? 'disabled' : ''} title="Pause bis">
+      <button class="toggle ${isOpen ? 'on' : ''}" id="ws-${i}-toggle"
+        onclick="toggleWorkerDay(${i})"></button>
+    </div>`;
+  }).join('');
+}
+
+function toggleWorkerDay(i) {
+  const toggle = document.getElementById(`ws-${i}-toggle`);
+  toggle.classList.toggle('on');
+  const isOn = toggle.classList.contains('on');
+  ['open','close','bstart','bend'].forEach(k => {
+    const el = document.getElementById(`ws-${i}-${k}`);
+    if (el) el.disabled = !isOn;
   });
 }
 
-function toggleGlobalDay(i) {
-  const toggle = document.getElementById(`gs-${i}-toggle`);
-  const open   = document.getElementById(`gs-${i}-open`);
-  const close  = document.getElementById(`gs-${i}-close`);
-  toggle.classList.toggle('on');
-  const isOn = toggle.classList.contains('on');
-  open.disabled  = !isOn;
-  close.disabled = !isOn;
-}
+async function saveWorkerSchedule() {
+  const workerId = document.getElementById('schedule-worker-select')?.value;
+  if (!workerId) { toast('Bitte Worker wählen', 'error'); return; }
 
-async function saveSchedule() {
   for (let i = 0; i < 7; i++) {
-    const isOpen    = document.getElementById(`gs-${i}-toggle`)?.classList.contains('on');
-    const openTime  = document.getElementById(`gs-${i}-open`)?.value;
-    const closeTime = document.getElementById(`gs-${i}-close`)?.value;
+    const isOpen     = document.getElementById(`ws-${i}-toggle`)?.classList.contains('on');
+    const openTime   = document.getElementById(`ws-${i}-open`)?.value;
+    const closeTime  = document.getElementById(`ws-${i}-close`)?.value;
+    const breakStart = document.getElementById(`ws-${i}-bstart`)?.value || null;
+    const breakEnd   = document.getElementById(`ws-${i}-bend`)?.value || null;
 
     const existing = await sb.query('worker_schedule', {
-      filter: `worker_id=is.null&day_of_week=eq.${i}`
+      filter: `worker_id=eq.${workerId}&day_of_week=eq.${i}`
     });
 
+    const payload = {
+      open_time: openTime, close_time: closeTime,
+      is_open: isOpen, break_start: breakStart || null, break_end: breakEnd || null
+    };
+
     if (Array.isArray(existing) && existing.length > 0) {
-      await sb.update('worker_schedule',
-        `worker_id=is.null&day_of_week=eq.${i}`,
-        { open_time: openTime, close_time: closeTime, is_open: isOpen }
-      );
+      await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, payload);
     } else {
-      await sb.insert('worker_schedule', {
-        worker_id: null, day_of_week: i,
-        open_time: openTime, close_time: closeTime, is_open: isOpen
-      });
+      await sb.insert('worker_schedule', { worker_id: workerId, day_of_week: i, ...payload });
     }
   }
   toast('Öffnungszeiten gespeichert', 'success');
 }
 
+// Holidays
+async function loadHolidays() {
+  const workerId = document.getElementById('holiday-worker-select')?.value;
+  if (!workerId) return;
+
+  const data = await sb.query('holidays', {
+    filter: `worker_id=eq.${workerId}`, order: 'date_from.asc'
+  });
+  const holidays = Array.isArray(data) ? data : [];
+  const el = document.getElementById('holidays-list');
+
+  if (!holidays.length) {
+    el.innerHTML = `<div class="empty-state" style="padding:20px;"><div class="empty-desc">Kein Urlaub gesetzt</div></div>`;
+    return;
+  }
+  el.innerHTML = holidays.map(h => `
+    <div class="due-item">
+      <div>
+        <div class="due-name">${h.label || 'Urlaub'}</div>
+        <div class="due-date">
+          ${new Date(h.date_from+'T12:00:00').toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'})}
+          → ${new Date(h.date_to+'T12:00:00').toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'})}
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteHoliday('${h.id}')">Löschen</button>
+    </div>`).join('');
+}
+
+async function saveHoliday() {
+  const workerId = document.getElementById('holiday-worker-modal')?.value;
+  const dateFrom = document.getElementById('holiday-from')?.value;
+  const dateTo   = document.getElementById('holiday-to')?.value;
+  const label    = document.getElementById('holiday-label')?.value.trim();
+
+  if (!workerId) { toast('Bitte Worker wählen', 'error'); return; }
+  if (!dateFrom || !dateTo) { toast('Bitte Von/Bis Datum wählen', 'error'); return; }
+  if (dateTo < dateFrom)    { toast('Bis-Datum muss nach Von-Datum liegen', 'error'); return; }
+
+  await sb.insert('holidays', {
+    worker_id: workerId, date_from: dateFrom, date_to: dateTo,
+    label: label || null
+  });
+
+  // Sync selected worker in list dropdown
+  const listSel = document.getElementById('holiday-worker-select');
+  if (listSel) listSel.value = workerId;
+
+  closeModal('modal-holiday');
+  loadHolidays();
+  toast('Urlaub gespeichert', 'success');
+}
+
+async function deleteHoliday(id) {
+  if (!confirm('Urlaub wirklich löschen?')) return;
+  await sb.delete('holidays', `id=eq.${id}`);
+  loadHolidays();
+  toast('Urlaub gelöscht', 'info');
+}
+
 // Date Overrides
 async function loadOverrides() {
+  const workerId = document.getElementById('override-worker-select')?.value;
+  // workerId = '' means all workers (global), otherwise filter by worker
+
+  let filter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
   const data = await sb.query('schedule_overrides', {
-    select: '*', filter: 'worker_id=is.null', order: 'specific_date.asc'
+    select: '*,workers(name)', filter, order: 'specific_date.asc'
   });
   const overrides = Array.isArray(data) ? data : [];
   const el = document.getElementById('overrides-list');
@@ -1936,7 +2145,10 @@ async function loadOverrides() {
   el.innerHTML = overrides.map(o => `
     <div class="due-item">
       <div>
-        <div class="due-name">${new Date(o.specific_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'long'})}</div>
+        <div class="due-name">
+          ${new Date(o.specific_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'long'})}
+          ${o.workers?.name ? `<span style="font-size:12px;color:var(--text-muted);margin-left:6px;">(${o.workers.name})</span>` : ''}
+        </div>
         <div class="due-date">${o.is_closed ? 'Geschlossen' : `${o.open_time} – ${o.close_time}`}${o.reason ? ` · ${o.reason}` : ''}</div>
       </div>
       <button class="btn btn-danger btn-sm" onclick="deleteOverride('${o.id}')">Löschen</button>
@@ -1949,6 +2161,7 @@ function toggleOverrideTimes() {
 }
 
 async function saveOverride() {
+  const workerId = document.getElementById('override-worker-modal')?.value || null;
   const date   = document.getElementById('override-date').value;
   const closed = document.getElementById('override-closed-toggle').classList.contains('on');
   const open   = document.getElementById('override-open').value;
@@ -1958,10 +2171,14 @@ async function saveOverride() {
   if (!date) { toast('Bitte Datum wählen', 'error'); return; }
 
   await sb.insert('schedule_overrides', {
-    worker_id: null, specific_date: date,
+    worker_id: workerId || null, specific_date: date,
     open_time: closed ? null : open, close_time: closed ? null : close,
     is_closed: closed, reason: reason || null
   });
+
+  // Sync filter dropdown to match what was saved
+  const ovSel = document.getElementById('override-worker-select');
+  if (ovSel) ovSel.value = workerId || '';
 
   closeModal('modal-override');
   loadOverrides();
