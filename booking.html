@@ -630,8 +630,25 @@ html, body {
 const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
 
-// Edge function URL for OpenAI proxy (set up in Phase 5)
-const CHAT_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/chat`;
+// Edge function URLs
+const CHAT_FUNCTION_URL  = `${SUPABASE_URL}/functions/v1/chat`;
+const EMAIL_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-email`;
+
+// ── Email helper ─────────────────────────────────────────────
+async function triggerEmail(type, data) {
+  try {
+    await fetch(EMAIL_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${state.token}`
+      },
+      body: JSON.stringify({ type, data })
+    });
+  } catch(e) {
+    console.warn('Email trigger failed (non-blocking):', type, e);
+  }
+}
 
 // ============================================================
 // STATE
@@ -1037,6 +1054,19 @@ async function createBooking() {
     const dateLabel = d.toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
     const timeLabel = d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
 
+    // ── Send emails (non-blocking) ────────────────────────────
+    const emailData = {
+      clientName:  state.profile.full_name,
+      clientEmail: state.profile.email,
+      clientPhone: state.profile.phone,
+      serviceName: service.name,
+      duration:    service.duration_minutes,
+      dateLabel,
+      timeLabel
+    };
+    triggerEmail('booking_confirmed_client', emailData);
+    triggerEmail('booking_confirmed_admin',  emailData);
+
     addBotMessage(`Super! 🎉 Du bist gebucht!\n\nBis ${dateLabel} um ${timeLabel} Uhr.\nEine Bestätigung wurde an deine E-Mail gesendet.`);
 
     // Rebooking prompt based on cycle
@@ -1251,6 +1281,19 @@ async function executeReschedule() {
 
     const d = new Date(newSlot.start);
     addBotMessage(`Erledigt! 🎉\n\nDein Termin wurde verschoben auf:\n📅 ${d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})} um ${d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr\n\nEine Bestätigung wurde an deine E-Mail gesendet.`);
+
+    // ── Send reschedule email ─────────────────────────────────
+    const oldD = new Date(old.start_time);
+    triggerEmail('booking_rescheduled', {
+      clientName:   state.profile.full_name,
+      clientEmail:  state.profile.email,
+      serviceName:  service.name,
+      oldDateLabel: oldD.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'}),
+      oldTimeLabel: oldD.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),
+      newDateLabel: d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'}),
+      newTimeLabel: d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})
+    });
+
     showEndMenu();
 
   } catch(e) {
@@ -1363,6 +1406,16 @@ async function executeCancel() {
     await sbPatch('bookings', `id=eq.${booking.id}`, { status: 'cancelled' });
     await loadUpcomingBooking();
     hideTyping();
+
+    // ── Send cancellation email ───────────────────────────────
+    const bD = new Date(booking.start_time);
+    triggerEmail('booking_cancelled', {
+      clientName:  state.profile.full_name,
+      clientEmail: state.profile.email,
+      serviceName: booking.services?.name || '',
+      dateLabel:   bD.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'}),
+      timeLabel:   bD.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})
+    });
 
     addBotMessage('Dein Termin wurde storniert. ✓\n\nMöchtest du einen neuen Termin buchen?');
     showQuickReplies([
