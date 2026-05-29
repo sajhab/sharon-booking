@@ -682,6 +682,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   state.token = token;
 
+  // Safety timeout — if loading takes more than 5 seconds, redirect to login
+  setTimeout(() => {
+    if (document.getElementById('loading-screen').style.display !== 'none') {
+      localStorage.removeItem('sz_token');
+      localStorage.removeItem('sz_uid');
+      window.location.href = 'index.html';
+    }
+  }, 5000);
+
   try {
     // Load profile
     const pRes = await sbGet(`profiles?id=eq.${uid}&select=*`);
