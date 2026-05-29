@@ -813,51 +813,99 @@ tr:hover td { background: var(--burgundy-light); }
 
       <!-- ===================== INTELLIGENCE ===================== -->
       <div class="section" id="section-intelligence">
-        <div class="stats-row">
+
+        <!-- AI Suggestion Banner -->
+        <div id="intel-ai-banner" style="display:none;background:linear-gradient(135deg,#7D1535,#5a0e25);border-radius:12px;padding:20px 24px;margin-bottom:24px;color:white;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:1px;opacity:0.7;margin-bottom:6px;">✨ KI-EMPFEHLUNG</div>
+          <div id="intel-ai-text" style="font-size:15px;line-height:1.6;"></div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-row" style="grid-template-columns:repeat(5,1fr);">
           <div class="stat-card">
             <div class="stat-label">Gesamt Clients</div>
-            <div class="stat-value" id="intel-total">0</div>
+            <div class="stat-value" id="intel-total">—</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Aktiv diesen Monat</div>
-            <div class="stat-value" id="intel-active-month">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Buchungen diese Woche</div>
-            <div class="stat-value" id="intel-week">0</div>
+            <div class="stat-label">Umsatz diesen Monat</div>
+            <div class="stat-value" id="intel-revenue" style="font-size:20px;">—</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Beliebtester Tag</div>
             <div class="stat-value" id="intel-busyday" style="font-size:18px;">—</div>
           </div>
+          <div class="stat-card">
+            <div class="stat-label">Top Service</div>
+            <div class="stat-value" id="intel-topservice" style="font-size:16px;">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ø Zyklus</div>
+            <div class="stat-value" id="intel-cycle" style="font-size:20px;">—</div>
+            <div class="stat-sub">Wochen</div>
+          </div>
+        </div>
+
+        <!-- Rates row -->
+        <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-top:-8px;">
+          <div class="stat-card">
+            <div class="stat-label">Auslastung 14 Tage</div>
+            <div class="stat-value" id="intel-capacity-pct">—</div>
+            <div id="intel-capacity-mini" style="margin-top:8px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+              <div id="intel-capacity-bar" style="height:100%;background:var(--burgundy);border-radius:3px;width:0%;transition:width 0.6s ease;"></div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Freie Slots heute</div>
+            <div class="stat-value" id="intel-today-free">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Stornierungsrate</div>
+            <div class="stat-value" id="intel-cancel-rate">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">No-Show Rate</div>
+            <div class="stat-value" id="intel-noshow-rate">—</div>
+          </div>
         </div>
 
         <div class="intel-grid">
+
+          <!-- Capacity 14 days -->
           <div class="card">
             <div class="card-header"><div class="card-title">Kapazität — Nächste 14 Tage</div></div>
             <div class="card-body" id="intel-capacity"></div>
           </div>
 
+          <!-- Due soon -->
           <div class="card">
-            <div class="card-header"><div class="card-title">Fällig — noch nicht gebucht</div></div>
+            <div class="card-header">
+              <div class="card-title">Fällig — noch nicht gebucht</div>
+              <span id="intel-due-count" class="nav-badge" style="background:var(--burgundy);display:none;">0</span>
+            </div>
             <div class="card-body">
               <div class="due-list" id="intel-due"></div>
             </div>
           </div>
 
+          <!-- At risk -->
           <div class="card">
-            <div class="card-header"><div class="card-title">⚠️ Risiko Clients</div></div>
+            <div class="card-header">
+              <div class="card-title">⚠️ Risiko Clients</div>
+              <span id="intel-risk-count" class="nav-badge" style="background:#dc2626;display:none;">0</span>
+            </div>
             <div class="card-body">
               <div class="due-list" id="intel-risk"></div>
             </div>
           </div>
 
+          <!-- Waitlist -->
           <div class="card">
             <div class="card-header"><div class="card-title">Warteliste</div></div>
             <div class="card-body">
               <div class="due-list" id="intel-waitlist"></div>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -2283,81 +2331,194 @@ async function saveManualBooking() {
 // INTELLIGENCE
 // ============================================================
 async function loadIntelligence() {
-  const clients  = state.allClients;
-  const active   = clients.filter(c => c.account_status === 'active');
+  const now    = new Date();
+  const today  = new Date(now); today.setHours(0,0,0,0);
+  const active = state.allClients.filter(c => c.account_status === 'active');
 
-  document.getElementById('intel-total').textContent      = clients.length;
-  document.getElementById('intel-active-month').textContent = active.length;
+  // ── Parallel data fetch ──────────────────────────────────────
+  const [futureBookings, allBookings, waitData, services] = await Promise.all([
+    sb.query('bookings', {
+      select: '*,services(name,price)',
+      filter: `start_time=gte.${now.toISOString()}&status=eq.confirmed&is_block=eq.false`,
+      limit: 300
+    }),
+    sb.query('bookings', {
+      select: 'start_time,end_time,status,service_id,services(name,price)',
+      filter: `start_time=gte.${new Date(now.getFullYear(), now.getMonth(), 1).toISOString()}&is_block=eq.false`,
+      limit: 500
+    }),
+    sb.query('waiting_list', {
+      select: '*,profiles(full_name),services(name)',
+      filter: 'status=eq.waiting', order: 'joined_at.asc'
+    }),
+    sb.query('services', { select: '*', filter: 'is_active=eq.true', order: 'display_order.asc' })
+  ]);
 
-  // Bookings this week
-  const weekStart = getWeekStart(new Date());
-  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
-  const weekBookings = await sb.query('bookings', {
-    filter: `start_time=gte.${weekStart.toISOString()}&start_time=lte.${weekEnd.toISOString()}&status=eq.confirmed`
+  const futureBk  = Array.isArray(futureBookings) ? futureBookings : [];
+  const monthBk   = Array.isArray(allBookings)    ? allBookings    : [];
+  const waitlist  = Array.isArray(waitData)        ? waitData       : [];
+  const svcs      = Array.isArray(services)        ? services       : [];
+
+  // ── STAT: Total clients ──────────────────────────────────────
+  document.getElementById('intel-total').textContent = active.length;
+
+  // ── STAT: Revenue this month ─────────────────────────────────
+  const monthRevenue = monthBk
+    .filter(b => b.status === 'confirmed' && new Date(b.start_time) < now)
+    .reduce((sum, b) => sum + parseFloat(b.services?.price || 0), 0);
+  document.getElementById('intel-revenue').textContent = `€${Math.round(monthRevenue)}`;
+
+  // ── STAT: Busiest day ────────────────────────────────────────
+  const dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const dayCounts = [0,0,0,0,0,0,0];
+  monthBk.filter(b => b.status === 'confirmed').forEach(b => {
+    dayCounts[new Date(b.start_time).getDay()]++;
   });
-  document.getElementById('intel-week').textContent = Array.isArray(weekBookings) ? weekBookings.length : 0;
+  const busiestDay = dayCounts.indexOf(Math.max(...dayCounts));
+  document.getElementById('intel-busyday').textContent = dayNames[busiestDay] || '—';
 
-  // Capacity next 14 days
-  const capEl = document.getElementById('intel-capacity');
-  const maxPerDay = parseInt(state.settings['max_bookings_per_day'] || 6);
+  // ── STAT: Top service ────────────────────────────────────────
+  const svcCounts: Record<string,number> = {};
+  monthBk.filter(b => b.status === 'confirmed' && b.services?.name).forEach(b => {
+    svcCounts[b.services.name] = (svcCounts[b.services.name] || 0) + 1;
+  });
+  const topSvc = Object.entries(svcCounts).sort((a,b) => b[1]-a[1])[0];
+  document.getElementById('intel-topservice').textContent = topSvc ? topSvc[0].split(' ')[0] : '—';
+
+  // ── STAT: Avg cycle ──────────────────────────────────────────
+  const cycleClients = active.filter(c => c.detected_cycle_weeks);
+  const avgCycle = cycleClients.length
+    ? (cycleClients.reduce((s,c) => s + (c.detected_cycle_weeks || 0), 0) / cycleClients.length).toFixed(1)
+    : (active.filter(c=>c.preferred_cycle_weeks).length
+        ? (active.reduce((s,c)=>s+(c.preferred_cycle_weeks||0),0)/active.length).toFixed(1)
+        : '—');
+  document.getElementById('intel-cycle').textContent = avgCycle;
+
+  // ── STAT: Capacity 14 days ───────────────────────────────────
+  const maxPerDay  = parseInt(state.settings['max_bookings_per_day'] || '6');
   const totalSlots = maxPerDay * 14;
-  const futureBookings = await sb.query('bookings', {
-    filter: `start_time=gte.${new Date().toISOString()}&status=eq.confirmed`,
-    limit: 200
-  });
-  const booked = Array.isArray(futureBookings) ? Math.min(futureBookings.length, totalSlots) : 0;
-  const pct    = Math.round((booked / totalSlots) * 100);
+  const booked14   = Math.min(futureBk.length, totalSlots);
+  const pct        = Math.round((booked14 / totalSlots) * 100);
+  document.getElementById('intel-capacity-pct').textContent = `${pct}%`;
+  document.getElementById('intel-capacity-bar').style.width = `${pct}%`;
 
+  // ── STAT: Free slots today ───────────────────────────────────
+  const todayStart = new Date(today);
+  const todayEnd   = new Date(today); todayEnd.setHours(23,59,59);
+  const todayBooked = futureBk.filter(b => {
+    const d = new Date(b.start_time);
+    return d >= todayStart && d <= todayEnd;
+  }).length;
+  document.getElementById('intel-today-free').textContent = Math.max(0, maxPerDay - todayBooked);
+
+  // ── STAT: Cancel + no-show rates ─────────────────────────────
+  const allStatusBk = await sb.query('bookings', {
+    filter: 'is_block=eq.false', select: 'status', limit: 1000
+  });
+  const allSt = Array.isArray(allStatusBk) ? allStatusBk : [];
+  const total = allSt.length || 1;
+  const cancelRate  = Math.round(allSt.filter(b => b.status === 'cancelled').length / total * 100);
+  const noshowRate  = Math.round(allSt.filter(b => b.status === 'no_show').length / total * 100);
+  document.getElementById('intel-cancel-rate').textContent = `${cancelRate}%`;
+  document.getElementById('intel-noshow-rate').textContent = `${noshowRate}%`;
+
+  // ── Capacity bar (detailed, per day) ────────────────────────
+  const capEl = document.getElementById('intel-capacity');
+  const dayBuckets: Record<string,number> = {};
+  futureBk.forEach(b => {
+    const d = new Date(b.start_time).toISOString().split('T')[0];
+    dayBuckets[d] = (dayBuckets[d] || 0) + 1;
+  });
+  const next14 = Array.from({length:14}, (_,i) => {
+    const d = new Date(today); d.setDate(d.getDate() + i);
+    return d;
+  });
   capEl.innerHTML = `
-    <div class="capacity-label"><span>${booked} von ${totalSlots} Slots belegt</span><span>${pct}%</span></div>
-    <div class="capacity-bar-bg"><div class="capacity-bar-fill" style="width:${pct}%"></div></div>`;
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      ${next14.map(d => {
+        const str  = d.toISOString().split('T')[0];
+        const cnt  = dayBuckets[str] || 0;
+        const p    = Math.min(100, Math.round(cnt / maxPerDay * 100));
+        const col  = p >= 80 ? '#dc2626' : p >= 50 ? '#d97706' : '#16a34a';
+        return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+          <span style="width:60px;color:var(--text-muted);flex-shrink:0;">${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric'})}</span>
+          <div style="flex:1;background:var(--border);border-radius:3px;height:8px;">
+            <div style="width:${p}%;height:100%;background:${col};border-radius:3px;transition:width 0.4s ease;"></div>
+          </div>
+          <span style="width:30px;text-align:right;color:var(--text-muted);">${cnt}/${maxPerDay}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
 
-  // Due soon
-  const today   = new Date(); today.setHours(0,0,0,0);
+  // ── Due soon ─────────────────────────────────────────────────
   const dueList = document.getElementById('intel-due');
-  const dueSoon = active.filter(c => {
-    if (!c.next_suggested_date) return false;
-    const diff = (new Date(c.next_suggested_date) - today) / 86400000;
-    return diff >= 0 && diff <= 7;
-  });
+  const dueSoon = active
+    .filter(c => {
+      if (!c.next_suggested_date) return false;
+      const diff = (new Date(c.next_suggested_date).getTime() - today.getTime()) / 86400000;
+      return diff >= -3 && diff <= 10;
+    })
+    .sort((a,b) => new Date(a.next_suggested_date).getTime() - new Date(b.next_suggested_date).getTime());
 
-  dueList.innerHTML = dueSoon.length ? dueSoon.map(c => `
-    <div class="due-item">
-      <div>
-        <div class="due-name">${c.full_name}</div>
-        <div class="due-date">Fällig: ${new Date(c.next_suggested_date).toLocaleDateString('de-DE')}</div>
-      </div>
-      <button class="btn btn-outline btn-sm">Nudge</button>
-    </div>`).join('') :
-    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Niemand fällig diese Woche</div></div>`;
+  const dueCount = document.getElementById('intel-due-count');
+  if (dueSoon.length) {
+    dueCount.textContent = dueSoon.length;
+    dueCount.style.display = 'inline-flex';
+  } else {
+    dueCount.style.display = 'none';
+  }
 
-  // At risk
-  const riskList = document.getElementById('intel-risk');
-  const atRisk   = active.filter(c => {
-    if (!c.last_appointment_date) return false;
-    const weeks = (today - new Date(c.last_appointment_date)) / (7 * 86400000);
-    return weeks > (c.preferred_cycle_weeks || 4) * 1.5;
-  });
-
-  riskList.innerHTML = atRisk.length ? atRisk.map(c => {
-    const weeks = Math.floor((today - new Date(c.last_appointment_date)) / (7*86400000));
+  dueList.innerHTML = dueSoon.length ? dueSoon.map(c => {
+    const dueDate = new Date(c.next_suggested_date + 'T12:00:00');
+    const diff    = Math.round((dueDate - today) / 86400000);
+    const label   = diff < 0 ? `Überfällig seit ${Math.abs(diff)} Tagen` : diff === 0 ? 'Heute fällig' : `Fällig in ${diff} Tagen`;
+    const color   = diff < 0 ? '#dc2626' : diff <= 3 ? '#d97706' : 'var(--text-muted)';
+    // Check if already has future booking
+    const hasBooking = futureBk.some(b => b.client_id === c.id);
     return `<div class="due-item">
       <div>
         <div class="due-name">${c.full_name}</div>
-        <div class="due-date">Letzter Besuch: vor ${weeks} Wochen</div>
+        <div class="due-date" style="color:${color};">${label}</div>
       </div>
-      <button class="btn btn-outline btn-sm">Nudge</button>
+      ${hasBooking
+        ? `<span style="font-size:12px;color:#16a34a;">✓ Gebucht</span>`
+        : `<button class="btn btn-outline btn-sm" onclick="sendManualNudge('${c.id}','${c.full_name}','${c.email}')">Nudge</button>`
+      }
+    </div>`;
+  }).join('') :
+    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Niemand fällig diese Woche</div></div>`;
+
+  // ── At risk ──────────────────────────────────────────────────
+  const riskList  = document.getElementById('intel-risk');
+  const riskCount = document.getElementById('intel-risk-count');
+  const atRisk    = active.filter(c => {
+    if (!c.last_appointment_date) return false;
+    const weeks = (today.getTime() - new Date(c.last_appointment_date).getTime()) / (7 * 86400000);
+    return weeks > (c.preferred_cycle_weeks || 4) * 1.8;
+  }).sort((a,b) => new Date(a.last_appointment_date).getTime() - new Date(b.last_appointment_date).getTime());
+
+  if (atRisk.length) {
+    riskCount.textContent = atRisk.length;
+    riskCount.style.display = 'inline-flex';
+  } else {
+    riskCount.style.display = 'none';
+  }
+
+  riskList.innerHTML = atRisk.length ? atRisk.map(c => {
+    const weeks = Math.floor((today.getTime() - new Date(c.last_appointment_date).getTime()) / (7*86400000));
+    const urgency = weeks > 10 ? '#dc2626' : '#d97706';
+    return `<div class="due-item">
+      <div>
+        <div class="due-name">${c.full_name}</div>
+        <div class="due-date" style="color:${urgency};">Letzter Besuch: vor ${weeks} Wochen</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="sendManualNudge('${c.id}','${c.full_name}','${c.email}')">Nudge</button>
     </div>`;
   }).join('') :
     `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Keine Risiko-Clients</div></div>`;
 
-  // Waitlist
-  const waitData = await sb.query('waiting_list', {
-    select: '*,profiles(full_name),services(name)',
-    filter: 'status=eq.waiting', order: 'joined_at.asc'
-  });
+  // ── Waitlist ─────────────────────────────────────────────────
   const waitEl = document.getElementById('intel-waitlist');
-  const waitlist = Array.isArray(waitData) ? waitData : [];
   waitEl.innerHTML = waitlist.length ? waitlist.map(w => `
     <div class="due-item">
       <div>
@@ -2366,6 +2527,79 @@ async function loadIntelligence() {
       </div>
     </div>`).join('') :
     `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Warteliste leer</div></div>`;
+
+  // ── AI ANALYSIS ──────────────────────────────────────────────
+  // Build compact data snapshot and ask Claude for insights
+  try {
+    const aiSnapshot = {
+      active_clients: active.length,
+      capacity_pct: pct,
+      busiest_day: dayNames[busiestDay],
+      top_service: topSvc ? topSvc[0] : null,
+      avg_cycle_weeks: avgCycle,
+      due_soon_count: dueSoon.filter(c => !futureBk.some(b => b.client_id === c.id)).length,
+      at_risk_count: atRisk.length,
+      waitlist_count: waitlist.length,
+      cancel_rate_pct: cancelRate,
+      noshow_rate_pct: noshowRate,
+      month_revenue_eur: Math.round(monthRevenue),
+      free_slots_today: Math.max(0, maxPerDay - todayBooked),
+      services: svcs.map(s => s.name)
+    };
+
+    const banner = document.getElementById('intel-ai-banner');
+    const aiText = document.getElementById('intel-ai-text');
+    banner.style.display = 'block';
+    aiText.innerHTML = '<span style="opacity:0.6;">KI analysiert Daten...</span>';
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        messages: [{
+          role: 'user',
+          content: `Du bist der Business-Analyst für Sharon Zuccaro's Nail Design Studio in Bonn. 
+Analysiere diese aktuellen Geschäftsdaten und gib eine prägnante, umsetzbare Empfehlung auf Deutsch (max. 2 Sätze):
+
+${JSON.stringify(aiSnapshot)}
+
+Fokus auf die wichtigste Aktion die Sharon HEUTE tun sollte. Sei direkt und konkret.`
+        }]
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const insight = data.content?.[0]?.text || '';
+      if (insight) {
+        aiText.textContent = insight;
+      } else {
+        banner.style.display = 'none';
+      }
+    } else {
+      banner.style.display = 'none';
+    }
+  } catch(e) {
+    document.getElementById('intel-ai-banner').style.display = 'none';
+  }
+}
+
+// ── Manual nudge from Intelligence dashboard ─────────────────
+async function sendManualNudge(clientId, clientName, clientEmail) {
+  if (!clientEmail) { toast('Keine E-Mail für diesen Client', 'error'); return; }
+
+  try {
+    await adminTriggerEmail('rebooking_nudge', {
+      clientName,
+      clientEmail,
+      nextSuggestedDate: null
+    });
+    toast(`Nudge gesendet an ${clientName} ✓`, 'success');
+  } catch(e) {
+    toast('Fehler beim Senden', 'error');
+  }
 }
 
 // ============================================================
