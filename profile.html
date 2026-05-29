@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Profil — Sharon Zuccaro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --burgundy:       #7D1535;
+  --burgundy-dark:  #5a0e25;
+  --burgundy-light: #f9f0f3;
+  --burgundy-mid:   #e8c5cf;
+  --black:          #0a0a0a;
+  --white:          #ffffff;
+  --bg:             #faf7f8;
+  --text:           #1a1a1a;
+  --text-muted:     #8a7a7d;
+  --border:         #ecdde0;
+  --font-head:      'Playfair Display', serif;
+  --font-body:      'DM Sans', sans-serif;
+  --transition:     all 0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ---- TOP BAR ---- */
+.topbar {
+  background: var(--black);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-logo {
+  font-family: var(--font-head);
+  color: var(--white);
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-sm {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary-sm { background: var(--burgundy); color: var(--white); }
+.btn-primary-sm:hover { background: var(--burgundy-dark); }
+
+.btn-ghost-sm {
+  background: none;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.btn-ghost-sm:hover { color: var(--white); border-color: rgba(255,255,255,0.4); }
+
+/* ---- CONTENT ---- */
+.content {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.page-title {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 4px;
+}
+
+.page-sub {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 36px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-family: var(--font-head);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.card-body { padding: 20px 24px; }
+
+.form-group { margin-bottom: 18px; }
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus {
+  border-color: var(--burgundy);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(125,21,53,0.07);
+}
+
+.form-input:disabled {
+  color: var(--text-muted);
+  background: var(--bg);
+  cursor: default;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+select.form-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7a7d' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* Password section */
+.section-divider {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  margin-top: 4px;
+}
+
+.btn-save {
+  display: inline-block;
+  padding: 11px 24px;
+  background: var(--burgundy);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-save:hover { background: var(--burgundy-dark); }
+.btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-danger-outline {
+  display: inline-block;
+  padding: 11px 24px;
+  background: none;
+  color: #c0392b;
+  border: 1.5px solid #f5c6cb;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-danger-outline:hover { background: #fdf0f0; }
+
+/* Appointments list */
+.appt-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.appt-item:last-child { border-bottom: none; }
+
+.appt-date {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.appt-service {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.badge-confirmed { background: #e8f5ee; color: #2d7a50; }
+.badge-cancelled { background: #fdf0f0; color: #8b1a1a; }
+.badge-completed { background: var(--bg); color: var(--text-muted); }
+
+.empty-state {
+  text-align: center;
+  padding: 28px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--black);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  z-index: 1000;
+  animation: slideUp 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+.toast.success { background: #1a5c32; }
+.toast.error   { background: #8b1a1a; }
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; pointer-events: none; }
+}
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .content { padding: 28px 16px 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="booking.html" class="topbar-logo">Sharon Zuccaro</a>
+  <div class="topbar-actions">
+    <a href="booking.html" class="btn-sm btn-primary-sm">🐾 Termin buchen</a>
+    <button class="btn-sm btn-ghost-sm" onclick="handleLogout()">Abmelden</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="page-title">Mein Profil</div>
+  <div class="page-sub" id="profile-sub">Deine persönlichen Daten und Buchungshistorie.</div>
+
+  <!-- Persönliche Daten -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Persönliche Daten</div>
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Vorname</label>
+          <input type="text" class="form-input" id="profile-firstname" placeholder="Anna">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nachname</label>
+          <input type="text" class="form-input" id="profile-lastname" placeholder="Müller">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">E-Mail</label>
+        <input type="email" class="form-input" id="profile-email" disabled>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Telefon</label>
+        <input type="tel" class="form-input" id="profile-phone" placeholder="+49 176 12345678">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Buchungsrhythmus</label>
+        <select class="form-input" id="profile-cycle">
+          <option value="">Bitte wählen...</option>
+          <option value="2">Alle 2 Wochen</option>
+          <option value="3">Alle 3 Wochen</option>
+          <option value="4">Alle 4 Wochen</option>
+        </select>
+      </div>
+
+      <button class="btn-save" id="save-profile-btn" onclick="saveProfile()">Änderungen speichern</button>
+    </div>
+  </div>
+
+  <!-- Passwort ändern -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Passwort ändern</div>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label class="form-label">Neues Passwort</label>
+        <input type="password" class="form-input" id="new-password" placeholder="Min. 8 Zeichen" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Passwort bestätigen</label>
+        <input type="password" class="form-input" id="confirm-password" placeholder="Passwort wiederholen" autocomplete="new-password">
+      </div>
+      <button class="btn-save" id="save-pw-btn" onclick="savePassword()">Passwort aktualisieren</button>
+    </div>
+  </div>
+
+  <!-- Meine Termine -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Meine Termine</div>
+    </div>
+    <div class="card-body">
+      <div id="appointments-list">
+        <div class="empty-state">Termine werden geladen...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Konto löschen -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="color:#c0392b;">Konto löschen</div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+        Wenn du dein Konto löschen möchtest, wende dich bitte direkt an Sharon.
+        Alle zukünftigen Termine werden dabei storniert.
+      </p>
+      <a href="mailto:info@sharonzuccaro.com?subject=Konto löschen" class="btn-danger-outline">
+        Sharon kontaktieren
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
+
+let currentUserId = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem('sz_token');
+  const uid   = localStorage.getItem('sz_uid');
+
+  if (!token || !uid) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  currentUserId = uid;
+
+  await loadProfile(token, uid);
+  await loadAppointments(token, uid);
+});
+
+async function loadProfile(token, uid) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}&select=*`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!Array.isArray(data) || !data.length) return;
+
+    const p = data[0];
+
+    if (p.account_status !== 'active' && !p.is_admin) {
+      window.location.href = 'pending.html';
+      return;
+    }
+
+    const parts = (p.full_name || '').split(' ');
+    document.getElementById('profile-firstname').value = parts[0] || '';
+    document.getElementById('profile-lastname').value  = parts.slice(1).join(' ') || '';
+    document.getElementById('profile-email').value     = p.email || '';
+    document.getElementById('profile-phone').value     = p.phone || '';
+    if (p.preferred_cycle_weeks) {
+      document.getElementById('profile-cycle').value = p.preferred_cycle_weeks.toString();
+    }
+
+    document.getElementById('profile-sub').textContent =
+      `Hallo ${parts[0] || 'dort'}! Hier verwaltest du deine Daten.`;
+
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+async function loadAppointments(token, uid) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?client_id=eq.${uid}&is_block=eq.false&order=start_time.desc&limit=20&select=*,services(name)`,
+      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${token}` } }
+    );
+    const data = await res.json();
+    const el = document.getElementById('appointments-list');
+
+    if (!Array.isArray(data) || !data.length) {
+      el.innerHTML = '<div class="empty-state">Noch keine Termine vorhanden.</div>';
+      return;
+    }
+
+    const statusLabel = s => ({
+      confirmed: 'Bestätigt', cancelled: 'Storniert',
+      completed: 'Abgeschlossen', no_show: 'Nicht erschienen', rescheduled: 'Verschoben'
+    }[s] || s);
+
+    const statusClass = s => ({
+      confirmed: 'confirmed', cancelled: 'cancelled',
+      completed: 'completed', no_show: 'cancelled', rescheduled: 'completed'
+    }[s] || 'completed');
+
+    el.innerHTML = data.map(b => {
+      const d = new Date(b.start_time);
+      return `<div class="appt-item">
+        <div>
+          <div class="appt-date">${d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+          <div class="appt-service">${b.services?.name || '—'} · ${d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr</div>
+        </div>
+        <span class="badge badge-${statusClass(b.status)}">${statusLabel(b.status)}</span>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    document.getElementById('appointments-list').innerHTML =
+      '<div class="empty-state">Termine konnten nicht geladen werden.</div>';
+  }
+}
+
+async function saveProfile() {
+  const token = localStorage.getItem('sz_token');
+  const uid   = localStorage.getItem('sz_uid');
+  if (!token || !uid) return;
+
+  const firstname = document.getElementById('profile-firstname').value.trim();
+  const lastname  = document.getElementById('profile-lastname').value.trim();
+  const phone     = document.getElementById('profile-phone').value.trim();
+  const cycle     = document.getElementById('profile-cycle').value;
+
+  if (!firstname || !lastname) { showToast('Vor- und Nachname sind erforderlich.', 'error'); return; }
+
+  const btn = document.getElementById('save-profile-btn');
+  btn.disabled = true;
+  btn.textContent = 'Speichern...';
+
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${token}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        full_name: `${firstname} ${lastname}`.trim(),
+        phone: phone || null,
+        preferred_cycle_weeks: cycle ? parseInt(cycle) : null
+      })
+    });
+    showToast('Profil gespeichert ✓', 'success');
+  } catch(e) {
+    showToast('Fehler beim Speichern.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Änderungen speichern';
+  }
+}
+
+async function savePassword() {
+  const token   = localStorage.getItem('sz_token');
+  const newPw   = document.getElementById('new-password').value;
+  const confirm = document.getElementById('confirm-password').value;
+
+  if (!newPw || newPw.length < 8) {
+    showToast('Passwort muss mind. 8 Zeichen haben.', 'error'); return;
+  }
+  if (newPw !== confirm) {
+    showToast('Passwörter stimmen nicht überein.', 'error'); return;
+  }
+
+  const btn = document.getElementById('save-pw-btn');
+  btn.disabled = true;
+  btn.textContent = 'Aktualisieren...';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ password: newPw })
+    });
+    const data = await res.json();
+    if (data.error) { showToast(data.msg || 'Fehler aufgetreten.', 'error'); return; }
+    showToast('Passwort aktualisiert ✓', 'success');
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+  } catch(e) {
+    showToast('Fehler beim Aktualisieren.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Passwort aktualisieren';
+  }
+}
+
+function handleLogout() {
+  fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${localStorage.getItem('sz_token')}` }
+  }).finally(() => {
+    localStorage.removeItem('sz_token');
+    localStorage.removeItem('sz_uid');
+    window.location.href = 'index.html';
+  });
+}
+
+function showToast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+</script>
+</body>
+</html>

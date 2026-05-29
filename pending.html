@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anfrage erhalten — Sharon Zuccaro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --burgundy:       #7D1535;
+  --burgundy-dark:  #5a0e25;
+  --burgundy-light: #f9f0f3;
+  --burgundy-mid:   #e8c5cf;
+  --black:          #0a0a0a;
+  --white:          #ffffff;
+  --bg:             #faf7f8;
+  --text:           #1a1a1a;
+  --text-muted:     #8a7a7d;
+  --border:         #ecdde0;
+  --font-head:      'Playfair Display', serif;
+  --font-body:      'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 56px 48px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 4px 40px rgba(125,21,53,0.08);
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px; height: 56px;
+  border: 1.5px solid var(--burgundy-mid);
+  border-radius: 50%;
+  font-family: var(--font-head);
+  font-size: 20px;
+  color: var(--burgundy);
+  margin-bottom: 28px;
+}
+
+/* Pulse animation ring */
+.pulse-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 32px;
+}
+
+.pulse-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--burgundy-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.pulse-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 2px solid var(--burgundy-mid);
+  animation: pulse 2.5s ease-out infinite;
+}
+
+.pulse-ring:nth-child(2) { animation-delay: 0.8s; }
+
+@keyframes pulse {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+h1 {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Steps */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--burgundy);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-num.done {
+  background: #2d9e5f;
+}
+
+.step-num.waiting {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+}
+
+.step-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.step-text strong {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.step-text span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Info box */
+.info-box {
+  background: var(--burgundy-light);
+  border: 1px solid var(--burgundy-mid);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 13px;
+  color: var(--burgundy-dark);
+  line-height: 1.6;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.info-box strong { font-weight: 600; }
+
+/* Buttons */
+.btn-ghost {
+  display: inline-block;
+  padding: 12px 24px;
+  background: none;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+}
+
+.footer {
+  margin-top: 36px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.footer a {
+  color: var(--burgundy);
+  text-decoration: none;
+}
+
+@media (max-width: 520px) {
+  .card { padding: 40px 24px; }
+  h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo-mark">SZ</div>
+
+  <div class="pulse-wrap">
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-icon">💅</div>
+  </div>
+
+  <h1>Wir haben deine<br>Anfrage erhalten!</h1>
+  <p class="subtitle" id="greeting-text">
+    Sharon prüft deinen Account und schaltet dich in Kürze frei.
+    Du erhältst eine E-Mail, sobald dein Zugang aktiv ist.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num done">✓</div>
+      <div class="step-text">
+        <strong>Konto erstellt</strong>
+        <span>Deine E-Mail-Adresse wurde bestätigt.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num" style="background:var(--burgundy);color:white;font-size:14px;">⏳</div>
+      <div class="step-text">
+        <strong>Freischaltung ausstehend</strong>
+        <span>Sharon überprüft deinen Account — normalerweise innerhalb von 24 Stunden.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num waiting">3</div>
+      <div class="step-text">
+        <strong>Termin buchen</strong>
+        <span>Sobald du freigeschaltet bist, kannst du direkt mit Toki buchen.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Was passiert als nächstes?</strong><br>
+    Du bekommst eine E-Mail von <em>noreply@sharonzuccaro.com</em> mit dem Betreff
+    „Du wurdest freigeschaltet! 💅" — dann kannst du sofort loslegen.
+  </div>
+
+  <button class="btn-ghost" onclick="handleLogout()">Abmelden</button>
+
+  <div class="footer">
+    Fragen? Schreib Sharon direkt:<br>
+    <a href="mailto:info@sharonzuccaro.com">info@sharonzuccaro.com</a><br><br>
+    Built by <a href="https://aigentii.io" target="_blank">Aigentii AI Limited</a>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Handle email confirmation callback (hash or query params from Supabase)
+  const hash = window.location.hash;
+  const params = new URLSearchParams(window.location.search);
+
+  // Supabase redirects with #access_token=... after email confirmation
+  if (hash.includes('access_token')) {
+    const hashParams = new URLSearchParams(hash.substring(1));
+    const token = hashParams.get('access_token');
+    const userId = hashParams.get('user_id') || hashParams.get('sub');
+
+    if (token) {
+      localStorage.setItem('sz_token', token);
+
+      // Decode JWT to get user id
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.sub) localStorage.setItem('sz_uid', payload.sub);
+
+        // Create profile if it doesn't exist yet
+        await ensureProfile(token, payload.sub, payload);
+      } catch (e) { console.error('Token decode error', e); }
+    }
+  }
+
+  // Check if already approved — redirect to booking
+  const token = localStorage.getItem('sz_token');
+  const uid   = localStorage.getItem('sz_uid');
+  if (token && uid) {
+    await checkStatus(token, uid);
+    // Show name in greeting if possible
+    showGreeting(uid, token);
+  }
+});
+
+async function ensureProfile(token, uid, payload) {
+  // Check if profile exists
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}`, {
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  const existing = await res.json();
+  if (Array.isArray(existing) && existing.length > 0) return; // already exists
+
+  // Create profile with pending status
+  const meta = payload.user_metadata || {};
+  await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${token}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      id: uid,
+      email: payload.email,
+      full_name: meta.full_name || '',
+      phone: meta.phone || null,
+      preferred_service_id: meta.preferred_service_id || null,
+      preferred_cycle_weeks: meta.preferred_cycle_weeks || null,
+      account_status: 'pending',
+      is_admin: false
+    })
+  });
+}
+
+async function checkStatus(token, uid) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}&select=account_status,is_admin`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const data = await res.json();
+    if (!Array.isArray(data) || !data.length) return;
+
+    const profile = data[0];
+    if (profile.is_admin) window.location.href = 'admin.html';
+    else if (profile.account_status === 'active') window.location.href = 'booking.html';
+    // else stay on pending page
+  } catch(e) {}
+}
+
+async function showGreeting(uid, token) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${uid}&select=full_name`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data.length && data[0].full_name) {
+      const firstName = data[0].full_name.split(' ')[0];
+      document.getElementById('greeting-text').textContent =
+        `Hallo ${firstName}! Sharon prüft deinen Account und schaltet dich in Kürze frei. Du erhältst eine E-Mail, sobald dein Zugang aktiv ist.`;
+    }
+  } catch(e) {}
+}
+
+function handleLogout() {
+  localStorage.removeItem('sz_token');
+  localStorage.removeItem('sz_uid');
+  window.location.href = 'index.html';
+}
+
+// Poll for approval every 30 seconds while page is open
+setInterval(async () => {
+  const token = localStorage.getItem('sz_token');
+  const uid   = localStorage.getItem('sz_uid');
+  if (token && uid) await checkStatus(token, uid);
+}, 30000);
+</script>
+</body>
+</html>

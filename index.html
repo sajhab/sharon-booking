@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharon Zuccaro — Nail Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --burgundy:       #7D1535;
+  --burgundy-dark:  #5a0e25;
+  --burgundy-light: #f9f0f3;
+  --burgundy-mid:   #e8c5cf;
+  --black:          #0a0a0a;
+  --white:          #ffffff;
+  --bg:             #faf7f8;
+  --text:           #1a1a1a;
+  --text-muted:     #8a7a7d;
+  --border:         #ecdde0;
+  --font-head:      'Playfair Display', serif;
+  --font-body:      'DM Sans', sans-serif;
+  --transition:     all 0.25s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   LAYOUT — two halves on desktop, stack on mobile
+============================================================ */
+.page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ---- LEFT HERO ---- */
+.hero {
+  position: relative;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 52px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(125,21,53,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(125,21,53,0.2) 0%, transparent 50%);
+}
+
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+}
+
+.hero-top { position: relative; z-index: 1; }
+
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px; height: 52px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 50%;
+  font-family: var(--font-head);
+  font-size: 20px;
+  color: var(--white);
+  letter-spacing: 1px;
+  margin-bottom: 52px;
+}
+
+.hero-headline {
+  font-family: var(--font-head);
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+}
+
+.hero-headline em {
+  font-style: italic;
+  color: var(--burgundy-mid);
+}
+
+.hero-sub {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  max-width: 340px;
+}
+
+.hero-bottom { position: relative; z-index: 1; }
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.hero-tag {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.hero-footer {
+  font-size: 12px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.5px;
+}
+
+/* ---- RIGHT PANEL ---- */
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  background: var(--white);
+}
+
+.panel-inner {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ============================================================
+   TABS  (Login / Registrieren)
+============================================================ */
+.tabs {
+  display: flex;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 36px;
+  gap: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 12px 0 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1.5px;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.tab-btn.active {
+  color: var(--burgundy);
+  border-bottom-color: var(--burgundy);
+}
+
+/* ============================================================
+   FORMS
+============================================================ */
+.form-pane { display: none; }
+.form-pane.active { display: block; }
+
+.form-title {
+  font-family: var(--font-head);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 6px;
+}
+
+.form-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus {
+  border-color: var(--burgundy);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(125,21,53,0.07);
+}
+
+.form-input::placeholder { color: #c0b0b5; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+/* Password toggle */
+.input-wrap { position: relative; }
+.input-wrap .form-input { padding-right: 42px; }
+.eye-btn {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+  padding: 4px;
+  line-height: 1;
+  transition: var(--transition);
+}
+.eye-btn:hover { color: var(--burgundy); }
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--burgundy);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+  margin-top: 8px;
+}
+
+.btn-primary:hover { background: var(--burgundy-dark); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-ghost {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: none;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 10px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-ghost:hover { border-color: var(--burgundy); color: var(--burgundy); }
+
+/* ============================================================
+   MESSAGES
+============================================================ */
+.msg {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+  line-height: 1.5;
+}
+
+.msg.error   { background: #fdf0f0; border: 1px solid #f5c6cb; color: #8b1a1a; }
+.msg.success { background: #f0faf4; border: 1px solid #b7e0c6; color: #1a5c32; }
+.msg.info    { background: var(--burgundy-light); border: 1px solid var(--burgundy-mid); color: var(--burgundy-dark); }
+.msg.show    { display: block; }
+
+/* ============================================================
+   DIVIDER
+============================================================ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ============================================================
+   SELECT STYLING
+============================================================ */
+select.form-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7a7d' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* ============================================================
+   LOADING SPINNER
+============================================================ */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-inner { animation: fadeUp 0.4s ease; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+  .page { grid-template-columns: 1fr; }
+  .hero {
+    padding: 36px 28px 40px;
+    min-height: auto;
+  }
+  .hero-headline { font-size: 30px; margin-bottom: 14px; }
+  .logo-mark { margin-bottom: 32px; }
+  .hero-sub { display: none; }
+  .panel { padding: 36px 24px 48px; }
+}
+
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ============ LEFT HERO ============ -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-top">
+      <div class="logo-mark">SZ</div>
+      <h1 class="hero-headline">
+        Nail Design,<br>
+        <em>auf ein neues Level</em><br>
+        gehoben.
+      </h1>
+      <p class="hero-sub">
+        Exklusive Nail-Art & Gel-Nails in Bonn.
+        Dein nächster Termin — einfach, schnell und unkompliziert.
+      </p>
+    </div>
+
+    <div class="hero-bottom">
+      <div class="hero-tags">
+        <span class="hero-tag">Gel Nails</span>
+        <span class="hero-tag">Nail Art</span>
+        <span class="hero-tag">Maniküre</span>
+        <span class="hero-tag">Bonn</span>
+      </div>
+      <div class="hero-footer">© Sharon Zuccaro · Built by Aigentii AI Limited</div>
+    </div>
+  </div>
+
+  <!-- ============ RIGHT PANEL ============ -->
+  <div class="panel">
+    <div class="panel-inner">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Einloggen</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Registrieren</button>
+      </div>
+
+      <!-- ===== LOGIN ===== -->
+      <div class="form-pane active" id="pane-login">
+        <div class="form-title">Willkommen zurück</div>
+        <div class="form-sub">Bitte melde dich an, um deinen Termin zu buchen.</div>
+
+        <div class="msg" id="login-msg"></div>
+
+        <div class="form-group">
+          <label class="form-label">E-Mail</label>
+          <input type="email" class="form-input" id="login-email" placeholder="deine@email.de" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Passwort</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+            <button class="eye-btn" onclick="togglePw('login-password', this)" tabindex="-1">👁</button>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="login-btn" onclick="handleLogin()">Einloggen</button>
+
+        <div class="divider">oder</div>
+        <button class="btn-ghost" onclick="switchTab('signup')">Noch kein Konto? Jetzt registrieren</button>
+      </div>
+
+      <!-- ===== SIGNUP ===== -->
+      <div class="form-pane" id="pane-signup">
+        <div class="form-title">Konto erstellen</div>
+        <div class="form-sub">Registriere dich für exklusiven Zugang zum Buchungssystem.</div>
+
+        <div class="msg" id="signup-msg"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Vorname *</label>
+            <input type="text" class="form-input" id="signup-firstname" placeholder="Anna" autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nachname *</label>
+            <input type="text" class="form-input" id="signup-lastname" placeholder="Müller" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">E-Mail *</label>
+          <input type="email" class="form-input" id="signup-email" placeholder="deine@email.de" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Telefon *</label>
+          <input type="tel" class="form-input" id="signup-phone" placeholder="+49 176 12345678" autocomplete="tel">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Gewünschter Service</label>
+          <select class="form-input" id="signup-service">
+            <option value="">Bitte wählen...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Buchungsrhythmus</label>
+          <select class="form-input" id="signup-cycle">
+            <option value="">Bitte wählen...</option>
+            <option value="2">Alle 2 Wochen</option>
+            <option value="3">Alle 3 Wochen</option>
+            <option value="4">Alle 4 Wochen</option>
+          </select>
+          <div class="form-hint">Wie oft möchtest du durchschnittlich kommen?</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Passwort *</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="signup-password" placeholder="Min. 8 Zeichen" autocomplete="new-password">
+            <button class="eye-btn" onclick="togglePw('signup-password', this)" tabindex="-1">👁</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Passwort bestätigen *</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="signup-confirm" placeholder="Passwort wiederholen" autocomplete="new-password">
+            <button class="eye-btn" onclick="togglePw('signup-confirm', this)" tabindex="-1">👁</button>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="signup-btn" onclick="handleSignup()">Konto erstellen</button>
+
+        <div class="divider">oder</div>
+        <button class="btn-ghost" onclick="switchTab('login')">Bereits registriert? Einloggen</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check if already logged in
+  const token = localStorage.getItem('sz_token');
+  const userId = localStorage.getItem('sz_uid');
+  if (token && userId) {
+    await checkSessionAndRedirect(token, userId);
+  }
+
+  // Load services for signup dropdown
+  loadServices();
+
+  // Allow Enter key on login
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+  document.getElementById('login-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+});
+
+async function checkSessionAndRedirect(token, userId) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=account_status,is_admin`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      const profile = data[0];
+      redirectByStatus(profile);
+    }
+  } catch (e) {
+    // Session expired — clear and let them log in again
+    localStorage.removeItem('sz_token');
+    localStorage.removeItem('sz_uid');
+  }
+}
+
+function redirectByStatus(profile) {
+  if (profile.is_admin) {
+    window.location.href = 'admin.html';
+  } else if (profile.account_status === 'active') {
+    window.location.href = 'booking.html';
+  } else if (profile.account_status === 'pending') {
+    window.location.href = 'pending.html';
+  } else if (profile.account_status === 'blocked') {
+    showMsg('login-msg', 'Dein Konto wurde gesperrt. Bitte kontaktiere Sharon.', 'error');
+  }
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.form-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById(`pane-${tab}`).classList.add('active');
+  hideMsg('login-msg');
+  hideMsg('signup-msg');
+}
+
+// ============================================================
+// LOAD SERVICES
+// ============================================================
+async function loadServices() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/services?is_active=eq.true&order=display_order.asc`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    const services = await res.json();
+    const sel = document.getElementById('signup-service');
+    if (Array.isArray(services) && services.length) {
+      sel.innerHTML = '<option value="">Bitte wählen...</option>' +
+        services.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    }
+  } catch (e) { /* services optional */ }
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+async function handleLogin() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  hideMsg('login-msg');
+
+  if (!email || !password) {
+    showMsg('login-msg', 'Bitte E-Mail und Passwort eingeben.', 'error');
+    return;
+  }
+
+  setLoading('login-btn', true);
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.error || !data.access_token) {
+      const msg = data.error_description || data.message || 'Ungültige Anmeldedaten.';
+      if (msg.includes('Email not confirmed')) {
+        showMsg('login-msg', 'Bitte bestätige zuerst deine E-Mail-Adresse. Schau in dein Postfach.', 'info');
+      } else if (msg.includes('Invalid login')) {
+        showMsg('login-msg', 'E-Mail oder Passwort falsch. Bitte nochmal versuchen.', 'error');
+      } else {
+        showMsg('login-msg', msg, 'error');
+      }
+      return;
+    }
+
+    // Store token
+    localStorage.setItem('sz_token', data.access_token);
+    localStorage.setItem('sz_uid', data.user.id);
+
+    // Get profile
+    const pRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${data.user.id}&select=account_status,is_admin`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${data.access_token}`
+      }
+    });
+    const profiles = await pRes.json();
+
+    if (!Array.isArray(profiles) || !profiles.length) {
+      // Profile might not exist yet (just verified)
+      window.location.href = 'pending.html';
+      return;
+    }
+
+    redirectByStatus(profiles[0]);
+
+  } catch (e) {
+    showMsg('login-msg', 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.', 'error');
+  } finally {
+    setLoading('login-btn', false);
+  }
+}
+
+// ============================================================
+// SIGNUP
+// ============================================================
+async function handleSignup() {
+  const firstname = document.getElementById('signup-firstname').value.trim();
+  const lastname  = document.getElementById('signup-lastname').value.trim();
+  const email     = document.getElementById('signup-email').value.trim();
+  const phone     = document.getElementById('signup-phone').value.trim();
+  const serviceId = document.getElementById('signup-service').value;
+  const cycle     = document.getElementById('signup-cycle').value;
+  const password  = document.getElementById('signup-password').value;
+  const confirm   = document.getElementById('signup-confirm').value;
+
+  hideMsg('signup-msg');
+
+  // Validation
+  if (!firstname || !lastname || !email || !phone || !password) {
+    showMsg('signup-msg', 'Bitte fülle alle Pflichtfelder aus.', 'error');
+    return;
+  }
+
+  if (password.length < 8) {
+    showMsg('signup-msg', 'Das Passwort muss mindestens 8 Zeichen lang sein.', 'error');
+    return;
+  }
+
+  if (password !== confirm) {
+    showMsg('signup-msg', 'Die Passwörter stimmen nicht überein.', 'error');
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showMsg('signup-msg', 'Bitte gib eine gültige E-Mail-Adresse ein.', 'error');
+    return;
+  }
+
+  setLoading('signup-btn', true);
+
+  try {
+    // Create Supabase auth user
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        data: {
+          full_name: `${firstname} ${lastname}`,
+          phone,
+          preferred_service_id: serviceId || null,
+          preferred_cycle_weeks: cycle ? parseInt(cycle) : null
+        },
+        options: {
+          emailRedirectTo: 'https://sajhab.github.io/sharon-booking/pending.html'
+        }
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      const msg = data.msg || data.error_description || data.message || '';
+      if (msg.includes('already registered') || msg.includes('User already registered')) {
+        showMsg('signup-msg', 'Diese E-Mail-Adresse ist bereits registriert. Bitte einloggen.', 'info');
+        setTimeout(() => switchTab('login'), 2500);
+      } else {
+        showMsg('signup-msg', msg || 'Registrierung fehlgeschlagen. Bitte erneut versuchen.', 'error');
+      }
+      return;
+    }
+
+    // Success — user needs to confirm email
+    showMsg('signup-msg',
+      '✉️ Fast geschafft! Wir haben dir eine Bestätigungs-E-Mail gesendet. Bitte klick den Link darin, um dein Konto zu aktivieren.',
+      'success'
+    );
+
+    // Disable form after success
+    document.getElementById('signup-btn').disabled = true;
+    document.getElementById('signup-btn').textContent = 'E-Mail gesendet ✓';
+
+  } catch (e) {
+    showMsg('signup-msg', 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.', 'error');
+  } finally {
+    setLoading('signup-btn', false);
+  }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = `msg ${type} show`;
+}
+
+function hideMsg(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'msg';
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Bitte warten...';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btnId === 'login-btn' ? 'Einloggen' : 'Konto erstellen';
+  }
+}
+
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+// Check URL for tab param (e.g. ?tab=signup from email links)
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('tab') === 'signup') switchTab('signup');
+</script>
+</body>
+</html>
