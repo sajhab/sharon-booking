@@ -2378,7 +2378,7 @@ async function loadIntelligence() {
   document.getElementById('intel-busyday').textContent = dayNames[busiestDay] || '—';
 
   // ── STAT: Top service ────────────────────────────────────────
-  const svcCounts: Record<string,number> = {};
+  const svcCounts = {};
   monthBk.filter(b => b.status === 'confirmed' && b.services?.name).forEach(b => {
     svcCounts[b.services.name] = (svcCounts[b.services.name] || 0) + 1;
   });
@@ -2424,7 +2424,7 @@ async function loadIntelligence() {
 
   // ── Capacity bar (detailed, per day) ────────────────────────
   const capEl = document.getElementById('intel-capacity');
-  const dayBuckets: Record<string,number> = {};
+  const dayBuckets = {};
   futureBk.forEach(b => {
     const d = new Date(b.start_time).toISOString().split('T')[0];
     dayBuckets[d] = (dayBuckets[d] || 0) + 1;
