@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharon Zuccaro — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+============================================================ */
+:root {
+  --burgundy:       #7D1535;
+  --burgundy-dark:  #5a0e25;
+  --burgundy-light: #f9f0f3;
+  --burgundy-mid:   #e8c5cf;
+  --black:          #0a0a0a;
+  --white:          #ffffff;
+  --bg:             #f7f4f5;
+  --text:           #1a1a1a;
+  --text-muted:     #7a7a7a;
+  --border:         #e8dde0;
+  --sidebar-w:      240px;
+  --header-h:       60px;
+  --radius:         10px;
+  --shadow:         0 2px 16px rgba(125,21,53,0.08);
+  --shadow-lg:      0 8px 32px rgba(125,21,53,0.14);
+  --font-head:      'Playfair Display', serif;
+  --font-body:      'DM Sans', sans-serif;
+  --transition:     all 0.2s ease;
+}
+
+/* ============================================================
+   RESET & BASE
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: var(--font-body); background: var(--bg); color: var(--text); font-size: 15px; }
+button { cursor: pointer; font-family: var(--font-body); }
+input, select, textarea { font-family: var(--font-body); }
+a { text-decoration: none; color: inherit; }
+
+/* ============================================================
+   AUTH SCREEN
+============================================================ */
+#auth-screen {
+  position: fixed; inset: 0; background: var(--black);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.auth-card {
+  background: var(--white); border-radius: 16px; padding: 48px 40px;
+  width: 100%; max-width: 400px; box-shadow: var(--shadow-lg);
+  animation: fadeUp 0.4s ease;
+}
+.auth-logo {
+  font-family: var(--font-head); font-size: 22px; color: var(--burgundy);
+  text-align: center; margin-bottom: 8px; letter-spacing: 1px;
+}
+.auth-sub { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 32px; }
+.auth-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.auth-input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 15px; outline: none; transition: var(--transition);
+  background: var(--bg); margin-bottom: 16px;
+}
+.auth-input:focus { border-color: var(--burgundy); background: var(--white); }
+.auth-btn {
+  width: 100%; padding: 14px; background: var(--burgundy); color: var(--white);
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+  transition: var(--transition); margin-top: 4px;
+}
+.auth-btn:hover { background: var(--burgundy-dark); }
+.auth-error { color: #c0392b; font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+#app { display: none; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w); background: var(--black);
+  display: flex; flex-direction: column; z-index: 100;
+  transition: transform 0.3s ease;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-logo-text {
+  font-family: var(--font-head); color: var(--white);
+  font-size: 15px; letter-spacing: 1.5px; line-height: 1.3;
+}
+.sidebar-logo-sub { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 3px; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; color: rgba(255,255,255,0.55);
+  font-size: 14px; font-weight: 400; cursor: pointer;
+  transition: var(--transition); border-left: 3px solid transparent;
+  position: relative;
+}
+.nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+.nav-item.active {
+  color: var(--white); background: rgba(125,21,53,0.3);
+  border-left-color: var(--burgundy);
+}
+.nav-item .nav-icon { font-size: 17px; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto; background: var(--burgundy);
+  color: var(--white); font-size: 11px; font-weight: 600;
+  padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+}
+.sidebar-footer {
+  padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.35); font-size: 12px;
+}
+.logout-btn {
+  display: flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,0.4); font-size: 13px;
+  background: none; border: none; padding: 8px 0;
+  transition: var(--transition); width: 100%;
+}
+.logout-btn:hover { color: rgba(255,255,255,0.8); }
+
+/* MAIN */
+.main {
+  margin-left: var(--sidebar-w);
+  height: 100vh; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 0 28px; height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+}
+.topbar-title { font-family: var(--font-head); font-size: 20px; color: var(--text); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-user { font-size: 13px; color: var(--text-muted); }
+.mobile-menu-btn {
+  display: none; background: none; border: none;
+  font-size: 22px; color: var(--text); padding: 4px;
+}
+.content { flex: 1; padding: 28px; }
+
+/* SECTIONS */
+.section { display: none; animation: fadeUp 0.3s ease; }
+.section.active { display: block; }
+
+/* ============================================================
+   COMPONENTS
+============================================================ */
+
+/* Cards */
+.card {
+  background: var(--white); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-family: var(--font-head); font-size: 16px; color: var(--text); }
+.card-body { padding: 22px; }
+
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--white); border-radius: var(--radius);
+  border: 1px solid var(--border); padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+.stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.stat-value { font-family: var(--font-head); font-size: 28px; color: var(--burgundy); }
+.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px; font-size: 14px;
+  font-weight: 500; border: none; transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--burgundy); color: var(--white); }
+.btn-primary:hover { background: var(--burgundy-dark); }
+.btn-outline { background: var(--white); color: var(--burgundy); border: 1.5px solid var(--burgundy); }
+.btn-outline:hover { background: var(--burgundy-light); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--burgundy); color: var(--burgundy); }
+.btn-danger { background: #fef2f2; color: #dc2626; border: 1.5px solid #fecaca; }
+.btn-danger:hover { background: #fee2e2; }
+.btn-success { background: #f0fdf4; color: #16a34a; border: 1.5px solid #bbf7d0; }
+.btn-success:hover { background: #dcfce7; }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; padding: 12px 16px;
+  font-size: 12px; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+}
+td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--burgundy-light); }
+
+/* Status badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+}
+.badge-active   { background: #f0fdf4; color: #16a34a; }
+.badge-pending  { background: #fffbeb; color: #d97706; }
+.badge-blocked  { background: #fef2f2; color: #dc2626; }
+.badge-confirmed { background: #eff6ff; color: #2563eb; }
+.badge-cancelled { background: #fef2f2; color: #dc2626; }
+.badge-rescheduled { background: #f5f3ff; color: #7c3aed; }
+.badge-no_show  { background: #fff7ed; color: #ea580c; }
+
+/* Form elements */
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 14px; outline: none;
+  transition: var(--transition); background: var(--white); color: var(--text);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(125,21,53,0.08);
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Toggle */
+.toggle-wrap { display: flex; align-items: center; gap: 10px; }
+.toggle {
+  position: relative; width: 44px; height: 24px;
+  background: var(--border); border-radius: 12px;
+  cursor: pointer; transition: var(--transition); border: none; flex-shrink: 0;
+}
+.toggle.on { background: var(--burgundy); }
+.toggle::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; background: var(--white);
+  border-radius: 50%; transition: var(--transition);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle.on::after { transform: translateX(20px); }
+.toggle-label { font-size: 14px; color: var(--text); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--white); border-radius: 14px; width: 100%;
+  max-width: 520px; box-shadow: var(--shadow-lg);
+  transform: translateY(20px); transition: transform 0.2s;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header {
+  padding: 22px 24px 18px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-family: var(--font-head); font-size: 18px; }
+.modal-close {
+  background: none; border: none; font-size: 22px;
+  color: var(--text-muted); line-height: 1; padding: 2px 6px;
+}
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 24px; }
+.modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--border);
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+
+/* Search / filter bar */
+.filter-bar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.search-input {
+  flex: 1; min-width: 200px; padding: 9px 14px 9px 36px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 14px; outline: none; transition: var(--transition);
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center;
+}
+.search-input:focus { border-color: var(--burgundy); }
+.filter-select {
+  padding: 9px 14px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 14px; outline: none;
+  background: var(--white); cursor: pointer; transition: var(--transition);
+}
+.filter-select:focus { border-color: var(--burgundy); }
+
+/* ============================================================
+   CALENDAR
+============================================================ */
+.cal-toolbar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.cal-nav { display: flex; align-items: center; gap: 8px; }
+.cal-nav-btn {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; font-size: 16px;
+  transition: var(--transition); color: var(--text);
+}
+.cal-nav-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
+.cal-date-label {
+  font-family: var(--font-head); font-size: 18px;
+  color: var(--text); min-width: 200px; text-align: center;
+}
+.cal-view-tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 8px; margin-left: auto; }
+.cal-view-tab {
+  padding: 6px 14px; border-radius: 6px; font-size: 13px;
+  font-weight: 500; border: none; background: transparent;
+  color: var(--text-muted); transition: var(--transition);
+}
+.cal-view-tab.active { background: var(--white); color: var(--burgundy); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+.cal-week {
+  display: grid; grid-template-columns: 60px repeat(7, 1fr);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--white); overflow: hidden; box-shadow: var(--shadow);
+}
+.cal-time-col { background: var(--bg); }
+.cal-day-header {
+  padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border); background: var(--white);
+}
+.cal-day-name { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.cal-day-num { font-family: var(--font-head); font-size: 20px; color: var(--text); margin-top: 2px; }
+.cal-day-header.today .cal-day-num {
+  background: var(--burgundy); color: var(--white);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 2px auto 0;
+}
+.cal-time-header { padding: 12px 8px; border-bottom: 1px solid var(--border); background: var(--bg); }
+.cal-body { display: contents; }
+.cal-time-slot {
+  height: 60px; display: flex; align-items: flex-start;
+  padding: 4px 8px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-muted); background: var(--bg);
+  justify-content: flex-end;
+}
+.cal-cell {
+  height: 60px; border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border); position: relative;
+  padding: 2px; cursor: pointer; transition: background 0.15s;
+}
+.cal-cell:hover { background: var(--burgundy-light); }
+.cal-event {
+  position: absolute; left: 2px; right: 2px; top: 2px;
+  border-radius: 6px; padding: 3px 6px; font-size: 11px;
+  font-weight: 500; cursor: pointer; overflow: hidden;
+  line-height: 1.3; z-index: 1; transition: opacity 0.15s;
+}
+.cal-event:hover { opacity: 0.85; }
+.cal-event.client   { background: #f0e6ff; color: #6b21a8; border-left: 3px solid #7c3aed; }
+.cal-event.manual   { background: #fef9c3; color: #854d0e; border-left: 3px solid #ca8a04; }
+.cal-event.block    { background: #e0f2fe; color: #075985; border-left: 3px solid #0284c7; }
+.cal-event.no-show  { background: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
+
+/* Legend */
+.cal-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+/* ============================================================
+   INTELLIGENCE
+============================================================ */
+.intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.capacity-bar-wrap { margin: 12px 0; }
+.capacity-bar-bg { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
+.capacity-bar-fill { background: var(--burgundy); height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.capacity-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+
+.due-list { display: flex; flex-direction: column; gap: 10px; }
+.due-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--bg); border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.due-name { font-weight: 500; font-size: 14px; }
+.due-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* ============================================================
+   SETTINGS
+============================================================ */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.settings-section-title {
+  font-family: var(--font-head); font-size: 15px; color: var(--burgundy);
+  margin-bottom: 16px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-info .setting-name { font-size: 14px; font-weight: 500; }
+.setting-info .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.setting-input {
+  width: 80px; padding: 7px 10px; border: 1.5px solid var(--border);
+  border-radius: 6px; font-size: 14px; text-align: center; outline: none;
+  transition: var(--transition);
+}
+.setting-input:focus { border-color: var(--burgundy); }
+
+/* Schedule grid */
+.schedule-grid { display: flex; flex-direction: column; gap: 8px; }
+.schedule-row {
+  display: grid; grid-template-columns: 100px 1fr 1fr 80px;
+  align-items: center; gap: 12px; padding: 10px 14px;
+  background: var(--bg); border-radius: 8px; border: 1px solid var(--border);
+}
+.schedule-day { font-weight: 500; font-size: 14px; }
+
+/* ============================================================
+   EMPTY STATE
+============================================================ */
+.empty-state {
+  text-align: center; padding: 48px 24px; color: var(--text-muted);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-title { font-family: var(--font-head); font-size: 18px; color: var(--text); margin-bottom: 6px; }
+.empty-desc { font-size: 14px; }
+
+/* ============================================================
+   TOAST
+============================================================ */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  background: var(--black); color: var(--white); padding: 12px 18px;
+  border-radius: 10px; font-size: 14px; box-shadow: var(--shadow-lg);
+  display: flex; align-items: center; gap: 8px;
+  animation: slideIn 0.3s ease; max-width: 320px;
+}
+.toast.success { border-left: 4px solid #16a34a; }
+.toast.error   { border-left: 4px solid #dc2626; }
+.toast.info    { border-left: 4px solid var(--burgundy); }
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================
+   MOBILE
+============================================================ */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .mobile-menu-btn { display: block; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .intel-grid { grid-template-columns: 1fr; }
+  .cal-week { grid-template-columns: 40px repeat(7, 1fr); font-size: 11px; }
+  .content { padding: 16px; }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .search-input { min-width: unset; }
+  .schedule-row { grid-template-columns: 80px 1fr 1fr 60px; }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">SHARON ZUCCARO</div>
+    <div class="auth-sub">Admin Dashboard</div>
+    <label class="auth-label">E-Mail</label>
+    <input type="email" class="auth-input" id="auth-email" placeholder="info@sharonzuccaro.com">
+    <label class="auth-label">Passwort</label>
+    <input type="password" class="auth-input" id="auth-password" placeholder="••••••••">
+    <button class="auth-btn" onclick="handleLogin()">Anmelden</button>
+    <div class="auth-error" id="auth-error">Ungültige Anmeldedaten</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">SHARON ZUCCARO</div>
+      <div class="sidebar-logo-sub">Admin Panel</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showSection('calendar')">
+        <span class="nav-icon">📅</span> Kalender
+      </div>
+      <div class="nav-item" onclick="showSection('approvals')">
+        <span class="nav-icon">⏳</span> Freigaben
+        <span class="nav-badge" id="approvals-badge">0</span>
+      </div>
+      <div class="nav-item" onclick="showSection('clients')">
+        <span class="nav-icon">👥</span> Clients
+      </div>
+      <div class="nav-item" onclick="showSection('bookings')">
+        <span class="nav-icon">📋</span> Buchungen
+      </div>
+      <div class="nav-item" onclick="showSection('services')">
+        <span class="nav-icon">💅</span> Services
+      </div>
+      <div class="nav-item" onclick="showSection('workers')">
+        <span class="nav-icon">👩</span> Worker
+      </div>
+      <div class="nav-item" onclick="showSection('settings')">
+        <span class="nav-icon">⚙️</span> Einstellungen
+      </div>
+      <div class="nav-item" onclick="showSection('intelligence')">
+        <span class="nav-icon">📊</span> Intelligence
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="handleLogout()">
+        <span>🚪</span> Abmelden
+      </button>
+      <div style="margin-top:8px;font-size:11px;">Built by Aigentii AI Limited</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="topbar-title">Kalender</div>
+      <div class="topbar-right">
+        <span class="topbar-user" id="topbar-user"></span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ===================== CALENDAR ===================== -->
+      <div class="section active" id="section-calendar">
+        <div class="cal-toolbar">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+            <div class="cal-date-label" id="cal-label">Mai 2026</div>
+            <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="calToday()">Heute</button>
+          <div class="cal-view-tabs">
+            <button class="cal-view-tab active" onclick="setCalView('week',this)">Woche</button>
+            <button class="cal-view-tab" onclick="setCalView('day',this)">Tag</button>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-booking')">+ Buchung</button>
+        </div>
+
+        <div class="card" style="overflow:hidden;">
+          <div class="cal-week" id="cal-week"></div>
+        </div>
+
+        <div class="cal-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div> Client Buchung</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#ca8a04"></div> Manuelle Buchung</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#0284c7"></div> Block</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div> No Show</div>
+        </div>
+      </div>
+
+      <!-- ===================== APPROVALS ===================== -->
+      <div class="section" id="section-approvals">
+        <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+          <div class="stat-card">
+            <div class="stat-label">Ausstehend</div>
+            <div class="stat-value" id="stat-pending">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Aktive Clients</div>
+            <div class="stat-value" id="stat-active">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gesperrt</div>
+            <div class="stat-value" id="stat-blocked">0</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Neue Registrierungen</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>E-Mail</th>
+                  <th>Telefon</th>
+                  <th>Service</th>
+                  <th>Rhythmus</th>
+                  <th>Registriert</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="approvals-table">
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Keine ausstehenden Anfragen</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== CLIENTS ===================== -->
+      <div class="section" id="section-clients">
+        <div class="filter-bar">
+          <input type="text" class="search-input" placeholder="Name oder E-Mail suchen..." oninput="filterClients(this.value)">
+          <select class="filter-select" onchange="filterClientStatus(this.value)">
+            <option value="">Alle</option>
+            <option value="active">Aktiv</option>
+            <option value="pending">Ausstehend</option>
+            <option value="blocked">Gesperrt</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>E-Mail</th>
+                  <th>Telefon</th>
+                  <th>Status</th>
+                  <th>Zyklus</th>
+                  <th>Letzter Termin</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="clients-table">
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Keine Clients gefunden</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== BOOKINGS ===================== -->
+      <div class="section" id="section-bookings">
+        <div class="filter-bar">
+          <input type="date" class="form-input" style="max-width:180px;" id="booking-filter-from">
+          <input type="date" class="form-input" style="max-width:180px;" id="booking-filter-to">
+          <select class="filter-select" id="booking-filter-status" onchange="loadBookings()">
+            <option value="">Alle Status</option>
+            <option value="confirmed">Bestätigt</option>
+            <option value="cancelled">Storniert</option>
+            <option value="rescheduled">Verschoben</option>
+            <option value="no_show">No Show</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="loadBookings()">Filtern</button>
+          <button class="btn btn-primary btn-sm" style="margin-left:auto;" onclick="openModal('modal-booking')">+ Buchung</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Datum & Zeit</th>
+                  <th>Client</th>
+                  <th>Service</th>
+                  <th>Worker</th>
+                  <th>Status</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="bookings-table">
+                <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Keine Buchungen gefunden</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== SERVICES ===================== -->
+      <div class="section" id="section-services">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+          <button class="btn btn-primary" onclick="openServiceModal()">+ Service hinzufügen</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reihenfolge</th>
+                  <th>Name</th>
+                  <th>Dauer</th>
+                  <th>Preis</th>
+                  <th>Buffer</th>
+                  <th>Aktiv</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="services-table">
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💅</div><div class="empty-title">Noch keine Services</div><div class="empty-desc">Füge deinen ersten Service hinzu</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== WORKERS ===================== -->
+      <div class="section" id="section-workers">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+          <button class="btn btn-primary" onclick="openWorkerModal()">+ Worker hinzufügen</button>
+        </div>
+        <div id="workers-list" style="display:flex;flex-direction:column;gap:16px;"></div>
+      </div>
+
+      <!-- ===================== SETTINGS ===================== -->
+      <div class="section" id="section-settings">
+        <div class="settings-grid">
+
+          <!-- Buchungsregeln -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Buchungsregeln</div></div>
+            <div class="card-body">
+              <div class="settings-section-title">Zeitparameter</div>
+              <div id="settings-booking-rules"></div>
+            </div>
+          </div>
+
+          <!-- Öffnungszeiten -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Öffnungszeiten</div>
+              <button class="btn btn-primary btn-sm" onclick="saveSchedule()">Speichern</button>
+            </div>
+            <div class="card-body">
+              <div class="schedule-grid" id="schedule-grid"></div>
+            </div>
+          </div>
+
+          <!-- Erinnerungen -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Erinnerungen & E-Mails</div></div>
+            <div class="card-body" id="settings-reminders"></div>
+          </div>
+
+          <!-- Datum Overrides -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Datum Overrides</div>
+              <button class="btn btn-outline btn-sm" onclick="openModal('modal-override')">+ Hinzufügen</button>
+            </div>
+            <div class="card-body">
+              <div id="overrides-list">
+                <div class="empty-state" style="padding:24px;">
+                  <div class="empty-desc">Keine Datum-Overrides gesetzt</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================== INTELLIGENCE ===================== -->
+      <div class="section" id="section-intelligence">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Gesamt Clients</div>
+            <div class="stat-value" id="intel-total">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Aktiv diesen Monat</div>
+            <div class="stat-value" id="intel-active-month">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Buchungen diese Woche</div>
+            <div class="stat-value" id="intel-week">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Beliebtester Tag</div>
+            <div class="stat-value" id="intel-busyday" style="font-size:18px;">—</div>
+          </div>
+        </div>
+
+        <div class="intel-grid">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Kapazität — Nächste 14 Tage</div></div>
+            <div class="card-body" id="intel-capacity"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Fällig — noch nicht gebucht</div></div>
+            <div class="card-body">
+              <div class="due-list" id="intel-due"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚠️ Risiko Clients</div></div>
+            <div class="card-body">
+              <div class="due-list" id="intel-risk"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Warteliste</div></div>
+            <div class="card-body">
+              <div class="due-list" id="intel-waitlist"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /app -->
+
+<!-- ============================================================
+     MODALS
+============================================================ -->
+
+<!-- Client Detail Modal -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="client-modal-name">Client</div>
+      <button class="modal-close" onclick="closeModal('modal-client')">×</button>
+    </div>
+    <div class="modal-body" id="client-modal-body"></div>
+    <div class="modal-footer" id="client-modal-footer"></div>
+  </div>
+</div>
+
+<!-- Service Modal -->
+<div class="modal-overlay" id="modal-service">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="service-modal-title">Service hinzufügen</div>
+      <button class="modal-close" onclick="closeModal('modal-service')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="service-id">
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-input" id="service-name" placeholder="z.B. Full Set">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Beschreibung</label>
+        <textarea class="form-textarea" id="service-desc" placeholder="Optional"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Dauer (Minuten) *</label>
+          <input type="number" class="form-input" id="service-duration" placeholder="90" min="15" step="15">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preis (€) *</label>
+          <input type="number" class="form-input" id="service-price" placeholder="65" min="0" step="0.50">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Buffer Override (Min)</label>
+          <input type="number" class="form-input" id="service-buffer" placeholder="Global verwenden" min="0">
+          <div class="form-hint">Leer lassen = globalen Buffer verwenden</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reihenfolge</label>
+          <input type="number" class="form-input" id="service-order" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <button class="toggle on" id="service-active-toggle" onclick="this.classList.toggle('on')"></button>
+          <span class="toggle-label">Service aktiv</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-service')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveService()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Worker Modal -->
+<div class="modal-overlay" id="modal-worker">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="worker-modal-title">Worker hinzufügen</div>
+      <button class="modal-close" onclick="closeModal('modal-worker')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="worker-id">
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-input" id="worker-name" placeholder="z.B. Anna">
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-Mail</label>
+        <input type="email" class="form-input" id="worker-email" placeholder="anna@sharon.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kalender-Farbe</label>
+        <input type="color" class="form-input" id="worker-color" value="#7D1535" style="height:44px;padding:4px;">
+      </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <button class="toggle on" id="worker-active-toggle" onclick="this.classList.toggle('on')"></button>
+          <span class="toggle-label">Worker aktiv</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-worker')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveWorker()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manual Booking Modal -->
+<div class="modal-overlay" id="modal-booking">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Manuelle Buchung</div>
+      <button class="modal-close" onclick="closeModal('modal-booking')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Client *</label>
+        <select class="form-select" id="booking-client"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Service *</label>
+        <select class="form-select" id="booking-service" onchange="updateBookingEnd()"></select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Datum *</label>
+          <input type="date" class="form-input" id="booking-date" onchange="updateBookingEnd()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Startzeit *</label>
+          <input type="time" class="form-input" id="booking-time" onchange="updateBookingEnd()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Worker</label>
+        <select class="form-select" id="booking-worker"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Endzeit (berechnet)</label>
+        <input type="text" class="form-input" id="booking-endtime" readonly style="background:var(--bg);">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notizen</label>
+        <textarea class="form-textarea" id="booking-notes" placeholder="Optional"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-booking')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveManualBooking()">Buchung erstellen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Date Override Modal -->
+<div class="modal-overlay" id="modal-override">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Datum Override</div>
+      <button class="modal-close" onclick="closeModal('modal-override')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Datum *</label>
+        <input type="date" class="form-input" id="override-date">
+      </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <button class="toggle" id="override-closed-toggle" onclick="this.classList.toggle('on');toggleOverrideTimes()"></button>
+          <span class="toggle-label">Ganztägig geschlossen</span>
+        </div>
+      </div>
+      <div id="override-times">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Öffnet</label>
+            <input type="time" class="form-input" id="override-open" value="09:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Schließt</label>
+            <input type="time" class="form-input" id="override-close" value="18:00">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Grund</label>
+        <input type="text" class="form-input" id="override-reason" placeholder="z.B. Feiertag, Urlaub">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-override')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveOverride()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Detail Modal -->
+<div class="modal-overlay" id="modal-booking-detail">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Buchung Details</div>
+      <button class="modal-close" onclick="closeModal('modal-booking-detail')">×</button>
+    </div>
+    <div class="modal-body" id="booking-detail-body"></div>
+    <div class="modal-footer" id="booking-detail-footer"></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Sidebar overlay for mobile -->
+<div id="sidebar-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;" onclick="toggleSidebar()"></div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
+
+const sb = {
+  async query(table, options = {}) {
+    let url = `${SUPABASE_URL}/rest/v1/${table}?`;
+    if (options.select)  url += `select=${options.select}&`;
+    if (options.filter)  url += `${options.filter}&`;
+    if (options.order)   url += `order=${options.order}&`;
+    if (options.limit)   url += `limit=${options.limit}&`;
+    const res = await fetch(url, { headers: sbHeaders() });
+    return res.json();
+  },
+  async insert(table, data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { ...sbHeaders(), 'Prefer': 'return=representation' },
+      body: JSON.stringify(data)
+    });
+    return res.json();
+  },
+  async update(table, filter, data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+      method: 'PATCH',
+      headers: { ...sbHeaders(), 'Prefer': 'return=representation' },
+      body: JSON.stringify(data)
+    });
+    return res.json();
+  },
+  async delete(table, filter) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+      method: 'DELETE', headers: sbHeaders()
+    });
+    return res.ok;
+  },
+  async auth(email, password) {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+      body: JSON.stringify({ email, password })
+    });
+    return res.json();
+  },
+  async logout() {
+    await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+      method: 'POST', headers: sbHeaders()
+    });
+  }
+};
+
+function sbHeaders() {
+  const token = localStorage.getItem('sb_token');
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SUPABASE_ANON,
+    'Authorization': `Bearer ${token || SUPABASE_ANON}`
+  };
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  user: null,
+  profile: null,
+  services: [],
+  workers: [],
+  settings: {},
+  calDate: new Date(),
+  calView: 'week',
+  bookings: [],
+  clients: [],
+  allClients: []
+};
+
+// ============================================================
+// AUTH
+// ============================================================
+async function handleLogin() {
+  const email    = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl    = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+
+  if (!email || !password) { showError('Bitte alle Felder ausfüllen.'); return; }
+
+  const res = await sb.auth(email, password);
+  if (res.error || !res.access_token) {
+    errEl.textContent = 'Ungültige Anmeldedaten'; errEl.style.display = 'block'; return;
+  }
+
+  localStorage.setItem('sb_token', res.access_token);
+  localStorage.setItem('sb_user_id', res.user.id);
+
+  const profiles = await sb.query('profiles', { filter: `id=eq.${res.user.id}` });
+  if (!profiles[0] || !profiles[0].is_admin) {
+    errEl.textContent = 'Kein Admin-Zugriff'; errEl.style.display = 'block';
+    localStorage.clear(); return;
+  }
+
+  state.user    = res.user;
+  state.profile = profiles[0];
+  bootApp();
+}
+
+async function checkSession() {
+  const token  = localStorage.getItem('sb_token');
+  const userId = localStorage.getItem('sb_user_id');
+  if (!token || !userId) return;
+
+  const profiles = await sb.query('profiles', { filter: `id=eq.${userId}` });
+  if (!profiles[0] || !profiles[0].is_admin) { localStorage.clear(); return; }
+
+  state.profile = profiles[0];
+  bootApp();
+}
+
+function handleLogout() {
+  sb.logout();
+  localStorage.clear();
+  location.reload();
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+async function bootApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('topbar-user').textContent = state.profile.full_name || state.profile.email;
+
+  await Promise.all([
+    loadServices(),
+    loadWorkers(),
+    loadSettings(),
+    loadClients()
+  ]);
+
+  renderCalendar();
+  renderScheduleSettings();
+  renderSettingsPanel();
+  loadIntelligence();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const sectionTitles = {
+  calendar: 'Kalender', approvals: 'Freigaben', clients: 'Clients',
+  bookings: 'Buchungen', services: 'Services', workers: 'Worker',
+  settings: 'Einstellungen', intelligence: 'Intelligence'
+};
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`section-${name}`).classList.add('active');
+  document.querySelector(`.nav-item[onclick="showSection('${name}')"]`).classList.add('active');
+  document.getElementById('topbar-title').textContent = sectionTitles[name];
+
+  if (name === 'approvals') loadApprovals();
+  if (name === 'clients')   renderClientsTable(state.allClients);
+  if (name === 'bookings')  loadBookings();
+  if (name === 'services')  renderServicesTable();
+  if (name === 'workers')   renderWorkersList();
+  if (name === 'intelligence') loadIntelligence();
+
+  // close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').style.display = 'none';
+}
+
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const o = document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');
+  o.style.display = s.classList.contains('open') ? 'block' : 'none';
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'modal-booking') populateBookingModal();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${msg}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+const DAYS_DE   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+const MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+function calToday() { state.calDate = new Date(); renderCalendar(); }
+function calNav(dir) {
+  if (state.calView === 'week') {
+    state.calDate = new Date(state.calDate.getTime() + dir * 7 * 86400000);
+  } else {
+    state.calDate = new Date(state.calDate.getTime() + dir * 86400000);
+  }
+  renderCalendar();
+}
+function setCalView(view, btn) {
+  state.calView = view;
+  document.querySelectorAll('.cal-view-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+function getWeekStart(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+async function renderCalendar() {
+  const calEl = document.getElementById('cal-week');
+  calEl.innerHTML = '';
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let days = [];
+  if (state.calView === 'week') {
+    const ws = getWeekStart(state.calDate);
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(ws); d.setDate(ws.getDate() + i);
+      days.push(d);
+    }
+    const ws2 = getWeekStart(state.calDate);
+    const we  = new Date(ws2); we.setDate(ws2.getDate() + 6);
+    document.getElementById('cal-label').textContent =
+      `${ws2.getDate()}. ${MONTHS_DE[ws2.getMonth()]} – ${we.getDate()}. ${MONTHS_DE[we.getMonth()]} ${we.getFullYear()}`;
+  } else {
+    days = [new Date(state.calDate)];
+    document.getElementById('cal-label').textContent =
+      `${DAYS_DE[state.calDate.getDay()]}, ${state.calDate.getDate()}. ${MONTHS_DE[state.calDate.getMonth()]} ${state.calDate.getFullYear()}`;
+  }
+
+  calEl.style.gridTemplateColumns = `60px repeat(${days.length}, 1fr)`;
+
+  // Header row
+  const th0 = document.createElement('div');
+  th0.className = 'cal-time-header'; th0.style.cssText = 'border-bottom:1px solid var(--border);background:var(--bg);';
+  calEl.appendChild(th0);
+
+  days.forEach(d => {
+    const dh = document.createElement('div');
+    const isToday = d.getTime() === today.getTime();
+    dh.className = `cal-day-header${isToday ? ' today' : ''}`;
+    dh.innerHTML = `<div class="cal-day-name">${DAYS_DE[d.getDay()]}</div><div class="cal-day-num">${d.getDate()}</div>`;
+    calEl.appendChild(dh);
+  });
+
+  // Fetch bookings for visible range
+  const fromStr = days[0].toISOString();
+  const toDate  = new Date(days[days.length-1]); toDate.setHours(23,59,59);
+  const toStr   = toDate.toISOString();
+
+  let bookings = [];
+  try {
+    bookings = await sb.query('bookings', {
+      select: '*,profiles(full_name),services(name,duration_minutes),workers(name,color_tag)',
+      filter: `start_time=gte.${fromStr}&start_time=lte.${toStr}&status=neq.cancelled`,
+      order: 'start_time.asc'
+    });
+    if (!Array.isArray(bookings)) bookings = [];
+  } catch(e) { bookings = []; }
+
+  // Time rows 08:00–20:00
+  for (let h = 8; h < 20; h++) {
+    const timeEl = document.createElement('div');
+    timeEl.className = 'cal-time-slot';
+    timeEl.textContent = `${String(h).padStart(2,'0')}:00`;
+    calEl.appendChild(timeEl);
+
+    days.forEach(d => {
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      const cellDate = new Date(d);
+      cellDate.setHours(h,0,0,0);
+      cell.onclick = () => openSlotModal(cellDate);
+
+      // Find bookings for this cell
+      const cellBookings = bookings.filter(b => {
+        const bs = new Date(b.start_time);
+        return bs.getFullYear() === d.getFullYear() &&
+               bs.getMonth()    === d.getMonth()    &&
+               bs.getDate()     === d.getDate()     &&
+               bs.getHours()    === h;
+      });
+
+      cellBookings.forEach(b => {
+        const ev = document.createElement('div');
+        const type = b.booked_by_admin ? 'manual' : b.status === 'no_show' ? 'no-show' : 'client';
+        ev.className = `cal-event ${type}`;
+        ev.textContent = `${b.profiles?.full_name || 'Client'} · ${b.services?.name || ''}`;
+        ev.onclick = (e) => { e.stopPropagation(); openBookingDetail(b); };
+        cell.appendChild(ev);
+      });
+
+      calEl.appendChild(cell);
+    });
+  }
+}
+
+function openSlotModal(date) {
+  document.getElementById('booking-date').value = date.toISOString().split('T')[0];
+  document.getElementById('booking-time').value = `${String(date.getHours()).padStart(2,'0')}:00`;
+  openModal('modal-booking');
+}
+
+function openBookingDetail(b) {
+  const start = new Date(b.start_time);
+  const end   = new Date(b.end_time);
+  document.getElementById('booking-detail-body').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="setting-row"><span style="font-weight:500;">Client</span><span>${b.profiles?.full_name || '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Service</span><span>${b.services?.name || '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Datum</span><span>${start.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Zeit</span><span>${start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} – ${end.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Worker</span><span>${b.workers?.name || '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Status</span><span class="badge badge-${b.status}">${b.status}</span></div>
+      ${b.notes ? `<div class="setting-row"><span style="font-weight:500;">Notizen</span><span>${b.notes}</span></div>` : ''}
+    </div>`;
+  document.getElementById('booking-detail-footer').innerHTML = `
+    <button class="btn btn-danger btn-sm" onclick="updateBookingStatus('${b.id}','no_show')">No Show</button>
+    <button class="btn btn-ghost btn-sm" onclick="updateBookingStatus('${b.id}','cancelled')">Stornieren</button>
+    <button class="btn btn-primary btn-sm" onclick="closeModal('modal-booking-detail')">Schließen</button>`;
+  openModal('modal-booking-detail');
+}
+
+async function updateBookingStatus(id, status) {
+  await sb.update('bookings', `id=eq.${id}`, { status });
+  closeModal('modal-booking-detail');
+  renderCalendar();
+  toast(`Status aktualisiert: ${status}`, 'success');
+}
+
+// ============================================================
+// APPROVALS
+// ============================================================
+async function loadApprovals() {
+  const pending = state.allClients.filter(c => c.account_status === 'pending');
+  const active  = state.allClients.filter(c => c.account_status === 'active');
+  const blocked = state.allClients.filter(c => c.account_status === 'blocked');
+
+  document.getElementById('stat-pending').textContent = pending.length;
+  document.getElementById('stat-active').textContent  = active.length;
+  document.getElementById('stat-blocked').textContent = blocked.length;
+  document.getElementById('approvals-badge').textContent = pending.length;
+
+  const tb = document.getElementById('approvals-table');
+  if (!pending.length) {
+    tb.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Keine ausstehenden Anfragen</div></div></td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = pending.map(c => `
+    <tr>
+      <td><strong>${c.full_name}</strong></td>
+      <td>${c.email}</td>
+      <td>${c.phone}</td>
+      <td>${state.services.find(s=>s.id===c.preferred_service_id)?.name || '—'}</td>
+      <td>${c.preferred_cycle_weeks ? `Alle ${c.preferred_cycle_weeks} Wochen` : '—'}</td>
+      <td>${new Date(c.created_at).toLocaleDateString('de-DE')}</td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-success btn-sm" onclick="approveClient('${c.id}')">✅ Freigeben</button>
+        <button class="btn btn-danger btn-sm" onclick="blockClient('${c.id}')">✗ Ablehnen</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function approveClient(id) {
+  await sb.update('profiles', `id=eq.${id}`, { account_status: 'active' });
+  await loadClients();
+  loadApprovals();
+  toast('Client freigeschaltet!', 'success');
+}
+
+async function blockClient(id) {
+  await sb.update('profiles', `id=eq.${id}`, { account_status: 'blocked' });
+  await loadClients();
+  loadApprovals();
+  toast('Client abgelehnt.', 'info');
+}
+
+// ============================================================
+// CLIENTS
+// ============================================================
+async function loadClients() {
+  const data = await sb.query('profiles', {
+    select: '*',
+    filter: 'is_admin=eq.false',
+    order: 'created_at.desc'
+  });
+  state.allClients = Array.isArray(data) ? data : [];
+
+  const badge = document.getElementById('approvals-badge');
+  const pendingCount = state.allClients.filter(c=>c.account_status==='pending').length;
+  badge.textContent = pendingCount;
+  badge.style.display = pendingCount > 0 ? 'inline-flex' : 'none';
+}
+
+function renderClientsTable(clients) {
+  const tb = document.getElementById('clients-table');
+  if (!clients.length) {
+    tb.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Keine Clients gefunden</div></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = clients.map(c => `
+    <tr>
+      <td><strong>${c.full_name}</strong></td>
+      <td>${c.email}</td>
+      <td>${c.phone}</td>
+      <td><span class="badge badge-${c.account_status}">${statusLabel(c.account_status)}</span></td>
+      <td>${c.preferred_cycle_weeks ? `${c.preferred_cycle_weeks}w` : '—'}</td>
+      <td>${c.last_appointment_date ? new Date(c.last_appointment_date).toLocaleDateString('de-DE') : '—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="openClientModal('${c.id}')">Details</button></td>
+    </tr>`).join('');
+}
+
+function filterClients(q) {
+  const filtered = state.allClients.filter(c =>
+    c.full_name.toLowerCase().includes(q.toLowerCase()) ||
+    c.email.toLowerCase().includes(q.toLowerCase())
+  );
+  renderClientsTable(filtered);
+}
+
+function filterClientStatus(status) {
+  const filtered = status ? state.allClients.filter(c => c.account_status === status) : state.allClients;
+  renderClientsTable(filtered);
+}
+
+function openClientModal(id) {
+  const c = state.allClients.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('client-modal-name').textContent = c.full_name;
+  document.getElementById('client-modal-body').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="setting-row"><span style="font-weight:500;">E-Mail</span><span>${c.email}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Telefon</span><span>${c.phone}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Status</span><span class="badge badge-${c.account_status}">${statusLabel(c.account_status)}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Buchungszyklus</span><span>${c.preferred_cycle_weeks ? `Alle ${c.preferred_cycle_weeks} Wochen` : '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Letzter Termin</span><span>${c.last_appointment_date ? new Date(c.last_appointment_date).toLocaleDateString('de-DE') : '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Nächster Termin</span><span>${c.next_suggested_date ? new Date(c.next_suggested_date).toLocaleDateString('de-DE') : '—'}</span></div>
+      <div class="form-group" style="margin-top:8px;">
+        <label class="form-label">Admin Notizen</label>
+        <textarea class="form-textarea" id="client-notes-${id}">${c.admin_notes || ''}</textarea>
+      </div>
+      ${c.account_status === 'blocked' && c.block_reason ? `<div class="setting-row"><span style="font-weight:500;">Sperrgrund</span><span>${c.block_reason}</span></div>` : ''}
+    </div>`;
+
+  const footer = document.getElementById('client-modal-footer');
+  let btns = `<button class="btn btn-ghost" onclick="closeModal('modal-client')">Schließen</button>
+    <button class="btn btn-primary btn-sm" onclick="saveClientNotes('${id}')">Notizen speichern</button>`;
+  if (c.account_status === 'active')   btns += `<button class="btn btn-danger btn-sm" onclick="blockClient('${id}');closeModal('modal-client')">Sperren</button>`;
+  if (c.account_status === 'blocked')  btns += `<button class="btn btn-success btn-sm" onclick="approveClient('${id}');closeModal('modal-client')">Entsperren</button>`;
+  if (c.account_status === 'pending')  btns += `<button class="btn btn-success btn-sm" onclick="approveClient('${id}');closeModal('modal-client')">Freigeben</button>`;
+  footer.innerHTML = btns;
+
+  openModal('modal-client');
+}
+
+async function saveClientNotes(id) {
+  const notes = document.getElementById(`client-notes-${id}`)?.value;
+  await sb.update('profiles', `id=eq.${id}`, { admin_notes: notes });
+  await loadClients();
+  toast('Notizen gespeichert', 'success');
+}
+
+// ============================================================
+// BOOKINGS
+// ============================================================
+async function loadBookings() {
+  let filter = '';
+  const from   = document.getElementById('booking-filter-from')?.value;
+  const to     = document.getElementById('booking-filter-to')?.value;
+  const status = document.getElementById('booking-filter-status')?.value;
+
+  if (from)   filter += `start_time=gte.${new Date(from).toISOString()}&`;
+  if (to)     { const td = new Date(to); td.setHours(23,59,59); filter += `start_time=lte.${td.toISOString()}&`; }
+  if (status) filter += `status=eq.${status}&`;
+
+  const data = await sb.query('bookings', {
+    select: '*,profiles(full_name),services(name),workers(name)',
+    filter: filter || undefined,
+    order: 'start_time.desc',
+    limit: 100
+  });
+  const bookings = Array.isArray(data) ? data : [];
+
+  const tb = document.getElementById('bookings-table');
+  if (!bookings.length) {
+    tb.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Keine Buchungen gefunden</div></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = bookings.map(b => {
+    const start = new Date(b.start_time);
+    return `<tr>
+      <td>${start.toLocaleDateString('de-DE',{day:'numeric',month:'short'})} ${start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</td>
+      <td>${b.profiles?.full_name || '—'}</td>
+      <td>${b.services?.name || '—'}</td>
+      <td>${b.workers?.name || '—'}</td>
+      <td><span class="badge badge-${b.status}">${b.status}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick='openBookingDetail(${JSON.stringify(b).replace(/'/g,"&#39;")})'>Details</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// SERVICES
+// ============================================================
+async function loadServices() {
+  const data = await sb.query('services', { select: '*', order: 'display_order.asc,created_at.asc' });
+  state.services = Array.isArray(data) ? data : [];
+}
+
+function renderServicesTable() {
+  const tb = document.getElementById('services-table');
+  if (!state.services.length) {
+    tb.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💅</div><div class="empty-title">Noch keine Services</div></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = state.services.map(s => `
+    <tr>
+      <td>${s.display_order}</td>
+      <td><strong>${s.name}</strong>${s.description ? `<br><small style="color:var(--text-muted)">${s.description}</small>` : ''}</td>
+      <td>${s.duration_minutes} Min</td>
+      <td>€${parseFloat(s.price).toFixed(2)}</td>
+      <td>${s.buffer_override ? s.buffer_override+'min' : 'Global'}</td>
+      <td><span class="badge ${s.is_active ? 'badge-active' : 'badge-blocked'}">${s.is_active ? 'Aktiv' : 'Inaktiv'}</span></td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" onclick="openServiceModal('${s.id}')">Bearbeiten</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteService('${s.id}')">Löschen</button>
+      </td>
+    </tr>`).join('');
+}
+
+function openServiceModal(id) {
+  const s = id ? state.services.find(x => x.id === id) : null;
+  document.getElementById('service-modal-title').textContent = s ? 'Service bearbeiten' : 'Service hinzufügen';
+  document.getElementById('service-id').value          = s?.id || '';
+  document.getElementById('service-name').value        = s?.name || '';
+  document.getElementById('service-desc').value        = s?.description || '';
+  document.getElementById('service-duration').value    = s?.duration_minutes || '';
+  document.getElementById('service-price').value       = s?.price || '';
+  document.getElementById('service-buffer').value      = s?.buffer_override || '';
+  document.getElementById('service-order').value       = s?.display_order ?? 0;
+  const toggle = document.getElementById('service-active-toggle');
+  toggle.className = 'toggle' + (s ? (s.is_active ? ' on' : '') : ' on');
+  openModal('modal-service');
+}
+
+async function saveService() {
+  const id       = document.getElementById('service-id').value;
+  const name     = document.getElementById('service-name').value.trim();
+  const desc     = document.getElementById('service-desc').value.trim();
+  const duration = parseInt(document.getElementById('service-duration').value);
+  const price    = parseFloat(document.getElementById('service-price').value);
+  const buffer   = document.getElementById('service-buffer').value;
+  const order    = parseInt(document.getElementById('service-order').value) || 0;
+  const isActive = document.getElementById('service-active-toggle').classList.contains('on');
+
+  if (!name || !duration || isNaN(price)) { toast('Bitte alle Pflichtfelder ausfüllen', 'error'); return; }
+
+  const payload = {
+    name, description: desc || null,
+    duration_minutes: duration, price,
+    buffer_override: buffer ? parseInt(buffer) : null,
+    display_order: order, is_active: isActive
+  };
+
+  if (id) {
+    await sb.update('services', `id=eq.${id}`, payload);
+    toast('Service aktualisiert', 'success');
+  } else {
+    await sb.insert('services', payload);
+    toast('Service hinzugefügt', 'success');
+  }
+
+  closeModal('modal-service');
+  await loadServices();
+  renderServicesTable();
+}
+
+async function deleteService(id) {
+  if (!confirm('Service wirklich löschen?')) return;
+  await sb.delete('services', `id=eq.${id}`);
+  await loadServices();
+  renderServicesTable();
+  toast('Service gelöscht', 'info');
+}
+
+// ============================================================
+// WORKERS
+// ============================================================
+async function loadWorkers() {
+  const data = await sb.query('workers', { select: '*', order: 'created_at.asc' });
+  state.workers = Array.isArray(data) ? data : [];
+}
+
+function renderWorkersList() {
+  const container = document.getElementById('workers-list');
+  if (!state.workers.length) {
+    container.innerHTML = `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon">👩</div><div class="empty-title">Noch keine Worker</div></div></div></div>`;
+    return;
+  }
+  container.innerHTML = state.workers.map(w => `
+    <div class="card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:14px;height:14px;border-radius:50%;background:${w.color_tag};"></div>
+          <div class="card-title">${w.name}</div>
+          <span class="badge ${w.is_active ? 'badge-active' : 'badge-blocked'}">${w.is_active ? 'Aktiv' : 'Inaktiv'}</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="openWorkerModal('${w.id}')">Bearbeiten</button>
+          <button class="btn btn-ghost btn-sm" onclick="openWorkerSchedule('${w.id}')">Zeiten</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="font-size:13px;color:var(--text-muted);">${w.email || 'Keine E-Mail'}</div>
+        <div id="worker-schedule-${w.id}" style="margin-top:12px;display:none;"></div>
+      </div>
+    </div>`).join('');
+}
+
+function openWorkerModal(id) {
+  const w = id ? state.workers.find(x => x.id === id) : null;
+  document.getElementById('worker-modal-title').textContent = w ? 'Worker bearbeiten' : 'Worker hinzufügen';
+  document.getElementById('worker-id').value    = w?.id || '';
+  document.getElementById('worker-name').value  = w?.name || '';
+  document.getElementById('worker-email').value = w?.email || '';
+  document.getElementById('worker-color').value = w?.color_tag || '#7D1535';
+  const toggle = document.getElementById('worker-active-toggle');
+  toggle.className = 'toggle' + (w ? (w.is_active ? ' on' : '') : ' on');
+  openModal('modal-worker');
+}
+
+async function saveWorker() {
+  const id       = document.getElementById('worker-id').value;
+  const name     = document.getElementById('worker-name').value.trim();
+  const email    = document.getElementById('worker-email').value.trim();
+  const color    = document.getElementById('worker-color').value;
+  const isActive = document.getElementById('worker-active-toggle').classList.contains('on');
+
+  if (!name) { toast('Bitte Namen eingeben', 'error'); return; }
+
+  const payload = { name, email: email || null, color_tag: color, is_active: isActive };
+
+  if (id) {
+    await sb.update('workers', `id=eq.${id}`, payload);
+    toast('Worker aktualisiert', 'success');
+  } else {
+    await sb.insert('workers', payload);
+    toast('Worker hinzugefügt', 'success');
+  }
+
+  closeModal('modal-worker');
+  await loadWorkers();
+  renderWorkersList();
+}
+
+async function openWorkerSchedule(workerId) {
+  const el = document.getElementById(`worker-schedule-${workerId}`);
+  if (el.style.display === 'block') { el.style.display = 'none'; return; }
+
+  const data = await sb.query('worker_schedule', {
+    select: '*', filter: `worker_id=eq.${workerId}`, order: 'day_of_week.asc'
+  });
+  const sched = Array.isArray(data) ? data : [];
+  const days  = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+
+  el.innerHTML = `<div class="schedule-grid">
+    ${days.map((d,i) => {
+      const s = sched.find(x => x.day_of_week === i);
+      return `<div class="schedule-row">
+        <span class="schedule-day">${d}</span>
+        <input type="time" class="form-input" value="${s?.open_time || '09:00'}" id="ws-${workerId}-${i}-open" ${!s?.is_open ? 'disabled' : ''}>
+        <input type="time" class="form-input" value="${s?.close_time || '18:00'}" id="ws-${workerId}-${i}-close" ${!s?.is_open ? 'disabled' : ''}>
+        <button class="toggle ${s?.is_open ? 'on' : ''}" id="ws-${workerId}-${i}-toggle"
+          onclick="toggleWorkerDay('${workerId}',${i})"></button>
+      </div>`;
+    }).join('')}
+    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="saveWorkerSchedule('${workerId}')">Zeiten speichern</button>
+  </div>`;
+  el.style.display = 'block';
+}
+
+function toggleWorkerDay(wId, day) {
+  const toggle = document.getElementById(`ws-${wId}-${day}-toggle`);
+  const open   = document.getElementById(`ws-${wId}-${day}-open`);
+  const close  = document.getElementById(`ws-${wId}-${day}-close`);
+  toggle.classList.toggle('on');
+  const isOn = toggle.classList.contains('on');
+  open.disabled  = !isOn;
+  close.disabled = !isOn;
+}
+
+async function saveWorkerSchedule(workerId) {
+  for (let i = 0; i < 7; i++) {
+    const isOpen   = document.getElementById(`ws-${workerId}-${i}-toggle`)?.classList.contains('on');
+    const openTime = document.getElementById(`ws-${workerId}-${i}-open`)?.value;
+    const closeTime= document.getElementById(`ws-${workerId}-${i}-close`)?.value;
+
+    const existing = await sb.query('worker_schedule', {
+      filter: `worker_id=eq.${workerId}&day_of_week=eq.${i}`
+    });
+
+    if (Array.isArray(existing) && existing.length > 0) {
+      await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, {
+        open_time: openTime, close_time: closeTime, is_open: isOpen
+      });
+    } else {
+      await sb.insert('worker_schedule', {
+        worker_id: workerId, day_of_week: i,
+        open_time: openTime, close_time: closeTime, is_open: isOpen
+      });
+    }
+  }
+  toast('Zeiten gespeichert', 'success');
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+async function loadSettings() {
+  const data = await sb.query('settings', { select: '*' });
+  if (Array.isArray(data)) {
+    data.forEach(s => { state.settings[s.key] = s.value; });
+  }
+}
+
+function renderSettingsPanel() {
+  // Booking rules
+  const bookingRules = [
+    { key: 'global_buffer_minutes',     label: 'Buffer zwischen Terminen', unit: 'Min', type: 'number' },
+    { key: 'booking_window_days',       label: 'Buchungsfenster',          unit: 'Tage', type: 'number' },
+    { key: 'slot_interval_minutes',     label: 'Slot-Intervall',           unit: 'Min', type: 'number' },
+    { key: 'cancellation_cutoff_hours', label: 'Stornierungsfrist',        unit: 'Std', type: 'number' },
+    { key: 'max_bookings_per_day',      label: 'Max Buchungen/Tag',        unit: '',    type: 'number' },
+  ];
+
+  const toggleRules = [
+    { key: 'same_day_booking_enabled',  label: 'Same-Day Buchungen', desc: 'Clients können heute buchen' },
+    { key: 'multiple_services_enabled', label: 'Mehrere Services',   desc: 'Pro Termin mehrere Services' },
+  ];
+
+  document.getElementById('settings-booking-rules').innerHTML =
+    bookingRules.map(r => `
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">${r.label}</div>
+          <div class="setting-desc">${r.unit}</div>
+        </div>
+        <input type="${r.type}" class="setting-input" id="setting-${r.key}"
+          value="${state.settings[r.key] || ''}"
+          onchange="saveSetting('${r.key}', this.value)">
+      </div>`).join('') +
+    toggleRules.map(r => `
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">${r.label}</div>
+          <div class="setting-desc">${r.desc}</div>
+        </div>
+        <button class="toggle ${state.settings[r.key]==='true' ? 'on' : ''}"
+          onclick="this.classList.toggle('on');saveSetting('${r.key}', this.classList.contains('on').toString())"></button>
+      </div>`).join('');
+
+  // Reminders
+  const reminders = [
+    { key: 'reminder_24h_enabled',      label: '24h Erinnerung',          desc: 'Vor dem Termin' },
+    { key: 'post_appointment_email',    label: 'Danke-E-Mail',            desc: 'Nach dem Termin + Wiederbuchung' },
+    { key: 'rebooking_nudge_enabled',   label: 'Wiederbuchungs-Nudge',    desc: '3 Tage vor Fälligkeitsdatum' },
+    { key: 'followup_nudge_enabled',    label: 'Follow-up Nudge',         desc: 'Falls kein Termin gebucht' },
+  ];
+
+  document.getElementById('settings-reminders').innerHTML =
+    reminders.map(r => `
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">${r.label}</div>
+          <div class="setting-desc">${r.desc}</div>
+        </div>
+        <button class="toggle ${state.settings[r.key]==='true' ? 'on' : ''}"
+          onclick="this.classList.toggle('on');saveSetting('${r.key}', this.classList.contains('on').toString())"></button>
+      </div>`).join('');
+
+  loadOverrides();
+}
+
+async function saveSetting(key, value) {
+  state.settings[key] = value;
+  const existing = await sb.query('settings', { filter: `key=eq.${key}` });
+  if (Array.isArray(existing) && existing.length > 0) {
+    await sb.update('settings', `key=eq.${key}`, { value, updated_at: new Date().toISOString() });
+  } else {
+    await sb.insert('settings', { key, value });
+  }
+  toast('Einstellung gespeichert', 'success');
+}
+
+// Global Schedule
+function renderScheduleSettings() {
+  const days = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+  sb.query('worker_schedule', { filter: 'worker_id=is.null', order: 'day_of_week.asc' }).then(data => {
+    const sched = Array.isArray(data) ? data : [];
+    document.getElementById('schedule-grid').innerHTML = days.map((d, i) => {
+      const s = sched.find(x => x.day_of_week === i);
+      return `<div class="schedule-row">
+        <span class="schedule-day">${d}</span>
+        <input type="time" class="form-input" value="${s?.open_time || '09:00'}" id="gs-${i}-open" ${!s?.is_open ? 'disabled' : ''}>
+        <input type="time" class="form-input" value="${s?.close_time || '18:00'}" id="gs-${i}-close" ${!s?.is_open ? 'disabled' : ''}>
+        <button class="toggle ${s?.is_open !== false ? 'on' : ''}" id="gs-${i}-toggle"
+          onclick="toggleGlobalDay(${i})"></button>
+      </div>`;
+    }).join('');
+  });
+}
+
+function toggleGlobalDay(i) {
+  const toggle = document.getElementById(`gs-${i}-toggle`);
+  const open   = document.getElementById(`gs-${i}-open`);
+  const close  = document.getElementById(`gs-${i}-close`);
+  toggle.classList.toggle('on');
+  const isOn = toggle.classList.contains('on');
+  open.disabled  = !isOn;
+  close.disabled = !isOn;
+}
+
+async function saveSchedule() {
+  for (let i = 0; i < 7; i++) {
+    const isOpen    = document.getElementById(`gs-${i}-toggle`)?.classList.contains('on');
+    const openTime  = document.getElementById(`gs-${i}-open`)?.value;
+    const closeTime = document.getElementById(`gs-${i}-close`)?.value;
+
+    const existing = await sb.query('worker_schedule', {
+      filter: `worker_id=is.null&day_of_week=eq.${i}`
+    });
+
+    if (Array.isArray(existing) && existing.length > 0) {
+      await sb.update('worker_schedule',
+        `worker_id=is.null&day_of_week=eq.${i}`,
+        { open_time: openTime, close_time: closeTime, is_open: isOpen }
+      );
+    } else {
+      await sb.insert('worker_schedule', {
+        worker_id: null, day_of_week: i,
+        open_time: openTime, close_time: closeTime, is_open: isOpen
+      });
+    }
+  }
+  toast('Öffnungszeiten gespeichert', 'success');
+}
+
+// Date Overrides
+async function loadOverrides() {
+  const data = await sb.query('schedule_overrides', {
+    select: '*', filter: 'worker_id=is.null', order: 'specific_date.asc'
+  });
+  const overrides = Array.isArray(data) ? data : [];
+  const el = document.getElementById('overrides-list');
+  if (!overrides.length) {
+    el.innerHTML = `<div class="empty-state" style="padding:20px;"><div class="empty-desc">Keine Datum-Overrides gesetzt</div></div>`;
+    return;
+  }
+  el.innerHTML = overrides.map(o => `
+    <div class="due-item">
+      <div>
+        <div class="due-name">${new Date(o.specific_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'long'})}</div>
+        <div class="due-date">${o.is_closed ? 'Geschlossen' : `${o.open_time} – ${o.close_time}`}${o.reason ? ` · ${o.reason}` : ''}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteOverride('${o.id}')">Löschen</button>
+    </div>`).join('');
+}
+
+function toggleOverrideTimes() {
+  const closed = document.getElementById('override-closed-toggle').classList.contains('on');
+  document.getElementById('override-times').style.display = closed ? 'none' : 'block';
+}
+
+async function saveOverride() {
+  const date   = document.getElementById('override-date').value;
+  const closed = document.getElementById('override-closed-toggle').classList.contains('on');
+  const open   = document.getElementById('override-open').value;
+  const close  = document.getElementById('override-close').value;
+  const reason = document.getElementById('override-reason').value.trim();
+
+  if (!date) { toast('Bitte Datum wählen', 'error'); return; }
+
+  await sb.insert('schedule_overrides', {
+    worker_id: null, specific_date: date,
+    open_time: closed ? null : open, close_time: closed ? null : close,
+    is_closed: closed, reason: reason || null
+  });
+
+  closeModal('modal-override');
+  loadOverrides();
+  toast('Override gespeichert', 'success');
+}
+
+async function deleteOverride(id) {
+  await sb.delete('schedule_overrides', `id=eq.${id}`);
+  loadOverrides();
+  toast('Override gelöscht', 'info');
+}
+
+// ============================================================
+// MANUAL BOOKING
+// ============================================================
+async function populateBookingModal() {
+  const clientSel = document.getElementById('booking-client');
+  clientSel.innerHTML = '<option value="">Client wählen...</option>' +
+    state.allClients.filter(c=>c.account_status==='active').map(c =>
+      `<option value="${c.id}">${c.full_name}</option>`).join('');
+
+  const serviceSel = document.getElementById('booking-service');
+  serviceSel.innerHTML = '<option value="">Service wählen...</option>' +
+    state.services.filter(s=>s.is_active).map(s =>
+      `<option value="${s.id}" data-duration="${s.duration_minutes}">${s.name} · ${s.duration_minutes}min</option>`).join('');
+
+  const workerSel = document.getElementById('booking-worker');
+  workerSel.innerHTML = '<option value="">Kein Worker</option>' +
+    state.workers.filter(w=>w.is_active).map(w =>
+      `<option value="${w.id}">${w.name}</option>`).join('');
+}
+
+function updateBookingEnd() {
+  const date     = document.getElementById('booking-date').value;
+  const time     = document.getElementById('booking-time').value;
+  const sel      = document.getElementById('booking-service');
+  const option   = sel.options[sel.selectedIndex];
+  const duration = option ? parseInt(option.dataset.duration) : 0;
+
+  if (date && time && duration) {
+    const start = new Date(`${date}T${time}`);
+    const end   = new Date(start.getTime() + duration * 60000);
+    document.getElementById('booking-endtime').value =
+      end.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  }
+}
+
+async function saveManualBooking() {
+  const clientId  = document.getElementById('booking-client').value;
+  const serviceId = document.getElementById('booking-service').value;
+  const date      = document.getElementById('booking-date').value;
+  const time      = document.getElementById('booking-time').value;
+  const workerId  = document.getElementById('booking-worker').value;
+  const notes     = document.getElementById('booking-notes').value;
+
+  if (!clientId || !serviceId || !date || !time) { toast('Bitte alle Pflichtfelder ausfüllen', 'error'); return; }
+
+  const service  = state.services.find(s => s.id === serviceId);
+  const start    = new Date(`${date}T${time}`);
+  const end      = new Date(start.getTime() + service.duration_minutes * 60000);
+
+  await sb.insert('bookings', {
+    client_id: clientId, service_id: serviceId,
+    worker_id: workerId || null,
+    start_time: start.toISOString(), end_time: end.toISOString(),
+    status: 'confirmed', notes: notes || null, booked_by_admin: true
+  });
+
+  closeModal('modal-booking');
+  renderCalendar();
+  toast('Buchung erstellt!', 'success');
+}
+
+// ============================================================
+// INTELLIGENCE
+// ============================================================
+async function loadIntelligence() {
+  const clients  = state.allClients;
+  const active   = clients.filter(c => c.account_status === 'active');
+
+  document.getElementById('intel-total').textContent      = clients.length;
+  document.getElementById('intel-active-month').textContent = active.length;
+
+  // Bookings this week
+  const weekStart = getWeekStart(new Date());
+  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
+  const weekBookings = await sb.query('bookings', {
+    filter: `start_time=gte.${weekStart.toISOString()}&start_time=lte.${weekEnd.toISOString()}&status=eq.confirmed`
+  });
+  document.getElementById('intel-week').textContent = Array.isArray(weekBookings) ? weekBookings.length : 0;
+
+  // Capacity next 14 days
+  const capEl = document.getElementById('intel-capacity');
+  const maxPerDay = parseInt(state.settings['max_bookings_per_day'] || 6);
+  const totalSlots = maxPerDay * 14;
+  const futureBookings = await sb.query('bookings', {
+    filter: `start_time=gte.${new Date().toISOString()}&status=eq.confirmed`,
+    limit: 200
+  });
+  const booked = Array.isArray(futureBookings) ? Math.min(futureBookings.length, totalSlots) : 0;
+  const pct    = Math.round((booked / totalSlots) * 100);
+
+  capEl.innerHTML = `
+    <div class="capacity-label"><span>${booked} von ${totalSlots} Slots belegt</span><span>${pct}%</span></div>
+    <div class="capacity-bar-bg"><div class="capacity-bar-fill" style="width:${pct}%"></div></div>`;
+
+  // Due soon
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const dueList = document.getElementById('intel-due');
+  const dueSoon = active.filter(c => {
+    if (!c.next_suggested_date) return false;
+    const diff = (new Date(c.next_suggested_date) - today) / 86400000;
+    return diff >= 0 && diff <= 7;
+  });
+
+  dueList.innerHTML = dueSoon.length ? dueSoon.map(c => `
+    <div class="due-item">
+      <div>
+        <div class="due-name">${c.full_name}</div>
+        <div class="due-date">Fällig: ${new Date(c.next_suggested_date).toLocaleDateString('de-DE')}</div>
+      </div>
+      <button class="btn btn-outline btn-sm">Nudge</button>
+    </div>`).join('') :
+    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Niemand fällig diese Woche</div></div>`;
+
+  // At risk
+  const riskList = document.getElementById('intel-risk');
+  const atRisk   = active.filter(c => {
+    if (!c.last_appointment_date) return false;
+    const weeks = (today - new Date(c.last_appointment_date)) / (7 * 86400000);
+    return weeks > (c.preferred_cycle_weeks || 4) * 1.5;
+  });
+
+  riskList.innerHTML = atRisk.length ? atRisk.map(c => {
+    const weeks = Math.floor((today - new Date(c.last_appointment_date)) / (7*86400000));
+    return `<div class="due-item">
+      <div>
+        <div class="due-name">${c.full_name}</div>
+        <div class="due-date">Letzter Besuch: vor ${weeks} Wochen</div>
+      </div>
+      <button class="btn btn-outline btn-sm">Nudge</button>
+    </div>`;
+  }).join('') :
+    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Keine Risiko-Clients</div></div>`;
+
+  // Waitlist
+  const waitData = await sb.query('waiting_list', {
+    select: '*,profiles(full_name),services(name)',
+    filter: 'status=eq.waiting', order: 'joined_at.asc'
+  });
+  const waitEl = document.getElementById('intel-waitlist');
+  const waitlist = Array.isArray(waitData) ? waitData : [];
+  waitEl.innerHTML = waitlist.length ? waitlist.map(w => `
+    <div class="due-item">
+      <div>
+        <div class="due-name">${w.profiles?.full_name || '—'}</div>
+        <div class="due-date">${w.services?.name || '—'} · seit ${new Date(w.joined_at).toLocaleDateString('de-DE')}</div>
+      </div>
+    </div>`).join('') :
+    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Warteliste leer</div></div>`;
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function statusLabel(s) {
+  return { active: 'Aktiv', pending: 'Ausstehend', blocked: 'Gesperrt' }[s] || s;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+checkSession();
+</script>
+</body>
+</html>
