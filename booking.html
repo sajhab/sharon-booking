@@ -788,6 +788,9 @@ async function getAvailableSlots(serviceId, dateFrom, dateTo) {
   const interval = parseInt(state.settings.slot_interval_minutes || 30);
   const windowDays = parseInt(state.settings.booking_window_days || 30);
 
+  // ── Get the assigned worker ──────────────────────────────────
+  const workerId = state.profile?.worker_id || null;
+
   const slots = [];
   const today = new Date(); today.setHours(0,0,0,0);
   const maxDate = new Date(today); maxDate.setDate(maxDate.getDate() + windowDays);
@@ -797,22 +800,30 @@ async function getAvailableSlots(serviceId, dateFrom, dateTo) {
   if (from < today) from = new Date(today);
   if (to > maxDate) to = new Date(maxDate);
 
-  // Fetch existing bookings for the range
-  const bookings = await sbGet(
-    `bookings?start_time=gte.${from.toISOString()}&end_time=lte.${to.toISOString()}&status=neq.cancelled&status=neq.rescheduled`
-  );
-  const existingBookings = Array.isArray(bookings) ? bookings : [];
+  // Fetch existing bookings for the range (filter by worker if assigned)
+  let bookingFilter = `start_time=gte.${from.toISOString()}&end_time=lte.${to.toISOString()}&status=neq.cancelled&status=neq.rescheduled`;
+  if (workerId) bookingFilter += `&worker_id=eq.${workerId}`;
+  const bookings = await sbGet(bookingFilter.startsWith('bookings') ? bookingFilter : `bookings?${bookingFilter}`);
 
-  // Fetch schedule overrides
-  const overridesRaw = await sbGet(`schedule_overrides?specific_date=gte.${from.toISOString().split('T')[0]}&specific_date=lte.${to.toISOString().split('T')[0]}`);
+  // Fix: sbGet prepends table, so build correctly:
+   const existingBookingsRaw = await sbGet(
+     `bookings?start_time=gte.${from.toISOString()}&end_time=lte.${to.toISOString()}&status=neq.cancelled&status=neq.rescheduled${workerId ? '&worker_id=eq.' + workerId : ''}`
+   );
+   const existingBookings = Array.isArray(existingBookingsRaw) ? existingBookingsRaw : [];
+
+  // Fetch schedule overrides for this worker (or global if no worker)
+  const overrideWorkerFilter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
+  const overridesRaw = await sbGet(
+    `schedule_overrides?${overrideWorkerFilter}&specific_date=gte.${from.toISOString().split('T')[0]}&specific_date=lte.${to.toISOString().split('T')[0]}`
+  );
   const overrides = Array.isArray(overridesRaw) ? overridesRaw : [];
 
-  // Fetch holidays
-  const holidaysRaw = await sbGet(`holidays?date_from=lte.${to.toISOString().split('T')[0]}&date_to=gte.${from.toISOString().split('T')[0]}`);
+  // Fetch holidays for this worker
+  const holidayWorkerFilter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
+  const holidaysRaw = await sbGet(
+    `holidays?${holidayWorkerFilter}&date_from=lte.${to.toISOString().split('T')[0]}&date_to=gte.${from.toISOString().split('T')[0]}`
+  );
   const holidays = Array.isArray(holidaysRaw) ? holidaysRaw : [];
-
-  // Fetch worker schedule (first active worker for now, or null=global)
-  const activeWorker = state.profile ? null : null; // we just use global for now
 
   // Iterate each day
   const cur = new Date(from);
@@ -824,48 +835,70 @@ async function getAvailableSlots(serviceId, dateFrom, dateTo) {
     const onHoliday = holidays.some(h => dateStr >= h.date_from && dateStr <= h.date_to);
     if (onHoliday) { cur.setDate(cur.getDate()+1); continue; }
 
-    // Check override
+    // Check override (worker-specific first, then global)
     const override = overrides.find(o => o.specific_date === dateStr);
-    let dayOpen = null, dayClose = null, dayIsOpen = true;
+    let dayOpen, dayClose, breakStart = null, breakEnd = null;
 
     if (override) {
       if (override.is_closed) { cur.setDate(cur.getDate()+1); continue; }
       dayOpen  = override.open_time;
       dayClose = override.close_time;
     } else {
-      // Use global schedule (worker_id=null)
-      const schedRaw = await sbGet(`worker_schedule?worker_id=is.null&day_of_week=eq.${dow}`);
+      // Load this worker's schedule for this day
+      const schedFilter = workerId
+        ? `worker_schedule?worker_id=eq.${workerId}&day_of_week=eq.${dow}`
+        : `worker_schedule?worker_id=is.null&day_of_week=eq.${dow}`;
+      const schedRaw = await sbGet(schedFilter);
       const sched = Array.isArray(schedRaw) ? schedRaw[0] : null;
       if (!sched || sched.is_open === false) { cur.setDate(cur.getDate()+1); continue; }
-      dayOpen  = sched.open_time;
-      dayClose = sched.close_time;
+      dayOpen     = sched.open_time;
+      dayClose    = sched.close_time;
+      breakStart  = sched.break_start || null;
+      breakEnd    = sched.break_end   || null;
     }
+
+    if (!dayOpen || !dayClose) { cur.setDate(cur.getDate()+1); continue; }
 
     // Generate slots for this day
     const [oh, om] = dayOpen.split(':').map(Number);
     const [ch, cm] = dayClose.split(':').map(Number);
-    let slotStart = new Date(cur); slotStart.setHours(oh, om, 0, 0);
-    const dayEnd  = new Date(cur); dayEnd.setHours(ch, cm, 0, 0);
+    let slotStart  = new Date(cur); slotStart.setHours(oh, om, 0, 0);
+    const dayEnd   = new Date(cur); dayEnd.setHours(ch, cm, 0, 0);
 
-    // Last slot must END by dayEnd
+    // Parse break window if set
+    let breakStartMs = null, breakEndMs = null;
+    if (breakStart && breakEnd) {
+      const [bsh, bsm] = breakStart.split(':').map(Number);
+      const [beh, bem] = breakEnd.split(':').map(Number);
+      breakStartMs = new Date(cur); breakStartMs.setHours(bsh, bsm, 0, 0);
+      breakEndMs   = new Date(cur); breakEndMs.setHours(beh, bem, 0, 0);
+    }
+
     while (true) {
-      const slotEnd = new Date(slotStart.getTime() + (duration + buffer) * 60000);
-      // Slot finish (without buffer) must be <= close time
       const actualEnd = new Date(slotStart.getTime() + duration * 60000);
       if (actualEnd > dayEnd) break;
 
-      // Skip past slots (add 15 min buffer from now for same-day)
+      // Skip past slots (15 min buffer from now for same-day)
       const nowPlusPad = new Date(Date.now() + 15 * 60000);
       if (slotStart <= nowPlusPad) {
         slotStart = new Date(slotStart.getTime() + interval * 60000);
         continue;
       }
 
+      // Skip if slot falls inside break
+      if (breakStartMs && breakEndMs) {
+        const slotEnd = new Date(slotStart.getTime() + duration * 60000);
+        if (slotStart < breakEndMs && slotEnd > breakStartMs) {
+          slotStart = new Date(slotStart.getTime() + interval * 60000);
+          continue;
+        }
+      }
+
       // Check collision with existing bookings (include buffer)
+      const slotEnd = new Date(slotStart.getTime() + (duration + buffer) * 60000);
       const collision = existingBookings.some(b => {
-        const bStart = new Date(b.start_time);
-        const bEnd   = new Date(b.end_time);
-        // Add buffer to existing booking end
+        const bStart  = new Date(b.start_time);
+        const bEnd    = new Date(b.end_time);
         const bEndBuf = new Date(bEnd.getTime() + buffer * 60000);
         return slotStart < bEndBuf && slotEnd > bStart;
       });
@@ -1038,15 +1071,17 @@ async function createBooking() {
   const endTime = new Date(new Date(slot.start).getTime() + service.duration_minutes * 60000).toISOString();
 
   try {
-    const result = await sbPost('bookings', {
-      client_id: state.profile.id,
-      service_id: service.id,
-      start_time: slot.start,
-      end_time: endTime,
-      status: 'confirmed',
-      booked_by_admin: false,
-      is_block: false
-    });
+// In createBooking(), replace the sbPost line:
+   const result = await sbPost('bookings', {
+     client_id:    state.profile.id,
+     service_id:   service.id,
+     worker_id:    state.profile.worker_id || null,   // ← ADD THIS
+     start_time:   slot.start,
+     end_time:     endTime,
+     status:       'confirmed',
+     booked_by_admin: false,
+     is_block:     false
+   });
 
     hideTyping();
 
@@ -1076,7 +1111,8 @@ async function createBooking() {
     triggerEmail('booking_confirmed_client', emailData);
     triggerEmail('booking_confirmed_admin',  emailData);
 
-    addBotMessage(`Super! 🎉 Du bist gebucht!\n\nBis ${dateLabel} um ${timeLabel} Uhr.\nEine Bestätigung wurde an deine E-Mail gesendet.`);
+    // Replace the addBotMessage success line with:
+      addBotMessage(`Super! 🎉 Dein Termin ist gebucht!\n\n📅 ${dateLabel} um ${timeLabel} Uhr\n✂️ ${state.flowData.service.name}\n\nEine Bestätigung wurde an deine E-Mail gesendet.`);
 
     // Rebooking prompt based on cycle
     const cycle = state.profile.preferred_cycle_weeks;
