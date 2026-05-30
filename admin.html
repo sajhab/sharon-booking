@@ -6,9 +6,6 @@
 <title>Sharon Zuccaro — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   DESIGN TOKENS
-============================================================ */
 :root {
   --burgundy:       #7D1535;
   --burgundy-dark:  #5a0e25;
@@ -29,19 +26,12 @@
   --font-body:      'DM Sans', sans-serif;
   --transition:     all 0.2s ease;
 }
-
-/* ============================================================
-   RESET & BASE
-============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: var(--font-body); background: var(--bg); color: var(--text); font-size: 15px; }
 button { cursor: pointer; font-family: var(--font-body); }
 input, select, textarea { font-family: var(--font-body); }
 a { text-decoration: none; color: inherit; }
 
-/* ============================================================
-   AUTH SCREEN
-============================================================ */
 #auth-screen {
   position: fixed; inset: 0; background: var(--black);
   display: flex; align-items: center; justify-content: center; z-index: 1000;
@@ -51,139 +41,54 @@ a { text-decoration: none; color: inherit; }
   width: 100%; max-width: 400px; box-shadow: var(--shadow-lg);
   animation: fadeUp 0.4s ease;
 }
-.auth-logo {
-  font-family: var(--font-head); font-size: 22px; color: var(--burgundy);
-  text-align: center; margin-bottom: 8px; letter-spacing: 1px;
-}
+.auth-logo { font-family: var(--font-head); font-size: 22px; color: var(--burgundy); text-align: center; margin-bottom: 8px; letter-spacing: 1px; }
 .auth-sub { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 32px; }
 .auth-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
-.auth-input {
-  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
-  border-radius: 8px; font-size: 15px; outline: none; transition: var(--transition);
-  background: var(--bg); margin-bottom: 16px;
-}
+.auth-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15px; outline: none; transition: var(--transition); background: var(--bg); margin-bottom: 16px; }
 .auth-input:focus { border-color: var(--burgundy); background: var(--white); }
-.auth-btn {
-  width: 100%; padding: 14px; background: var(--burgundy); color: var(--white);
-  border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
-  transition: var(--transition); margin-top: 4px;
-}
+.auth-btn { width: 100%; padding: 14px; background: var(--burgundy); color: var(--white); border: none; border-radius: 8px; font-size: 15px; font-weight: 600; transition: var(--transition); margin-top: 4px; }
 .auth-btn:hover { background: var(--burgundy-dark); }
 .auth-error { color: #c0392b; font-size: 13px; margin-top: 10px; text-align: center; display: none; }
 
-/* ============================================================
-   LAYOUT
-============================================================ */
 #app { display: none; height: 100vh; overflow: hidden; }
 
-/* SIDEBAR */
-.sidebar {
-  position: fixed; left: 0; top: 0; bottom: 0;
-  width: var(--sidebar-w); background: var(--black);
-  display: flex; flex-direction: column; z-index: 100;
-  transition: transform 0.3s ease;
-}
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-.sidebar-logo-text {
-  font-family: var(--font-head); color: var(--white);
-  font-size: 15px; letter-spacing: 1.5px; line-height: 1.3;
-}
+.sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w); background: var(--black); display: flex; flex-direction: column; z-index: 100; transition: transform 0.3s ease; }
+.sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logo-text { font-family: var(--font-head); color: var(--white); font-size: 15px; letter-spacing: 1.5px; line-height: 1.3; }
 .sidebar-logo-sub { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 3px; }
 .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
-.nav-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 20px; color: rgba(255,255,255,0.55);
-  font-size: 14px; font-weight: 400; cursor: pointer;
-  transition: var(--transition); border-left: 3px solid transparent;
-  position: relative;
-}
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: rgba(255,255,255,0.55); font-size: 14px; font-weight: 400; cursor: pointer; transition: var(--transition); border-left: 3px solid transparent; position: relative; }
 .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
-.nav-item.active {
-  color: var(--white); background: rgba(125,21,53,0.3);
-  border-left-color: var(--burgundy);
-}
+.nav-item.active { color: var(--white); background: rgba(125,21,53,0.3); border-left-color: var(--burgundy); }
 .nav-item .nav-icon { font-size: 17px; width: 20px; text-align: center; }
-.nav-badge {
-  margin-left: auto; background: var(--burgundy);
-  color: var(--white); font-size: 11px; font-weight: 600;
-  padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
-}
-.sidebar-footer {
-  padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.35); font-size: 12px;
-}
-.logout-btn {
-  display: flex; align-items: center; gap: 8px;
-  color: rgba(255,255,255,0.4); font-size: 13px;
-  background: none; border: none; padding: 8px 0;
-  transition: var(--transition); width: 100%;
-}
+.nav-badge { margin-left: auto; background: var(--burgundy); color: var(--white); font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.35); font-size: 12px; }
+.logout-btn { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.4); font-size: 13px; background: none; border: none; padding: 8px 0; transition: var(--transition); width: 100%; }
 .logout-btn:hover { color: rgba(255,255,255,0.8); }
 
-/* MAIN */
-.main {
-  margin-left: var(--sidebar-w);
-  height: 100vh; overflow-y: auto;
-  display: flex; flex-direction: column;
-}
-.topbar {
-  position: sticky; top: 0; z-index: 50;
-  background: var(--white); border-bottom: 1px solid var(--border);
-  padding: 0 28px; height: var(--header-h);
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
-}
+.main { margin-left: var(--sidebar-w); height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+.topbar { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 28px; height: var(--header-h); display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
 .topbar-title { font-family: var(--font-head); font-size: 20px; color: var(--text); }
 .topbar-right { display: flex; align-items: center; gap: 16px; }
 .topbar-user { font-size: 13px; color: var(--text-muted); }
-.mobile-menu-btn {
-  display: none; background: none; border: none;
-  font-size: 22px; color: var(--text); padding: 4px;
-}
+.mobile-menu-btn { display: none; background: none; border: none; font-size: 22px; color: var(--text); padding: 4px; }
 .content { flex: 1; padding: 28px; }
 
-/* SECTIONS */
 .section { display: none; animation: fadeUp 0.3s ease; }
 .section.active { display: block; }
 
-/* ============================================================
-   COMPONENTS
-============================================================ */
-
-/* Cards */
-.card {
-  background: var(--white); border-radius: var(--radius);
-  border: 1px solid var(--border); box-shadow: var(--shadow);
-  overflow: hidden;
-}
-.card-header {
-  padding: 18px 22px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
+.card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .card-title { font-family: var(--font-head); font-size: 16px; color: var(--text); }
 .card-body { padding: 22px; }
 
-/* Stats row */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-.stat-card {
-  background: var(--white); border-radius: var(--radius);
-  border: 1px solid var(--border); padding: 20px 22px;
-  box-shadow: var(--shadow);
-}
+.stat-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow); }
 .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
 .stat-value { font-family: var(--font-head); font-size: 28px; color: var(--burgundy); }
 .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-/* Buttons */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 9px 18px; border-radius: 8px; font-size: 14px;
-  font-weight: 500; border: none; transition: var(--transition);
-  white-space: nowrap;
-}
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; border: none; transition: var(--transition); white-space: nowrap; }
 .btn-primary { background: var(--burgundy); color: var(--white); }
 .btn-primary:hover { background: var(--burgundy-dark); }
 .btn-outline { background: var(--white); color: var(--burgundy); border: 1.5px solid var(--burgundy); }
@@ -196,281 +101,118 @@ a { text-decoration: none; color: inherit; }
 .btn-success:hover { background: #dcfce7; }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 
-/* Table */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
-th {
-  text-align: left; padding: 12px 16px;
-  font-size: 12px; font-weight: 600; color: var(--text-muted);
-  text-transform: uppercase; letter-spacing: 0.5px;
-  background: var(--bg); border-bottom: 1px solid var(--border);
-}
+th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg); border-bottom: 1px solid var(--border); }
 td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--burgundy-light); }
 
-/* Status badges */
-.badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
-}
-.badge-active   { background: #f0fdf4; color: #16a34a; }
-.badge-pending  { background: #fffbeb; color: #d97706; }
-.badge-blocked  { background: #fef2f2; color: #dc2626; }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.badge-active    { background: #f0fdf4; color: #16a34a; }
+.badge-pending   { background: #fffbeb; color: #d97706; }
+.badge-blocked   { background: #fef2f2; color: #dc2626; }
 .badge-confirmed { background: #eff6ff; color: #2563eb; }
 .badge-cancelled { background: #fef2f2; color: #dc2626; }
 .badge-rescheduled { background: #f5f3ff; color: #7c3aed; }
-.badge-no_show  { background: #fff7ed; color: #ea580c; }
+.badge-no_show   { background: #fff7ed; color: #ea580c; }
 
-/* Form elements */
 .form-group { margin-bottom: 18px; }
 .form-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
-.form-input, .form-select, .form-textarea {
-  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
-  border-radius: 8px; font-size: 14px; outline: none;
-  transition: var(--transition); background: var(--white); color: var(--text);
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(125,21,53,0.08);
-}
+.form-input, .form-select, .form-textarea { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; transition: var(--transition); background: var(--white); color: var(--text); }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(125,21,53,0.08); }
 .form-textarea { resize: vertical; min-height: 80px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-/* Toggle */
 .toggle-wrap { display: flex; align-items: center; gap: 10px; }
-.toggle {
-  position: relative; width: 44px; height: 24px;
-  background: var(--border); border-radius: 12px;
-  cursor: pointer; transition: var(--transition); border: none; flex-shrink: 0;
-}
+.toggle { position: relative; width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; transition: var(--transition); border: none; flex-shrink: 0; }
 .toggle.on { background: var(--burgundy); }
-.toggle::after {
-  content: ''; position: absolute; top: 3px; left: 3px;
-  width: 18px; height: 18px; background: var(--white);
-  border-radius: 50%; transition: var(--transition);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
+.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: var(--white); border-radius: 50%; transition: var(--transition); box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
 .toggle.on::after { transform: translateX(20px); }
 .toggle-label { font-size: 14px; color: var(--text); }
 
-/* Modal */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-  z-index: 500; display: flex; align-items: center; justify-content: center;
-  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--white); border-radius: 14px; width: 100%;
-  max-width: 520px; box-shadow: var(--shadow-lg);
-  transform: translateY(20px); transition: transform 0.2s;
-  max-height: 90vh; overflow-y: auto;
-}
+.modal { background: var(--white); border-radius: 14px; width: 100%; max-width: 520px; box-shadow: var(--shadow-lg); transform: translateY(20px); transition: transform 0.2s; max-height: 90vh; overflow-y: auto; }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-header {
-  padding: 22px 24px 18px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
+.modal-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .modal-title { font-family: var(--font-head); font-size: 18px; }
-.modal-close {
-  background: none; border: none; font-size: 22px;
-  color: var(--text-muted); line-height: 1; padding: 2px 6px;
-}
+.modal-close { background: none; border: none; font-size: 22px; color: var(--text-muted); line-height: 1; padding: 2px 6px; }
 .modal-close:hover { color: var(--text); }
 .modal-body { padding: 24px; }
-.modal-footer {
-  padding: 16px 24px; border-top: 1px solid var(--border);
-  display: flex; gap: 10px; justify-content: flex-end;
-}
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 
-/* Search / filter bar */
-.filter-bar {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 20px; flex-wrap: wrap;
-}
-.search-input {
-  flex: 1; min-width: 200px; padding: 9px 14px 9px 36px;
-  border: 1.5px solid var(--border); border-radius: 8px;
-  font-size: 14px; outline: none; transition: var(--transition);
-  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center;
-}
+.filter-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.search-input { flex: 1; min-width: 200px; padding: 9px 14px 9px 36px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; transition: var(--transition); background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center; }
 .search-input:focus { border-color: var(--burgundy); }
-.filter-select {
-  padding: 9px 14px; border: 1.5px solid var(--border);
-  border-radius: 8px; font-size: 14px; outline: none;
-  background: var(--white); cursor: pointer; transition: var(--transition);
-}
+.filter-select { padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background: var(--white); cursor: pointer; transition: var(--transition); }
 .filter-select:focus { border-color: var(--burgundy); }
 
-/* ============================================================
-   CALENDAR
-============================================================ */
-.cal-toolbar {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 20px; flex-wrap: wrap;
-}
+.cal-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 .cal-nav { display: flex; align-items: center; gap: 8px; }
-.cal-nav-btn {
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: 8px; padding: 8px 12px; font-size: 16px;
-  transition: var(--transition); color: var(--text);
-}
+.cal-nav-btn { background: var(--white); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 16px; transition: var(--transition); color: var(--text); }
 .cal-nav-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
-.cal-date-label {
-  font-family: var(--font-head); font-size: 18px;
-  color: var(--text); min-width: 200px; text-align: center;
-}
+.cal-date-label { font-family: var(--font-head); font-size: 18px; color: var(--text); min-width: 200px; text-align: center; }
 .cal-view-tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 8px; margin-left: auto; }
-.cal-view-tab {
-  padding: 6px 14px; border-radius: 6px; font-size: 13px;
-  font-weight: 500; border: none; background: transparent;
-  color: var(--text-muted); transition: var(--transition);
-}
+.cal-view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; border: none; background: transparent; color: var(--text-muted); transition: var(--transition); }
 .cal-view-tab.active { background: var(--white); color: var(--burgundy); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-.cal-week {
-  display: grid; grid-template-columns: 60px repeat(7, 1fr);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  background: var(--white); overflow: hidden; box-shadow: var(--shadow);
-}
+.cal-week { display: grid; grid-template-columns: 60px repeat(7, 1fr); border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); overflow: hidden; box-shadow: var(--shadow); }
 .cal-time-col { background: var(--bg); }
-.cal-day-header {
-  padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--border);
-  border-left: 1px solid var(--border); background: var(--white);
-}
+.cal-day-header { padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); background: var(--white); }
 .cal-day-name { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .cal-day-num { font-family: var(--font-head); font-size: 20px; color: var(--text); margin-top: 2px; }
-.cal-day-header.today .cal-day-num {
-  background: var(--burgundy); color: var(--white);
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 2px auto 0;
-}
+.cal-day-header.today .cal-day-num { background: var(--burgundy); color: var(--white); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 2px auto 0; }
 .cal-time-header { padding: 12px 8px; border-bottom: 1px solid var(--border); background: var(--bg); }
-.cal-body { display: contents; }
-.cal-time-slot {
-  height: 60px; display: flex; align-items: flex-start;
-  padding: 4px 8px; border-top: 1px solid var(--border);
-  font-size: 11px; color: var(--text-muted); background: var(--bg);
-  justify-content: flex-end;
-}
-.cal-cell {
-  height: 60px; border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border); position: relative;
-  padding: 2px; cursor: pointer; transition: background 0.15s;
-}
+.cal-time-slot { height: 60px; display: flex; align-items: flex-start; padding: 4px 8px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); background: var(--bg); justify-content: flex-end; }
+.cal-cell { height: 60px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); position: relative; padding: 2px; cursor: pointer; transition: background 0.15s; }
 .cal-cell:hover { background: var(--burgundy-light); }
-.cal-event {
-  position: absolute; left: 2px; right: 2px; top: 2px;
-  border-radius: 6px; padding: 3px 6px; font-size: 11px;
-  font-weight: 500; cursor: pointer; overflow: hidden;
-  line-height: 1.3; z-index: 1; transition: opacity 0.15s;
-}
+.cal-event { position: absolute; left: 2px; right: 2px; top: 2px; border-radius: 6px; padding: 3px 6px; font-size: 11px; font-weight: 500; cursor: pointer; overflow: hidden; line-height: 1.3; z-index: 1; transition: opacity 0.15s; }
 .cal-event:hover { opacity: 0.85; }
-.cal-event.client   { background: #f0e6ff; color: #6b21a8; border-left: 3px solid #7c3aed; }
-.cal-event.manual   { background: #fef9c3; color: #854d0e; border-left: 3px solid #ca8a04; }
-.cal-event.block    { background: #e0f2fe; color: #075985; border-left: 3px solid #0284c7; }
-.cal-event.no-show  { background: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
+.cal-event.client  { background: #f0e6ff; color: #6b21a8; border-left: 3px solid #7c3aed; }
+.cal-event.manual  { background: #fef9c3; color: #854d0e; border-left: 3px solid #ca8a04; }
+.cal-event.block   { background: #e0f2fe; color: #075985; border-left: 3px solid #0284c7; }
+.cal-event.no-show { background: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
 
-/* Legend */
 .cal-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
 .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
 
-/* ============================================================
-   INTELLIGENCE
-============================================================ */
 .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.capacity-bar-wrap { margin: 12px 0; }
-.capacity-bar-bg { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
-.capacity-bar-fill { background: var(--burgundy); height: 100%; border-radius: 4px; transition: width 0.6s ease; }
-.capacity-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
-
 .due-list { display: flex; flex-direction: column; gap: 10px; }
-.due-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px; background: var(--bg); border-radius: 8px;
-  border: 1px solid var(--border);
-}
+.due-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); }
 .due-name { font-weight: 500; font-size: 14px; }
 .due-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-/* ============================================================
-   SETTINGS
-============================================================ */
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.settings-section-title {
-  font-family: var(--font-head); font-size: 15px; color: var(--burgundy);
-  margin-bottom: 16px; padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-.setting-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 0; border-bottom: 1px solid var(--border);
-}
+.settings-section-title { font-family: var(--font-head); font-size: 15px; color: var(--burgundy); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .setting-row:last-child { border-bottom: none; }
 .setting-info .setting-name { font-size: 14px; font-weight: 500; }
 .setting-info .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.setting-input {
-  width: 80px; padding: 7px 10px; border: 1.5px solid var(--border);
-  border-radius: 6px; font-size: 14px; text-align: center; outline: none;
-  transition: var(--transition);
-}
+.setting-input { width: 80px; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 14px; text-align: center; outline: none; transition: var(--transition); }
 .setting-input:focus { border-color: var(--burgundy); }
 
-/* Schedule grid */
 .schedule-grid { display: flex; flex-direction: column; gap: 8px; }
-.schedule-row {
-  display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr 60px;
-  align-items: center; gap: 8px; padding: 10px 14px;
-  background: var(--bg); border-radius: 8px; border: 1px solid var(--border);
-}
+.schedule-row { display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr 60px; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); }
 .schedule-row .form-input { padding: 7px 8px; font-size: 13px; }
 .schedule-day { font-weight: 500; font-size: 14px; }
 
-/* ============================================================
-   EMPTY STATE
-============================================================ */
-.empty-state {
-  text-align: center; padding: 48px 24px; color: var(--text-muted);
-}
+.empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
 .empty-title { font-family: var(--font-head); font-size: 18px; color: var(--text); margin-bottom: 6px; }
 .empty-desc { font-size: 14px; }
 
-/* ============================================================
-   TOAST
-============================================================ */
-.toast-container {
-  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-  display: flex; flex-direction: column; gap: 10px;
-}
-.toast {
-  background: var(--black); color: var(--white); padding: 12px 18px;
-  border-radius: 10px; font-size: 14px; box-shadow: var(--shadow-lg);
-  display: flex; align-items: center; gap: 8px;
-  animation: slideIn 0.3s ease; max-width: 320px;
-}
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: var(--black); color: var(--white); padding: 12px 18px; border-radius: 10px; font-size: 14px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; animation: slideIn 0.3s ease; max-width: 320px; }
 .toast.success { border-left: 4px solid #16a34a; }
 .toast.error   { border-left: 4px solid #dc2626; }
 .toast.info    { border-left: 4px solid var(--burgundy); }
 
-/* ============================================================
-   ANIMATIONS
-============================================================ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-/* ============================================================
-   MOBILE
-============================================================ */
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
@@ -486,9 +228,7 @@ tr:hover td { background: var(--burgundy-light); }
   .search-input { min-width: unset; }
   .schedule-row { grid-template-columns: 70px 1fr 1fr 1fr 1fr 44px; gap: 4px; }
 }
-@media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr; }
-}
+@media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -509,61 +249,37 @@ tr:hover td { background: var(--burgundy-light); }
 
 <!-- APP -->
 <div id="app">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-text">SHARON ZUCCARO</div>
       <div class="sidebar-logo-sub">Admin Panel</div>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-item active" onclick="showSection('calendar')">
-        <span class="nav-icon">📅</span> Kalender
-      </div>
-      <div class="nav-item" onclick="showSection('approvals')">
-        <span class="nav-icon">⏳</span> Freigaben
-        <span class="nav-badge" id="approvals-badge">0</span>
-      </div>
-      <div class="nav-item" onclick="showSection('clients')">
-        <span class="nav-icon">👥</span> Clients
-      </div>
-      <div class="nav-item" onclick="showSection('bookings')">
-        <span class="nav-icon">📋</span> Buchungen
-      </div>
-      <div class="nav-item" onclick="showSection('services')">
-        <span class="nav-icon">💅</span> Services
-      </div>
-      <div class="nav-item" onclick="showSection('workers')">
-        <span class="nav-icon">👩</span> Worker
-      </div>
-      <div class="nav-item" onclick="showSection('settings')">
-        <span class="nav-icon">⚙️</span> Einstellungen
-      </div>
-      <div class="nav-item" onclick="showSection('intelligence')">
-        <span class="nav-icon">📊</span> Intelligence
-      </div>
+      <div class="nav-item active" onclick="showSection('calendar')"><span class="nav-icon">📅</span> Kalender</div>
+      <div class="nav-item" onclick="showSection('approvals')"><span class="nav-icon">⏳</span> Freigaben<span class="nav-badge" id="approvals-badge">0</span></div>
+      <div class="nav-item" onclick="showSection('clients')"><span class="nav-icon">👥</span> Clients</div>
+      <div class="nav-item" onclick="showSection('bookings')"><span class="nav-icon">📋</span> Buchungen</div>
+      <div class="nav-item" onclick="showSection('services')"><span class="nav-icon">💅</span> Services</div>
+      <div class="nav-item" onclick="showSection('workers')"><span class="nav-icon">👩</span> Worker</div>
+      <div class="nav-item" onclick="showSection('settings')"><span class="nav-icon">⚙️</span> Einstellungen</div>
+      <div class="nav-item" onclick="showSection('intelligence')"><span class="nav-icon">📊</span> Intelligence</div>
     </nav>
     <div class="sidebar-footer">
-      <button class="logout-btn" onclick="handleLogout()">
-        <span>🚪</span> Abmelden
-      </button>
+      <button class="logout-btn" onclick="handleLogout()"><span>🚪</span> Abmelden</button>
       <div style="margin-top:8px;font-size:11px;">Built by Aigentii AI Limited</div>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
     <header class="topbar">
       <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
       <div class="topbar-title" id="topbar-title">Kalender</div>
-      <div class="topbar-right">
-        <span class="topbar-user" id="topbar-user"></span>
-      </div>
+      <div class="topbar-right"><span class="topbar-user" id="topbar-user"></span></div>
     </header>
 
     <div class="content">
 
-      <!-- ===================== CALENDAR ===================== -->
+      <!-- CALENDAR -->
       <div class="section active" id="section-calendar">
         <div class="cal-toolbar">
           <div class="cal-nav">
@@ -578,11 +294,7 @@ tr:hover td { background: var(--burgundy-light); }
           </div>
           <button class="btn btn-primary btn-sm" onclick="openModal('modal-booking')">+ Buchung</button>
         </div>
-
-        <div class="card" style="overflow:hidden;">
-          <div class="cal-week" id="cal-week"></div>
-        </div>
-
+        <div class="card" style="overflow:hidden;"><div class="cal-week" id="cal-week"></div></div>
         <div class="cal-legend">
           <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div> Client Buchung</div>
           <div class="legend-item"><div class="legend-dot" style="background:#ca8a04"></div> Manuelle Buchung</div>
@@ -591,49 +303,32 @@ tr:hover td { background: var(--burgundy-light); }
         </div>
       </div>
 
-      <!-- ===================== APPROVALS ===================== -->
+      <!-- APPROVALS -->
       <div class="section" id="section-approvals">
         <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
-          <div class="stat-card">
-            <div class="stat-label">Ausstehend</div>
-            <div class="stat-value" id="stat-pending">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Aktive Clients</div>
-            <div class="stat-value" id="stat-active">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Gesperrt</div>
-            <div class="stat-value" id="stat-blocked">0</div>
-          </div>
+          <div class="stat-card"><div class="stat-label">Ausstehend</div><div class="stat-value" id="stat-pending">0</div></div>
+          <div class="stat-card"><div class="stat-label">Aktive Clients</div><div class="stat-value" id="stat-active">0</div></div>
+          <div class="stat-card"><div class="stat-label">Gesperrt</div><div class="stat-value" id="stat-blocked">0</div></div>
         </div>
-
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">Neue Registrierungen</div>
-          </div>
+          <div class="card-header"><div class="card-title">Neue Registrierungen</div></div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>E-Mail</th>
-                  <th>Telefon</th>
-                  <th>Service</th>
-                  <th>Rhythmus</th>
-                  <th>Registriert</th>
-                  <th>Aktionen</th>
+                  <th>Name</th><th>E-Mail</th><th>Telefon</th><th>Service</th>
+                  <th>Rhythmus</th><th>Registriert</th><th>Worker zuweisen</th><th>Aktionen</th>
                 </tr>
               </thead>
               <tbody id="approvals-table">
-                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Keine ausstehenden Anfragen</div></div></td></tr>
+                <tr><td colspan="8"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Keine ausstehenden Anfragen</div></div></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ===================== CLIENTS ===================== -->
+      <!-- CLIENTS -->
       <div class="section" id="section-clients">
         <div class="filter-bar">
           <input type="text" class="search-input" placeholder="Name oder E-Mail suchen..." oninput="filterClients(this.value)">
@@ -649,24 +344,19 @@ tr:hover td { background: var(--burgundy-light); }
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>E-Mail</th>
-                  <th>Telefon</th>
-                  <th>Status</th>
-                  <th>Zyklus</th>
-                  <th>Letzter Termin</th>
-                  <th>Aktionen</th>
+                  <th>Name</th><th>E-Mail</th><th>Telefon</th><th>Status</th>
+                  <th>Worker</th><th>Zyklus</th><th>Letzter Termin</th><th>Aktionen</th>
                 </tr>
               </thead>
               <tbody id="clients-table">
-                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Keine Clients gefunden</div></div></td></tr>
+                <tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Keine Clients gefunden</div></div></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ===================== BOOKINGS ===================== -->
+      <!-- BOOKINGS -->
       <div class="section" id="section-bookings">
         <div class="filter-bar">
           <input type="date" class="form-input" style="max-width:180px;" id="booking-filter-from">
@@ -684,16 +374,7 @@ tr:hover td { background: var(--burgundy-light); }
         <div class="card">
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Datum & Zeit</th>
-                  <th>Client</th>
-                  <th>Service</th>
-                  <th>Worker</th>
-                  <th>Status</th>
-                  <th>Aktionen</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Datum & Zeit</th><th>Client</th><th>Service</th><th>Worker</th><th>Status</th><th>Aktionen</th></tr></thead>
               <tbody id="bookings-table">
                 <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Keine Buchungen gefunden</div></div></td></tr>
               </tbody>
@@ -702,7 +383,7 @@ tr:hover td { background: var(--burgundy-light); }
         </div>
       </div>
 
-      <!-- ===================== SERVICES ===================== -->
+      <!-- SERVICES -->
       <div class="section" id="section-services">
         <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
           <button class="btn btn-primary" onclick="openServiceModal()">+ Service hinzufügen</button>
@@ -710,26 +391,16 @@ tr:hover td { background: var(--burgundy-light); }
         <div class="card">
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Reihenfolge</th>
-                  <th>Name</th>
-                  <th>Dauer</th>
-                  <th>Preis</th>
-                  <th>Buffer</th>
-                  <th>Aktiv</th>
-                  <th>Aktionen</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Reihenfolge</th><th>Name</th><th>Dauer</th><th>Preis</th><th>Buffer</th><th>Aktiv</th><th>Aktionen</th></tr></thead>
               <tbody id="services-table">
-                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💅</div><div class="empty-title">Noch keine Services</div><div class="empty-desc">Füge deinen ersten Service hinzu</div></div></td></tr>
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💅</div><div class="empty-title">Noch keine Services</div></div></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ===================== WORKERS ===================== -->
+      <!-- WORKERS -->
       <div class="section" id="section-workers">
         <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
           <button class="btn btn-primary" onclick="openWorkerModal()">+ Worker hinzufügen</button>
@@ -737,115 +408,63 @@ tr:hover td { background: var(--burgundy-light); }
         <div id="workers-list" style="display:flex;flex-direction:column;gap:16px;"></div>
       </div>
 
-      <!-- ===================== SETTINGS ===================== -->
+      <!-- SETTINGS -->
       <div class="section" id="section-settings">
         <div class="settings-grid">
-
-          <!-- Buchungsregeln — GLOBAL, no worker dropdown -->
           <div class="card">
             <div class="card-header"><div class="card-title">Buchungsregeln</div><span style="font-size:11px;color:var(--text-muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500;">Global</span></div>
-            <div class="card-body">
-              <div class="settings-section-title">Zeitparameter</div>
-              <div id="settings-booking-rules"></div>
-            </div>
+            <div class="card-body"><div class="settings-section-title">Zeitparameter</div><div id="settings-booking-rules"></div></div>
           </div>
-
-          <!-- Erinnerungen — GLOBAL, no worker dropdown -->
           <div class="card">
             <div class="card-header"><div class="card-title">Erinnerungen & E-Mails</div><span style="font-size:11px;color:var(--text-muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500;">Global</span></div>
             <div class="card-body" id="settings-reminders"></div>
           </div>
-
-          <!-- Öffnungszeiten — PER WORKER -->
           <div class="card">
             <div class="card-header" style="flex-wrap:wrap;gap:8px;">
               <div class="card-title">Öffnungszeiten & Pausen</div>
               <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-                <select class="form-input" id="schedule-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadWorkerSchedule()">
-                  <option value="">Lade...</option>
-                </select>
+                <select class="form-input" id="schedule-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadWorkerSchedule()"><option value="">Lade...</option></select>
                 <button class="btn btn-primary btn-sm" onclick="saveWorkerSchedule()">Speichern</button>
               </div>
             </div>
-            <div class="card-body">
-              <div class="schedule-grid" id="schedule-grid"></div>
-            </div>
+            <div class="card-body"><div class="schedule-grid" id="schedule-grid"></div></div>
           </div>
-
-          <!-- Urlaub & Feiertage — PER WORKER -->
           <div class="card">
             <div class="card-header" style="flex-wrap:wrap;gap:8px;">
               <div class="card-title">Urlaub & Feiertage</div>
               <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-                <select class="form-input" id="holiday-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadHolidays()">
-                  <option value="">Lade...</option>
-                </select>
+                <select class="form-input" id="holiday-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadHolidays()"><option value="">Lade...</option></select>
                 <button class="btn btn-outline btn-sm" onclick="openModal('modal-holiday')">+ Hinzufügen</button>
               </div>
             </div>
-            <div class="card-body">
-              <div id="holidays-list">
-                <div class="empty-state" style="padding:24px;"><div class="empty-desc">Kein Urlaub gesetzt</div></div>
-              </div>
-            </div>
+            <div class="card-body"><div id="holidays-list"><div class="empty-state" style="padding:24px;"><div class="empty-desc">Kein Urlaub gesetzt</div></div></div></div>
           </div>
-
-          <!-- Datum Overrides — PER WORKER (+ "Alle") -->
           <div class="card">
             <div class="card-header" style="flex-wrap:wrap;gap:8px;">
               <div class="card-title">Datum Overrides</div>
               <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-                <select class="form-input" id="override-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadOverrides()">
-                  <option value="">Lade...</option>
-                </select>
+                <select class="form-input" id="override-worker-select" style="width:auto;padding:6px 10px;font-size:13px;" onchange="loadOverrides()"><option value="">Lade...</option></select>
                 <button class="btn btn-outline btn-sm" onclick="openModal('modal-override')">+ Hinzufügen</button>
               </div>
             </div>
-            <div class="card-body">
-              <div id="overrides-list">
-                <div class="empty-state" style="padding:24px;"><div class="empty-desc">Keine Datum-Overrides gesetzt</div></div>
-              </div>
-            </div>
+            <div class="card-body"><div id="overrides-list"><div class="empty-state" style="padding:24px;"><div class="empty-desc">Keine Datum-Overrides gesetzt</div></div></div></div>
           </div>
-
         </div>
       </div>
 
-      <!-- ===================== INTELLIGENCE ===================== -->
+      <!-- INTELLIGENCE -->
       <div class="section" id="section-intelligence">
-
-        <!-- AI Suggestion Banner -->
         <div id="intel-ai-banner" style="display:none;background:linear-gradient(135deg,#7D1535,#5a0e25);border-radius:12px;padding:20px 24px;margin-bottom:24px;color:white;">
           <div style="font-size:11px;font-weight:600;letter-spacing:1px;opacity:0.7;margin-bottom:6px;">✨ KI-EMPFEHLUNG</div>
           <div id="intel-ai-text" style="font-size:15px;line-height:1.6;"></div>
         </div>
-
-        <!-- Stats row -->
         <div class="stats-row" style="grid-template-columns:repeat(5,1fr);">
-          <div class="stat-card">
-            <div class="stat-label">Gesamt Clients</div>
-            <div class="stat-value" id="intel-total">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Umsatz diesen Monat</div>
-            <div class="stat-value" id="intel-revenue" style="font-size:20px;">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Beliebtester Tag</div>
-            <div class="stat-value" id="intel-busyday" style="font-size:18px;">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Top Service</div>
-            <div class="stat-value" id="intel-topservice" style="font-size:16px;">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Ø Zyklus</div>
-            <div class="stat-value" id="intel-cycle" style="font-size:20px;">—</div>
-            <div class="stat-sub">Wochen</div>
-          </div>
+          <div class="stat-card"><div class="stat-label">Gesamt Clients</div><div class="stat-value" id="intel-total">—</div></div>
+          <div class="stat-card"><div class="stat-label">Umsatz diesen Monat</div><div class="stat-value" id="intel-revenue" style="font-size:20px;">—</div></div>
+          <div class="stat-card"><div class="stat-label">Beliebtester Tag</div><div class="stat-value" id="intel-busyday" style="font-size:18px;">—</div></div>
+          <div class="stat-card"><div class="stat-label">Top Service</div><div class="stat-value" id="intel-topservice" style="font-size:16px;">—</div></div>
+          <div class="stat-card"><div class="stat-label">Ø Zyklus</div><div class="stat-value" id="intel-cycle" style="font-size:20px;">—</div><div class="stat-sub">Wochen</div></div>
         </div>
-
-        <!-- Rates row -->
         <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-top:-8px;">
           <div class="stat-card">
             <div class="stat-label">Auslastung 14 Tage</div>
@@ -854,76 +473,34 @@ tr:hover td { background: var(--burgundy-light); }
               <div id="intel-capacity-bar" style="height:100%;background:var(--burgundy);border-radius:3px;width:0%;transition:width 0.6s ease;"></div>
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Freie Slots heute</div>
-            <div class="stat-value" id="intel-today-free">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Stornierungsrate</div>
-            <div class="stat-value" id="intel-cancel-rate">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">No-Show Rate</div>
-            <div class="stat-value" id="intel-noshow-rate">—</div>
-          </div>
+          <div class="stat-card"><div class="stat-label">Freie Slots heute</div><div class="stat-value" id="intel-today-free">—</div></div>
+          <div class="stat-card"><div class="stat-label">Stornierungsrate</div><div class="stat-value" id="intel-cancel-rate">—</div></div>
+          <div class="stat-card"><div class="stat-label">No-Show Rate</div><div class="stat-value" id="intel-noshow-rate">—</div></div>
         </div>
-
         <div class="intel-grid">
-
-          <!-- Capacity 14 days -->
+          <div class="card"><div class="card-header"><div class="card-title">Kapazität — Nächste 14 Tage</div></div><div class="card-body" id="intel-capacity"></div></div>
           <div class="card">
-            <div class="card-header"><div class="card-title">Kapazität — Nächste 14 Tage</div></div>
-            <div class="card-body" id="intel-capacity"></div>
+            <div class="card-header"><div class="card-title">Fällig — noch nicht gebucht</div><span id="intel-due-count" class="nav-badge" style="background:var(--burgundy);display:none;">0</span></div>
+            <div class="card-body"><div class="due-list" id="intel-due"></div></div>
           </div>
-
-          <!-- Due soon -->
           <div class="card">
-            <div class="card-header">
-              <div class="card-title">Fällig — noch nicht gebucht</div>
-              <span id="intel-due-count" class="nav-badge" style="background:var(--burgundy);display:none;">0</span>
-            </div>
-            <div class="card-body">
-              <div class="due-list" id="intel-due"></div>
-            </div>
+            <div class="card-header"><div class="card-title">⚠️ Risiko Clients</div><span id="intel-risk-count" class="nav-badge" style="background:#dc2626;display:none;">0</span></div>
+            <div class="card-body"><div class="due-list" id="intel-risk"></div></div>
           </div>
-
-          <!-- At risk -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">⚠️ Risiko Clients</div>
-              <span id="intel-risk-count" class="nav-badge" style="background:#dc2626;display:none;">0</span>
-            </div>
-            <div class="card-body">
-              <div class="due-list" id="intel-risk"></div>
-            </div>
-          </div>
-
-          <!-- Waitlist -->
-          <div class="card">
-            <div class="card-header"><div class="card-title">Warteliste</div></div>
-            <div class="card-body">
-              <div class="due-list" id="intel-waitlist"></div>
-            </div>
-          </div>
-
+          <div class="card"><div class="card-header"><div class="card-title">Warteliste</div></div><div class="card-body"><div class="due-list" id="intel-waitlist"></div></div></div>
         </div>
       </div>
 
-    </div><!-- /content -->
+    </div>
   </main>
-</div><!-- /app -->
+</div>
 
-<!-- ============================================================
-     MODALS
-============================================================ -->
+<!-- MODALS -->
 
 <!-- Client Detail Modal -->
 <div class="modal-overlay" id="modal-client">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="client-modal-name">Client</div>
-      <button class="modal-close" onclick="closeModal('modal-client')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="client-modal-name">Client</div><button class="modal-close" onclick="closeModal('modal-client')">×</button></div>
     <div class="modal-body" id="client-modal-body"></div>
     <div class="modal-footer" id="client-modal-footer"></div>
   </div>
@@ -932,47 +509,20 @@ tr:hover td { background: var(--burgundy-light); }
 <!-- Service Modal -->
 <div class="modal-overlay" id="modal-service">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="service-modal-title">Service hinzufügen</div>
-      <button class="modal-close" onclick="closeModal('modal-service')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="service-modal-title">Service hinzufügen</div><button class="modal-close" onclick="closeModal('modal-service')">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="service-id">
-      <div class="form-group">
-        <label class="form-label">Name *</label>
-        <input type="text" class="form-input" id="service-name" placeholder="z.B. Full Set">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Beschreibung</label>
-        <textarea class="form-textarea" id="service-desc" placeholder="Optional"></textarea>
+      <div class="form-group"><label class="form-label">Name *</label><input type="text" class="form-input" id="service-name" placeholder="z.B. Full Set"></div>
+      <div class="form-group"><label class="form-label">Beschreibung</label><textarea class="form-textarea" id="service-desc" placeholder="Optional"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Dauer (Minuten) *</label><input type="number" class="form-input" id="service-duration" placeholder="90" min="15" step="15"></div>
+        <div class="form-group"><label class="form-label">Preis (€) *</label><input type="number" class="form-input" id="service-price" placeholder="65" min="0" step="0.50"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Dauer (Minuten) *</label>
-          <input type="number" class="form-input" id="service-duration" placeholder="90" min="15" step="15">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Preis (€) *</label>
-          <input type="number" class="form-input" id="service-price" placeholder="65" min="0" step="0.50">
-        </div>
+        <div class="form-group"><label class="form-label">Buffer Override (Min)</label><input type="number" class="form-input" id="service-buffer" placeholder="Global verwenden" min="0"><div class="form-hint">Leer lassen = globalen Buffer verwenden</div></div>
+        <div class="form-group"><label class="form-label">Reihenfolge</label><input type="number" class="form-input" id="service-order" placeholder="0" min="0"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Buffer Override (Min)</label>
-          <input type="number" class="form-input" id="service-buffer" placeholder="Global verwenden" min="0">
-          <div class="form-hint">Leer lassen = globalen Buffer verwenden</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Reihenfolge</label>
-          <input type="number" class="form-input" id="service-order" placeholder="0" min="0">
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="toggle-wrap">
-          <button class="toggle on" id="service-active-toggle" onclick="this.classList.toggle('on')"></button>
-          <span class="toggle-label">Service aktiv</span>
-        </div>
-      </div>
+      <div class="form-group"><div class="toggle-wrap"><button class="toggle on" id="service-active-toggle" onclick="this.classList.toggle('on')"></button><span class="toggle-label">Service aktiv</span></div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-service')">Abbrechen</button>
@@ -984,30 +534,13 @@ tr:hover td { background: var(--burgundy-light); }
 <!-- Worker Modal -->
 <div class="modal-overlay" id="modal-worker">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="worker-modal-title">Worker hinzufügen</div>
-      <button class="modal-close" onclick="closeModal('modal-worker')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title" id="worker-modal-title">Worker hinzufügen</div><button class="modal-close" onclick="closeModal('modal-worker')">×</button></div>
     <div class="modal-body">
       <input type="hidden" id="worker-id">
-      <div class="form-group">
-        <label class="form-label">Name *</label>
-        <input type="text" class="form-input" id="worker-name" placeholder="z.B. Anna">
-      </div>
-      <div class="form-group">
-        <label class="form-label">E-Mail</label>
-        <input type="email" class="form-input" id="worker-email" placeholder="anna@sharon.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kalender-Farbe</label>
-        <input type="color" class="form-input" id="worker-color" value="#7D1535" style="height:44px;padding:4px;">
-      </div>
-      <div class="form-group">
-        <div class="toggle-wrap">
-          <button class="toggle on" id="worker-active-toggle" onclick="this.classList.toggle('on')"></button>
-          <span class="toggle-label">Worker aktiv</span>
-        </div>
-      </div>
+      <div class="form-group"><label class="form-label">Name *</label><input type="text" class="form-input" id="worker-name" placeholder="z.B. Anna"></div>
+      <div class="form-group"><label class="form-label">E-Mail</label><input type="email" class="form-input" id="worker-email" placeholder="anna@sharon.com"></div>
+      <div class="form-group"><label class="form-label">Kalender-Farbe</label><input type="color" class="form-input" id="worker-color" value="#7D1535" style="height:44px;padding:4px;"></div>
+      <div class="form-group"><div class="toggle-wrap"><button class="toggle on" id="worker-active-toggle" onclick="this.classList.toggle('on')"></button><span class="toggle-label">Worker aktiv</span></div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-worker')">Abbrechen</button>
@@ -1019,41 +552,17 @@ tr:hover td { background: var(--burgundy-light); }
 <!-- Manual Booking Modal -->
 <div class="modal-overlay" id="modal-booking">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Manuelle Buchung</div>
-      <button class="modal-close" onclick="closeModal('modal-booking')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Manuelle Buchung</div><button class="modal-close" onclick="closeModal('modal-booking')">×</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Client *</label>
-        <select class="form-select" id="booking-client"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Service *</label>
-        <select class="form-select" id="booking-service" onchange="updateBookingEnd()"></select>
-      </div>
+      <div class="form-group"><label class="form-label">Client *</label><select class="form-select" id="booking-client"></select></div>
+      <div class="form-group"><label class="form-label">Service *</label><select class="form-select" id="booking-service" onchange="updateBookingEnd()"></select></div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Datum *</label>
-          <input type="date" class="form-input" id="booking-date" onchange="updateBookingEnd()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Startzeit *</label>
-          <input type="time" class="form-input" id="booking-time" onchange="updateBookingEnd()">
-        </div>
+        <div class="form-group"><label class="form-label">Datum *</label><input type="date" class="form-input" id="booking-date" onchange="updateBookingEnd()"></div>
+        <div class="form-group"><label class="form-label">Startzeit *</label><input type="time" class="form-input" id="booking-time" onchange="updateBookingEnd()"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Worker</label>
-        <select class="form-select" id="booking-worker"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Endzeit (berechnet)</label>
-        <input type="text" class="form-input" id="booking-endtime" readonly style="background:var(--bg);">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notizen</label>
-        <textarea class="form-textarea" id="booking-notes" placeholder="Optional"></textarea>
-      </div>
+      <div class="form-group"><label class="form-label">Worker</label><select class="form-select" id="booking-worker"></select></div>
+      <div class="form-group"><label class="form-label">Endzeit (berechnet)</label><input type="text" class="form-input" id="booking-endtime" readonly style="background:var(--bg);"></div>
+      <div class="form-group"><label class="form-label">Notizen</label><textarea class="form-textarea" id="booking-notes" placeholder="Optional"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-booking')">Abbrechen</button>
@@ -1065,43 +574,18 @@ tr:hover td { background: var(--burgundy-light); }
 <!-- Date Override Modal -->
 <div class="modal-overlay" id="modal-override">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Datum Override</div>
-      <button class="modal-close" onclick="closeModal('modal-override')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Datum Override</div><button class="modal-close" onclick="closeModal('modal-override')">×</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Worker</label>
-        <select class="form-input" id="override-worker-modal">
-          <option value="">Alle Worker</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Datum *</label>
-        <input type="date" class="form-input" id="override-date">
-      </div>
-      <div class="form-group">
-        <div class="toggle-wrap">
-          <button class="toggle" id="override-closed-toggle" onclick="this.classList.toggle('on');toggleOverrideTimes()"></button>
-          <span class="toggle-label">Ganztägig geschlossen</span>
-        </div>
-      </div>
+      <div class="form-group"><label class="form-label">Worker</label><select class="form-input" id="override-worker-modal"><option value="">Alle Worker</option></select></div>
+      <div class="form-group"><label class="form-label">Datum *</label><input type="date" class="form-input" id="override-date"></div>
+      <div class="form-group"><div class="toggle-wrap"><button class="toggle" id="override-closed-toggle" onclick="this.classList.toggle('on');toggleOverrideTimes()"></button><span class="toggle-label">Ganztägig geschlossen</span></div></div>
       <div id="override-times">
         <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Öffnet</label>
-            <input type="time" class="form-input" id="override-open" value="09:00">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Schließt</label>
-            <input type="time" class="form-input" id="override-close" value="18:00">
-          </div>
+          <div class="form-group"><label class="form-label">Öffnet</label><input type="time" class="form-input" id="override-open" value="09:00"></div>
+          <div class="form-group"><label class="form-label">Schließt</label><input type="time" class="form-input" id="override-close" value="18:00"></div>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Grund</label>
-        <input type="text" class="form-input" id="override-reason" placeholder="z.B. Feiertag, Sonderöffnung">
-      </div>
+      <div class="form-group"><label class="form-label">Grund</label><input type="text" class="form-input" id="override-reason" placeholder="z.B. Feiertag, Sonderöffnung"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-override')">Abbrechen</button>
@@ -1113,31 +597,14 @@ tr:hover td { background: var(--burgundy-light); }
 <!-- Holiday Modal -->
 <div class="modal-overlay" id="modal-holiday">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Urlaub hinzufügen</div>
-      <button class="modal-close" onclick="closeModal('modal-holiday')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Urlaub hinzufügen</div><button class="modal-close" onclick="closeModal('modal-holiday')">×</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Worker</label>
-        <select class="form-input" id="holiday-worker-modal">
-          <option value="">Lade...</option>
-        </select>
-      </div>
+      <div class="form-group"><label class="form-label">Worker</label><select class="form-input" id="holiday-worker-modal"><option value="">Lade...</option></select></div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Von *</label>
-          <input type="date" class="form-input" id="holiday-from">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Bis *</label>
-          <input type="date" class="form-input" id="holiday-to">
-        </div>
+        <div class="form-group"><label class="form-label">Von *</label><input type="date" class="form-input" id="holiday-from"></div>
+        <div class="form-group"><label class="form-label">Bis *</label><input type="date" class="form-input" id="holiday-to"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Bezeichnung</label>
-        <input type="text" class="form-input" id="holiday-label" placeholder="z.B. Sommerurlaub, Weihnachten">
-      </div>
+      <div class="form-group"><label class="form-label">Bezeichnung</label><input type="text" class="form-input" id="holiday-label" placeholder="z.B. Sommerurlaub, Weihnachten"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-holiday')">Abbrechen</button>
@@ -1149,19 +616,13 @@ tr:hover td { background: var(--burgundy-light); }
 <!-- Booking Detail Modal -->
 <div class="modal-overlay" id="modal-booking-detail">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Buchung Details</div>
-      <button class="modal-close" onclick="closeModal('modal-booking-detail')">×</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Buchung Details</div><button class="modal-close" onclick="closeModal('modal-booking-detail')">×</button></div>
     <div class="modal-body" id="booking-detail-body"></div>
     <div class="modal-footer" id="booking-detail-footer"></div>
   </div>
 </div>
 
-<!-- Toast Container -->
 <div class="toast-container" id="toast-container"></div>
-
-<!-- Sidebar overlay for mobile -->
 <div id="sidebar-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;" onclick="toggleSidebar()"></div>
 
 <script>
@@ -1170,14 +631,15 @@ tr:hover td { background: var(--burgundy-light); }
 // ============================================================
 const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
+const EMAIL_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-email`;
 
 const sb = {
   async query(table, options = {}) {
     let url = `${SUPABASE_URL}/rest/v1/${table}?`;
-    if (options.select)  url += `select=${options.select}&`;
-    if (options.filter)  url += `${options.filter}&`;
-    if (options.order)   url += `order=${options.order}&`;
-    if (options.limit)   url += `limit=${options.limit}&`;
+    if (options.select) url += `select=${options.select}&`;
+    if (options.filter) url += `${options.filter}&`;
+    if (options.order)  url += `order=${options.order}&`;
+    if (options.limit)  url += `limit=${options.limit}&`;
     const res = await fetch(url, { headers: sbHeaders() });
     return res.json();
   },
@@ -1212,9 +674,7 @@ const sb = {
     return res.json();
   },
   async logout() {
-    await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
-      method: 'POST', headers: sbHeaders()
-    });
+    await fetch(`${SUPABASE_URL}/auth/v1/logout`, { method: 'POST', headers: sbHeaders() });
   }
 };
 
@@ -1231,16 +691,10 @@ function sbHeaders() {
 // STATE
 // ============================================================
 let state = {
-  user: null,
-  profile: null,
-  services: [],
-  workers: [],
-  settings: {},
-  calDate: new Date(),
-  calView: 'week',
-  bookings: [],
-  clients: [],
-  allClients: []
+  user: null, profile: null,
+  services: [], workers: [], settings: {},
+  calDate: new Date(), calView: 'week',
+  bookings: [], clients: [], allClients: []
 };
 
 // ============================================================
@@ -1251,7 +705,6 @@ async function handleLogin() {
   const password = document.getElementById('auth-password').value;
   const errEl    = document.getElementById('auth-error');
   errEl.style.display = 'none';
-
   if (!email || !password) { showError('Bitte alle Felder ausfüllen.'); return; }
 
   const res = await sb.auth(email, password);
@@ -1277,10 +730,8 @@ async function checkSession() {
   const token  = localStorage.getItem('sb_token');
   const userId = localStorage.getItem('sb_user_id');
   if (!token || !userId) return;
-
   const profiles = await sb.query('profiles', { filter: `id=eq.${userId}` });
   if (!profiles[0] || !profiles[0].is_admin) { localStorage.clear(); return; }
-
   state.profile = profiles[0];
   bootApp();
 }
@@ -1299,13 +750,7 @@ async function bootApp() {
   document.getElementById('app').style.display = 'flex';
   document.getElementById('topbar-user').textContent = state.profile.full_name || state.profile.email;
 
-  await Promise.all([
-    loadServices(),
-    loadWorkers(),
-    loadSettings(),
-    loadClients()
-  ]);
-
+  await Promise.all([loadServices(), loadWorkers(), loadSettings(), loadClients()]);
   renderCalendar();
   renderSettingsPanel();
   loadIntelligence();
@@ -1315,9 +760,9 @@ async function bootApp() {
 // NAVIGATION
 // ============================================================
 const sectionTitles = {
-  calendar: 'Kalender', approvals: 'Freigaben', clients: 'Clients',
-  bookings: 'Buchungen', services: 'Services', workers: 'Worker',
-  settings: 'Einstellungen', intelligence: 'Intelligence'
+  calendar:'Kalender', approvals:'Freigaben', clients:'Clients',
+  bookings:'Buchungen', services:'Services', workers:'Worker',
+  settings:'Einstellungen', intelligence:'Intelligence'
 };
 
 function showSection(name) {
@@ -1327,15 +772,14 @@ function showSection(name) {
   document.querySelector(`.nav-item[onclick="showSection('${name}')"]`).classList.add('active');
   document.getElementById('topbar-title').textContent = sectionTitles[name];
 
-  if (name === 'approvals') loadApprovals();
-  if (name === 'clients')   renderClientsTable(state.allClients);
-  if (name === 'bookings')  loadBookings();
-  if (name === 'services')  renderServicesTable();
-  if (name === 'workers')   renderWorkersList();
-  if (name === 'settings')  populateSettingsWorkerDropdowns();
+  if (name === 'approvals')    loadApprovals();
+  if (name === 'clients')      renderClientsTable(state.allClients);
+  if (name === 'bookings')     loadBookings();
+  if (name === 'services')     renderServicesTable();
+  if (name === 'workers')      renderWorkersList();
+  if (name === 'settings')     populateSettingsWorkerDropdowns();
   if (name === 'intelligence') loadIntelligence();
 
-  // close mobile sidebar
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').style.display = 'none';
 }
@@ -1355,14 +799,14 @@ function openModal(id) {
   if (id === 'modal-booking') populateBookingModal();
   if (id === 'modal-holiday') {
     const holModal = document.getElementById('holiday-worker-modal');
-    const workers = state.workers.filter(w => w.is_active);
+    const workers  = state.workers.filter(w => w.is_active);
     if (holModal) holModal.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
     const listSel = document.getElementById('holiday-worker-select');
     if (listSel && holModal) holModal.value = listSel.value || (workers[0]?.id || '');
   }
   if (id === 'modal-override') {
     const ovModal = document.getElementById('override-worker-modal');
-    const workers = state.workers.filter(w => w.is_active);
+    const workers  = state.workers.filter(w => w.is_active);
     if (ovModal) {
       ovModal.innerHTML = `<option value="">Alle Worker</option>` +
         workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
@@ -1379,9 +823,23 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 function toast(msg, type = 'info') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  el.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${msg}`;
+  el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span> ${msg}`;
   document.getElementById('toast-container').appendChild(el);
   setTimeout(() => el.remove(), 3500);
+}
+
+// ============================================================
+// EMAIL HELPER
+// ============================================================
+async function adminTriggerEmail(type, data) {
+  try {
+    const token = localStorage.getItem('sb_token');
+    await fetch(EMAIL_FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token || SUPABASE_ANON}` },
+      body: JSON.stringify({ type, data })
+    });
+  } catch(e) { console.warn('Email trigger failed:', type, e); }
 }
 
 // ============================================================
@@ -1392,11 +850,8 @@ const MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','Augus
 
 function calToday() { state.calDate = new Date(); renderCalendar(); }
 function calNav(dir) {
-  if (state.calView === 'week') {
-    state.calDate = new Date(state.calDate.getTime() + dir * 7 * 86400000);
-  } else {
-    state.calDate = new Date(state.calDate.getTime() + dir * 86400000);
-  }
+  if (state.calView === 'week') state.calDate = new Date(state.calDate.getTime() + dir * 7 * 86400000);
+  else state.calDate = new Date(state.calDate.getTime() + dir * 86400000);
   renderCalendar();
 }
 function setCalView(view, btn) {
@@ -1418,16 +873,12 @@ function getWeekStart(date) {
 async function renderCalendar() {
   const calEl = document.getElementById('cal-week');
   calEl.innerHTML = '';
-
   const today = new Date(); today.setHours(0,0,0,0);
 
   let days = [];
   if (state.calView === 'week') {
     const ws = getWeekStart(state.calDate);
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(ws); d.setDate(ws.getDate() + i);
-      days.push(d);
-    }
+    for (let i = 0; i < 7; i++) { const d = new Date(ws); d.setDate(ws.getDate() + i); days.push(d); }
     const ws2 = getWeekStart(state.calDate);
     const we  = new Date(ws2); we.setDate(ws2.getDate() + 6);
     document.getElementById('cal-label').textContent =
@@ -1440,9 +891,9 @@ async function renderCalendar() {
 
   calEl.style.gridTemplateColumns = `60px repeat(${days.length}, 1fr)`;
 
-  // Header row
   const th0 = document.createElement('div');
-  th0.className = 'cal-time-header'; th0.style.cssText = 'border-bottom:1px solid var(--border);background:var(--bg);';
+  th0.className = 'cal-time-header';
+  th0.style.cssText = 'border-bottom:1px solid var(--border);background:var(--bg);';
   calEl.appendChild(th0);
 
   days.forEach(d => {
@@ -1453,7 +904,6 @@ async function renderCalendar() {
     calEl.appendChild(dh);
   });
 
-  // Fetch bookings for visible range
   const fromStr = days[0].toISOString();
   const toDate  = new Date(days[days.length-1]); toDate.setHours(23,59,59);
   const toStr   = toDate.toISOString();
@@ -1468,7 +918,6 @@ async function renderCalendar() {
     if (!Array.isArray(bookings)) bookings = [];
   } catch(e) { bookings = []; }
 
-  // Time rows 08:00–20:00
   for (let h = 8; h < 20; h++) {
     const timeEl = document.createElement('div');
     timeEl.className = 'cal-time-slot';
@@ -1478,24 +927,20 @@ async function renderCalendar() {
     days.forEach(d => {
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
-      const cellDate = new Date(d);
-      cellDate.setHours(h,0,0,0);
+      const cellDate = new Date(d); cellDate.setHours(h,0,0,0);
       cell.onclick = () => openSlotModal(cellDate);
 
-      // Find bookings for this cell
       const cellBookings = bookings.filter(b => {
         const bs = new Date(b.start_time);
-        return bs.getFullYear() === d.getFullYear() &&
-               bs.getMonth()    === d.getMonth()    &&
-               bs.getDate()     === d.getDate()     &&
-               bs.getHours()    === h;
+        return bs.getFullYear()===d.getFullYear() && bs.getMonth()===d.getMonth() &&
+               bs.getDate()===d.getDate() && bs.getHours()===h;
       });
 
       cellBookings.forEach(b => {
         const ev = document.createElement('div');
-        const type = b.booked_by_admin ? 'manual' : b.status === 'no_show' ? 'no-show' : 'client';
+        const type = b.booked_by_admin ? 'manual' : b.status==='no_show' ? 'no-show' : 'client';
         ev.className = `cal-event ${type}`;
-        ev.textContent = `${b.profiles?.full_name || 'Client'} · ${b.services?.name || ''}`;
+        ev.textContent = `${b.profiles?.full_name||'Client'} · ${b.services?.name||''}`;
         ev.onclick = (e) => { e.stopPropagation(); openBookingDetail(b); };
         cell.appendChild(ev);
       });
@@ -1516,11 +961,11 @@ function openBookingDetail(b) {
   const end   = new Date(b.end_time);
   document.getElementById('booking-detail-body').innerHTML = `
     <div style="display:flex;flex-direction:column;gap:12px;">
-      <div class="setting-row"><span style="font-weight:500;">Client</span><span>${b.profiles?.full_name || '—'}</span></div>
-      <div class="setting-row"><span style="font-weight:500;">Service</span><span>${b.services?.name || '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Client</span><span>${b.profiles?.full_name||'—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Service</span><span>${b.services?.name||'—'}</span></div>
       <div class="setting-row"><span style="font-weight:500;">Datum</span><span>${start.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}</span></div>
       <div class="setting-row"><span style="font-weight:500;">Zeit</span><span>${start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} – ${end.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</span></div>
-      <div class="setting-row"><span style="font-weight:500;">Worker</span><span>${b.workers?.name || '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Worker</span><span>${b.workers?.name||'—'}</span></div>
       <div class="setting-row"><span style="font-weight:500;">Status</span><span class="badge badge-${b.status}">${b.status}</span></div>
       ${b.notes ? `<div class="setting-row"><span style="font-weight:500;">Notizen</span><span>${b.notes}</span></div>` : ''}
     </div>`;
@@ -1539,7 +984,7 @@ async function updateBookingStatus(id, status) {
 }
 
 // ============================================================
-// APPROVALS
+// APPROVALS — with worker assignment dropdown
 // ============================================================
 async function loadApprovals() {
   const pending = state.allClients.filter(c => c.account_status === 'pending');
@@ -1553,51 +998,52 @@ async function loadApprovals() {
 
   const tb = document.getElementById('approvals-table');
   if (!pending.length) {
-    tb.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Keine ausstehenden Anfragen</div></div></td></tr>`;
+    tb.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Keine ausstehenden Anfragen</div></div></td></tr>`;
     return;
   }
+
+  const workerOptions = state.workers.filter(w => w.is_active)
+    .map(w => `<option value="${w.id}">${w.name}</option>`).join('');
 
   tb.innerHTML = pending.map(c => `
     <tr>
       <td><strong>${c.full_name}</strong></td>
       <td>${c.email}</td>
-      <td>${c.phone}</td>
-      <td>${state.services.find(s=>s.id===c.preferred_service_id)?.name || '—'}</td>
+      <td>${c.phone || '—'}</td>
+      <td>${state.services.find(s=>s.id===c.preferred_service_id)?.name||'—'}</td>
       <td>${c.preferred_cycle_weeks ? `Alle ${c.preferred_cycle_weeks} Wochen` : '—'}</td>
       <td>${new Date(c.created_at).toLocaleDateString('de-DE')}</td>
-      <td style="display:flex;gap:6px;">
+      <td>
+        <select class="form-select" id="worker-assign-${c.id}" style="font-size:13px;padding:6px 8px;min-width:130px;">
+          <option value="">Kein Worker</option>
+          ${state.workers.filter(w=>w.is_active).map(w =>
+            `<option value="${w.id}" ${c.worker_id===w.id?'selected':''}>${w.name}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn btn-success btn-sm" onclick="approveClient('${c.id}')">✅ Freigeben</button>
         <button class="btn btn-danger btn-sm" onclick="blockClient('${c.id}')">✗ Ablehnen</button>
       </td>
     </tr>`).join('');
 }
 
-const EMAIL_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-email`;
-
-async function adminTriggerEmail(type, data) {
-  try {
-    const token = localStorage.getItem('sb_token');
-    await fetch(EMAIL_FUNCTION_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token || SUPABASE_ANON}`
-      },
-      body: JSON.stringify({ type, data })
-    });
-  } catch(e) {
-    console.warn('Email trigger failed:', type, e);
-  }
-}
-
 async function approveClient(id) {
-  // Get client details for email
   const clients = await sb.query('profiles', { filter: `id=eq.${id}`, select: 'full_name,email' });
-  await sb.update('profiles', `id=eq.${id}`, { account_status: 'active' });
+
+  // Read worker assignment from dropdown
+  const workerSelect = document.getElementById(`worker-assign-${id}`);
+  const workerId = workerSelect?.value || null;
+
+  await sb.update('profiles', `id=eq.${id}`, {
+    account_status: 'active',
+    worker_id: workerId || null
+  });
+
   await loadClients();
   loadApprovals();
   toast('Client freigeschaltet!', 'success');
-  // Send approval email
+
   if (Array.isArray(clients) && clients.length) {
     adminTriggerEmail('account_approved', {
       clientName:  clients[0].full_name,
@@ -1614,13 +1060,11 @@ async function blockClient(id) {
 }
 
 // ============================================================
-// CLIENTS
+// CLIENTS — with worker column
 // ============================================================
 async function loadClients() {
   const data = await sb.query('profiles', {
-    select: '*',
-    filter: 'is_admin=eq.false',
-    order: 'created_at.desc'
+    select: '*', filter: 'is_admin=eq.false', order: 'created_at.desc'
   });
   state.allClients = Array.isArray(data) ? data : [];
 
@@ -1633,19 +1077,22 @@ async function loadClients() {
 function renderClientsTable(clients) {
   const tb = document.getElementById('clients-table');
   if (!clients.length) {
-    tb.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Keine Clients gefunden</div></div></td></tr>`;
+    tb.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Keine Clients gefunden</div></div></td></tr>`;
     return;
   }
-  tb.innerHTML = clients.map(c => `
-    <tr>
+  tb.innerHTML = clients.map(c => {
+    const worker = state.workers.find(w => w.id === c.worker_id);
+    return `<tr>
       <td><strong>${c.full_name}</strong></td>
       <td>${c.email}</td>
-      <td>${c.phone}</td>
+      <td>${c.phone || '—'}</td>
       <td><span class="badge badge-${c.account_status}">${statusLabel(c.account_status)}</span></td>
+      <td>${worker ? `<span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:${worker.color_tag};flex-shrink:0;"></span>${worker.name}</span>` : '<span style="color:var(--text-muted);">—</span>'}</td>
       <td>${c.preferred_cycle_weeks ? `${c.preferred_cycle_weeks}w` : '—'}</td>
       <td>${c.last_appointment_date ? new Date(c.last_appointment_date).toLocaleDateString('de-DE') : '—'}</td>
       <td><button class="btn btn-outline btn-sm" onclick="openClientModal('${c.id}')">Details</button></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function filterClients(q) {
@@ -1661,33 +1108,45 @@ function filterClientStatus(status) {
   renderClientsTable(filtered);
 }
 
+// ── Client Detail Modal — with worker assignment ─────────────
 function openClientModal(id) {
   const c = state.allClients.find(x => x.id === id);
   if (!c) return;
   document.getElementById('client-modal-name').textContent = c.full_name;
+
+  const workerOptions = `<option value="">Kein Worker</option>` +
+    state.workers.filter(w => w.is_active).map(w =>
+      `<option value="${w.id}" ${c.worker_id===w.id?'selected':''}>${w.name}</option>`
+    ).join('');
+
   document.getElementById('client-modal-body').innerHTML = `
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="setting-row"><span style="font-weight:500;">E-Mail</span><span>${c.email}</span></div>
-      <div class="setting-row"><span style="font-weight:500;">Telefon</span><span>${c.phone}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Telefon</span><span>${c.phone||'—'}</span></div>
       <div class="setting-row"><span style="font-weight:500;">Status</span><span class="badge badge-${c.account_status}">${statusLabel(c.account_status)}</span></div>
-      <div class="setting-row"><span style="font-weight:500;">Buchungszyklus</span><span>${c.preferred_cycle_weeks ? `Alle ${c.preferred_cycle_weeks} Wochen` : '—'}</span></div>
-      <div class="setting-row"><span style="font-weight:500;">Letzter Termin</span><span>${c.last_appointment_date ? new Date(c.last_appointment_date).toLocaleDateString('de-DE') : '—'}</span></div>
-      <div class="setting-row"><span style="font-weight:500;">Nächster Termin</span><span>${c.next_suggested_date ? new Date(c.next_suggested_date).toLocaleDateString('de-DE') : '—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Buchungszyklus</span><span>${c.preferred_cycle_weeks?`Alle ${c.preferred_cycle_weeks} Wochen`:'—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Letzter Termin</span><span>${c.last_appointment_date?new Date(c.last_appointment_date).toLocaleDateString('de-DE'):'—'}</span></div>
+      <div class="setting-row"><span style="font-weight:500;">Nächster Termin</span><span>${c.next_suggested_date?new Date(c.next_suggested_date).toLocaleDateString('de-DE'):'—'}</span></div>
       <div class="form-group" style="margin-top:8px;">
-        <label class="form-label">Admin Notizen</label>
-        <textarea class="form-textarea" id="client-notes-${id}">${c.admin_notes || ''}</textarea>
+        <label class="form-label">Zugewiesener Worker</label>
+        <select class="form-select" id="client-worker-${id}">${workerOptions}</select>
       </div>
-      ${c.account_status === 'blocked' && c.block_reason ? `<div class="setting-row"><span style="font-weight:500;">Sperrgrund</span><span>${c.block_reason}</span></div>` : ''}
+      <div class="form-group">
+        <label class="form-label">Admin Notizen</label>
+        <textarea class="form-textarea" id="client-notes-${id}">${c.admin_notes||''}</textarea>
+      </div>
+      ${c.account_status==='blocked'&&c.block_reason?`<div class="setting-row"><span style="font-weight:500;">Sperrgrund</span><span>${c.block_reason}</span></div>`:''}
     </div>`;
 
-  const footer = document.getElementById('client-modal-footer');
-  let btns = `<button class="btn btn-ghost" onclick="closeModal('modal-client')">Schließen</button>
+  let btns = `
+    <button class="btn btn-ghost" onclick="closeModal('modal-client')">Schließen</button>
+    <button class="btn btn-outline btn-sm" onclick="saveClientWorker('${id}')">Worker speichern</button>
     <button class="btn btn-primary btn-sm" onclick="saveClientNotes('${id}')">Notizen speichern</button>`;
-  if (c.account_status === 'active')   btns += `<button class="btn btn-danger btn-sm" onclick="blockClient('${id}');closeModal('modal-client')">Sperren</button>`;
-  if (c.account_status === 'blocked')  btns += `<button class="btn btn-success btn-sm" onclick="approveClient('${id}');closeModal('modal-client')">Entsperren</button>`;
-  if (c.account_status === 'pending')  btns += `<button class="btn btn-success btn-sm" onclick="approveClient('${id}');closeModal('modal-client')">Freigeben</button>`;
-  footer.innerHTML = btns;
+  if (c.account_status==='active')  btns += `<button class="btn btn-danger btn-sm" onclick="blockClient('${id}');closeModal('modal-client')">Sperren</button>`;
+  if (c.account_status==='blocked') btns += `<button class="btn btn-success btn-sm" onclick="approveClient('${id}');closeModal('modal-client')">Entsperren</button>`;
+  if (c.account_status==='pending') btns += `<button class="btn btn-success btn-sm" onclick="approveClient('${id}');closeModal('modal-client')">Freigeben</button>`;
 
+  document.getElementById('client-modal-footer').innerHTML = btns;
   openModal('modal-client');
 }
 
@@ -1696,6 +1155,14 @@ async function saveClientNotes(id) {
   await sb.update('profiles', `id=eq.${id}`, { admin_notes: notes });
   await loadClients();
   toast('Notizen gespeichert', 'success');
+}
+
+// ── NEW: Save worker assignment from client detail modal ──────
+async function saveClientWorker(id) {
+  const workerId = document.getElementById(`client-worker-${id}`)?.value || null;
+  await sb.update('profiles', `id=eq.${id}`, { worker_id: workerId || null });
+  await loadClients();
+  toast('Worker zugewiesen', 'success');
 }
 
 // ============================================================
@@ -1713,9 +1180,7 @@ async function loadBookings() {
 
   const data = await sb.query('bookings', {
     select: '*,profiles(full_name),services(name),workers(name)',
-    filter: filter || undefined,
-    order: 'start_time.desc',
-    limit: 100
+    filter: filter || undefined, order: 'start_time.desc', limit: 100
   });
   const bookings = Array.isArray(data) ? data : [];
 
@@ -1728,9 +1193,9 @@ async function loadBookings() {
     const start = new Date(b.start_time);
     return `<tr>
       <td>${start.toLocaleDateString('de-DE',{day:'numeric',month:'short'})} ${start.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</td>
-      <td>${b.profiles?.full_name || '—'}</td>
-      <td>${b.services?.name || '—'}</td>
-      <td>${b.workers?.name || '—'}</td>
+      <td>${b.profiles?.full_name||'—'}</td>
+      <td>${b.services?.name||'—'}</td>
+      <td>${b.workers?.name||'—'}</td>
       <td><span class="badge badge-${b.status}">${b.status}</span></td>
       <td><button class="btn btn-ghost btn-sm" onclick='openBookingDetail(${JSON.stringify(b).replace(/'/g,"&#39;")})'>Details</button></td>
     </tr>`;
@@ -1754,11 +1219,11 @@ function renderServicesTable() {
   tb.innerHTML = state.services.map(s => `
     <tr>
       <td>${s.display_order}</td>
-      <td><strong>${s.name}</strong>${s.description ? `<br><small style="color:var(--text-muted)">${s.description}</small>` : ''}</td>
+      <td><strong>${s.name}</strong>${s.description?`<br><small style="color:var(--text-muted)">${s.description}</small>`:''}</td>
       <td>${s.duration_minutes} Min</td>
       <td>€${parseFloat(s.price).toFixed(2)}</td>
-      <td>${s.buffer_override ? s.buffer_override+'min' : 'Global'}</td>
-      <td><span class="badge ${s.is_active ? 'badge-active' : 'badge-blocked'}">${s.is_active ? 'Aktiv' : 'Inaktiv'}</span></td>
+      <td>${s.buffer_override?s.buffer_override+'min':'Global'}</td>
+      <td><span class="badge ${s.is_active?'badge-active':'badge-blocked'}">${s.is_active?'Aktiv':'Inaktiv'}</span></td>
       <td style="display:flex;gap:6px;">
         <button class="btn btn-outline btn-sm" onclick="openServiceModal('${s.id}')">Bearbeiten</button>
         <button class="btn btn-danger btn-sm" onclick="deleteService('${s.id}')">Löschen</button>
@@ -1769,15 +1234,15 @@ function renderServicesTable() {
 function openServiceModal(id) {
   const s = id ? state.services.find(x => x.id === id) : null;
   document.getElementById('service-modal-title').textContent = s ? 'Service bearbeiten' : 'Service hinzufügen';
-  document.getElementById('service-id').value          = s?.id || '';
-  document.getElementById('service-name').value        = s?.name || '';
-  document.getElementById('service-desc').value        = s?.description || '';
-  document.getElementById('service-duration').value    = s?.duration_minutes || '';
-  document.getElementById('service-price').value       = s?.price || '';
-  document.getElementById('service-buffer').value      = s?.buffer_override || '';
-  document.getElementById('service-order').value       = s?.display_order ?? 0;
+  document.getElementById('service-id').value       = s?.id||'';
+  document.getElementById('service-name').value     = s?.name||'';
+  document.getElementById('service-desc').value     = s?.description||'';
+  document.getElementById('service-duration').value = s?.duration_minutes||'';
+  document.getElementById('service-price').value    = s?.price||'';
+  document.getElementById('service-buffer').value   = s?.buffer_override||'';
+  document.getElementById('service-order').value    = s?.display_order??0;
   const toggle = document.getElementById('service-active-toggle');
-  toggle.className = 'toggle' + (s ? (s.is_active ? ' on' : '') : ' on');
+  toggle.className = 'toggle' + (s?(s.is_active?' on':''):' on');
   openModal('modal-service');
 }
 
@@ -1788,25 +1253,15 @@ async function saveService() {
   const duration = parseInt(document.getElementById('service-duration').value);
   const price    = parseFloat(document.getElementById('service-price').value);
   const buffer   = document.getElementById('service-buffer').value;
-  const order    = parseInt(document.getElementById('service-order').value) || 0;
+  const order    = parseInt(document.getElementById('service-order').value)||0;
   const isActive = document.getElementById('service-active-toggle').classList.contains('on');
 
-  if (!name || !duration || isNaN(price)) { toast('Bitte alle Pflichtfelder ausfüllen', 'error'); return; }
+  if (!name||!duration||isNaN(price)) { toast('Bitte alle Pflichtfelder ausfüllen','error'); return; }
 
-  const payload = {
-    name, description: desc || null,
-    duration_minutes: duration, price,
-    buffer_override: buffer ? parseInt(buffer) : null,
-    display_order: order, is_active: isActive
-  };
+  const payload = { name, description:desc||null, duration_minutes:duration, price, buffer_override:buffer?parseInt(buffer):null, display_order:order, is_active:isActive };
 
-  if (id) {
-    await sb.update('services', `id=eq.${id}`, payload);
-    toast('Service aktualisiert', 'success');
-  } else {
-    await sb.insert('services', payload);
-    toast('Service hinzugefügt', 'success');
-  }
+  if (id) { await sb.update('services',`id=eq.${id}`,payload); toast('Service aktualisiert','success'); }
+  else    { await sb.insert('services',payload); toast('Service hinzugefügt','success'); }
 
   closeModal('modal-service');
   await loadServices();
@@ -1815,10 +1270,10 @@ async function saveService() {
 
 async function deleteService(id) {
   if (!confirm('Service wirklich löschen?')) return;
-  await sb.delete('services', `id=eq.${id}`);
+  await sb.delete('services',`id=eq.${id}`);
   await loadServices();
   renderServicesTable();
-  toast('Service gelöscht', 'info');
+  toast('Service gelöscht','info');
 }
 
 // ============================================================
@@ -1841,7 +1296,7 @@ function renderWorkersList() {
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="width:14px;height:14px;border-radius:50%;background:${w.color_tag};"></div>
           <div class="card-title">${w.name}</div>
-          <span class="badge ${w.is_active ? 'badge-active' : 'badge-blocked'}">${w.is_active ? 'Aktiv' : 'Inaktiv'}</span>
+          <span class="badge ${w.is_active?'badge-active':'badge-blocked'}">${w.is_active?'Aktiv':'Inaktiv'}</span>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-outline btn-sm" onclick="openWorkerModal('${w.id}')">Bearbeiten</button>
@@ -1849,7 +1304,7 @@ function renderWorkersList() {
         </div>
       </div>
       <div class="card-body">
-        <div style="font-size:13px;color:var(--text-muted);">${w.email || 'Keine E-Mail'}</div>
+        <div style="font-size:13px;color:var(--text-muted);">${w.email||'Keine E-Mail'}</div>
         <div id="worker-schedule-${w.id}" style="margin-top:12px;display:none;"></div>
       </div>
     </div>`).join('');
@@ -1858,12 +1313,12 @@ function renderWorkersList() {
 function openWorkerModal(id) {
   const w = id ? state.workers.find(x => x.id === id) : null;
   document.getElementById('worker-modal-title').textContent = w ? 'Worker bearbeiten' : 'Worker hinzufügen';
-  document.getElementById('worker-id').value    = w?.id || '';
-  document.getElementById('worker-name').value  = w?.name || '';
-  document.getElementById('worker-email').value = w?.email || '';
-  document.getElementById('worker-color').value = w?.color_tag || '#7D1535';
+  document.getElementById('worker-id').value    = w?.id||'';
+  document.getElementById('worker-name').value  = w?.name||'';
+  document.getElementById('worker-email').value = w?.email||'';
+  document.getElementById('worker-color').value = w?.color_tag||'#7D1535';
   const toggle = document.getElementById('worker-active-toggle');
-  toggle.className = 'toggle' + (w ? (w.is_active ? ' on' : '') : ' on');
+  toggle.className = 'toggle' + (w?(w.is_active?' on':''):' on');
   openModal('modal-worker');
 }
 
@@ -1874,30 +1329,25 @@ async function saveWorker() {
   const color    = document.getElementById('worker-color').value;
   const isActive = document.getElementById('worker-active-toggle').classList.contains('on');
 
-  if (!name) { toast('Bitte Namen eingeben', 'error'); return; }
+  if (!name) { toast('Bitte Namen eingeben','error'); return; }
 
-  const payload = { name, email: email || null, color_tag: color, is_active: isActive };
+  const payload = { name, email:email||null, color_tag:color, is_active:isActive };
 
-  if (id) {
-    await sb.update('workers', `id=eq.${id}`, payload);
-    toast('Worker aktualisiert', 'success');
-  } else {
-    await sb.insert('workers', payload);
-    toast('Worker hinzugefügt', 'success');
-  }
+  if (id) { await sb.update('workers',`id=eq.${id}`,payload); toast('Worker aktualisiert','success'); }
+  else    { await sb.insert('workers',payload); toast('Worker hinzugefügt','success'); }
 
   closeModal('modal-worker');
   await loadWorkers();
   renderWorkersList();
+  // Refresh dropdowns so new worker appears immediately
+  populateSettingsWorkerDropdowns();
 }
 
 async function openWorkerSchedule(workerId) {
   const el = document.getElementById(`worker-schedule-${workerId}`);
   if (el.style.display === 'block') { el.style.display = 'none'; return; }
 
-  const data = await sb.query('worker_schedule', {
-    select: '*', filter: `worker_id=eq.${workerId}`, order: 'day_of_week.asc'
-  });
+  const data = await sb.query('worker_schedule', { select:'*', filter:`worker_id=eq.${workerId}`, order:'day_of_week.asc' });
   const sched = Array.isArray(data) ? data : [];
   const days  = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
 
@@ -1906,18 +1356,18 @@ async function openWorkerSchedule(workerId) {
       const s = sched.find(x => x.day_of_week === i);
       return `<div class="schedule-row">
         <span class="schedule-day">${d}</span>
-        <input type="time" class="form-input" value="${s?.open_time || '09:00'}" id="ws-${workerId}-${i}-open" ${!s?.is_open ? 'disabled' : ''}>
-        <input type="time" class="form-input" value="${s?.close_time || '18:00'}" id="ws-${workerId}-${i}-close" ${!s?.is_open ? 'disabled' : ''}>
-        <button class="toggle ${s?.is_open ? 'on' : ''}" id="ws-${workerId}-${i}-toggle"
-          onclick="toggleWorkerDay('${workerId}',${i})"></button>
+        <input type="time" class="form-input" value="${s?.open_time||'09:00'}" id="ws-${workerId}-${i}-open" ${!s?.is_open?'disabled':''}>
+        <input type="time" class="form-input" value="${s?.close_time||'18:00'}" id="ws-${workerId}-${i}-close" ${!s?.is_open?'disabled':''}>
+        <button class="toggle ${s?.is_open?'on':''}" id="ws-${workerId}-${i}-toggle"
+          onclick="toggleWorkerDayInline('${workerId}',${i})"></button>
       </div>`;
     }).join('')}
-    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="saveWorkerSchedule('${workerId}')">Zeiten speichern</button>
+    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="saveWorkerScheduleInline('${workerId}')">Zeiten speichern</button>
   </div>`;
   el.style.display = 'block';
 }
 
-function toggleWorkerDay(wId, day) {
+function toggleWorkerDayInline(wId, day) {
   const toggle = document.getElementById(`ws-${wId}-${day}-toggle`);
   const open   = document.getElementById(`ws-${wId}-${day}-open`);
   const close  = document.getElementById(`ws-${wId}-${day}-close`);
@@ -1927,28 +1377,21 @@ function toggleWorkerDay(wId, day) {
   close.disabled = !isOn;
 }
 
-async function saveWorkerSchedule(workerId) {
+async function saveWorkerScheduleInline(workerId) {
   for (let i = 0; i < 7; i++) {
-    const isOpen   = document.getElementById(`ws-${workerId}-${i}-toggle`)?.classList.contains('on');
-    const openTime = document.getElementById(`ws-${workerId}-${i}-open`)?.value;
-    const closeTime= document.getElementById(`ws-${workerId}-${i}-close`)?.value;
+    const isOpen    = document.getElementById(`ws-${workerId}-${i}-toggle`)?.classList.contains('on');
+    const openTime  = document.getElementById(`ws-${workerId}-${i}-open`)?.value;
+    const closeTime = document.getElementById(`ws-${workerId}-${i}-close`)?.value;
 
-    const existing = await sb.query('worker_schedule', {
-      filter: `worker_id=eq.${workerId}&day_of_week=eq.${i}`
-    });
+    const existing = await sb.query('worker_schedule', { filter:`worker_id=eq.${workerId}&day_of_week=eq.${i}` });
 
     if (Array.isArray(existing) && existing.length > 0) {
-      await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, {
-        open_time: openTime, close_time: closeTime, is_open: isOpen
-      });
+      await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, { open_time:openTime, close_time:closeTime, is_open:isOpen });
     } else {
-      await sb.insert('worker_schedule', {
-        worker_id: workerId, day_of_week: i,
-        open_time: openTime, close_time: closeTime, is_open: isOpen
-      });
+      await sb.insert('worker_schedule', { worker_id:workerId, day_of_week:i, open_time:openTime, close_time:closeTime, is_open:isOpen });
     }
   }
-  toast('Zeiten gespeichert', 'success');
+  toast('Zeiten gespeichert','success');
 }
 
 // ============================================================
@@ -1956,74 +1399,57 @@ async function saveWorkerSchedule(workerId) {
 // ============================================================
 async function loadSettings() {
   const data = await sb.query('settings', { select: '*' });
-  if (Array.isArray(data)) {
-    data.forEach(s => { state.settings[s.key] = s.value; });
-  }
+  if (Array.isArray(data)) data.forEach(s => { state.settings[s.key] = s.value; });
 }
 
 function renderSettingsPanel() {
-  // Booking rules
   const bookingRules = [
-    { key: 'global_buffer_minutes',     label: 'Buffer zwischen Terminen', unit: 'Min', type: 'number' },
-    { key: 'booking_window_days',       label: 'Buchungsfenster',          unit: 'Tage', type: 'number' },
-    { key: 'slot_interval_minutes',     label: 'Slot-Intervall',           unit: 'Min', type: 'number' },
-    { key: 'cancellation_cutoff_hours', label: 'Stornierungsfrist',        unit: 'Std', type: 'number' },
-    { key: 'max_bookings_per_day',      label: 'Max Buchungen/Tag',        unit: '',    type: 'number' },
+    { key:'global_buffer_minutes',     label:'Buffer zwischen Terminen', unit:'Min',  type:'number' },
+    { key:'booking_window_days',       label:'Buchungsfenster',          unit:'Tage', type:'number' },
+    { key:'slot_interval_minutes',     label:'Slot-Intervall',           unit:'Min',  type:'number' },
+    { key:'cancellation_cutoff_hours', label:'Stornierungsfrist',        unit:'Std',  type:'number' },
+    { key:'max_bookings_per_day',      label:'Max Buchungen/Tag',        unit:'',     type:'number' },
   ];
-
   const toggleRules = [
-    { key: 'same_day_booking_enabled',  label: 'Same-Day Buchungen', desc: 'Clients können heute buchen' },
-    { key: 'multiple_services_enabled', label: 'Mehrere Services',   desc: 'Pro Termin mehrere Services' },
+    { key:'same_day_booking_enabled',  label:'Same-Day Buchungen', desc:'Clients können heute buchen' },
+    { key:'multiple_services_enabled', label:'Mehrere Services',   desc:'Pro Termin mehrere Services' },
   ];
 
   document.getElementById('settings-booking-rules').innerHTML =
     bookingRules.map(r => `
       <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-name">${r.label}</div>
-          <div class="setting-desc">${r.unit}</div>
-        </div>
+        <div class="setting-info"><div class="setting-name">${r.label}</div><div class="setting-desc">${r.unit}</div></div>
         <input type="${r.type}" class="setting-input" id="setting-${r.key}"
-          value="${state.settings[r.key] || ''}"
-          onchange="saveSetting('${r.key}', this.value)">
+          value="${state.settings[r.key]||''}" onchange="saveSetting('${r.key}', this.value)">
       </div>`).join('') +
     toggleRules.map(r => `
       <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-name">${r.label}</div>
-          <div class="setting-desc">${r.desc}</div>
-        </div>
-        <button class="toggle ${state.settings[r.key]==='true' ? 'on' : ''}"
-          onclick="this.classList.toggle('on');saveSetting('${r.key}', this.classList.contains('on').toString())"></button>
+        <div class="setting-info"><div class="setting-name">${r.label}</div><div class="setting-desc">${r.desc}</div></div>
+        <button class="toggle ${state.settings[r.key]==='true'?'on':''}"
+          onclick="this.classList.toggle('on');saveSetting('${r.key}',this.classList.contains('on').toString())"></button>
       </div>`).join('');
 
-  // Reminders
   const reminders = [
-    { key: 'reminder_24h_enabled',      label: '24h Erinnerung',          desc: 'Vor dem Termin' },
-    { key: 'post_appointment_email',    label: 'Danke-E-Mail',            desc: 'Nach dem Termin + Wiederbuchung' },
-    { key: 'rebooking_nudge_enabled',   label: 'Wiederbuchungs-Nudge',    desc: '3 Tage vor Fälligkeitsdatum' },
-    { key: 'followup_nudge_enabled',    label: 'Follow-up Nudge',         desc: 'Falls kein Termin gebucht' },
+    { key:'reminder_24h_enabled',   label:'24h Erinnerung',       desc:'Vor dem Termin' },
+    { key:'post_appointment_email', label:'Danke-E-Mail',          desc:'Nach dem Termin + Wiederbuchung' },
+    { key:'rebooking_nudge_enabled',label:'Wiederbuchungs-Nudge',  desc:'3 Tage vor Fälligkeitsdatum' },
+    { key:'followup_nudge_enabled', label:'Follow-up Nudge',       desc:'Falls kein Termin gebucht' },
   ];
 
   document.getElementById('settings-reminders').innerHTML =
     reminders.map(r => `
       <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-name">${r.label}</div>
-          <div class="setting-desc">${r.desc}</div>
-        </div>
-        <button class="toggle ${state.settings[r.key]==='true' ? 'on' : ''}"
-          onclick="this.classList.toggle('on');saveSetting('${r.key}', this.classList.contains('on').toString())"></button>
+        <div class="setting-info"><div class="setting-name">${r.label}</div><div class="setting-desc">${r.desc}</div></div>
+        <button class="toggle ${state.settings[r.key]==='true'?'on':''}"
+          onclick="this.classList.toggle('on');saveSetting('${r.key}',this.classList.contains('on').toString())"></button>
       </div>`).join('');
 
-  // Populate worker dropdowns
   populateSettingsWorkerDropdowns();
 }
 
 function populateSettingsWorkerDropdowns() {
   const workers = state.workers.filter(w => w.is_active);
 
-  // Schedule dropdown — no "Alle", must pick a worker
   const schedSel = document.getElementById('schedule-worker-select');
   if (schedSel) {
     const prev = schedSel.value;
@@ -2033,7 +1459,6 @@ function populateSettingsWorkerDropdowns() {
     loadWorkerSchedule();
   }
 
-  // Holiday dropdown — no "Alle"
   const holSel = document.getElementById('holiday-worker-select');
   if (holSel) {
     const prev = holSel.value;
@@ -2043,13 +1468,9 @@ function populateSettingsWorkerDropdowns() {
     loadHolidays();
   }
 
-  // Holiday modal dropdown
   const holModal = document.getElementById('holiday-worker-modal');
-  if (holModal) {
-    holModal.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
-  }
+  if (holModal) holModal.innerHTML = workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
 
-  // Override dropdown — includes "Alle Worker"
   const ovSel = document.getElementById('override-worker-select');
   if (ovSel) {
     const prev = ovSel.value;
@@ -2059,7 +1480,6 @@ function populateSettingsWorkerDropdowns() {
     loadOverrides();
   }
 
-  // Override modal dropdown — includes "Alle Worker"
   const ovModal = document.getElementById('override-worker-modal');
   if (ovModal) {
     ovModal.innerHTML = `<option value="">Alle Worker</option>` +
@@ -2069,37 +1489,33 @@ function populateSettingsWorkerDropdowns() {
 
 async function saveSetting(key, value) {
   state.settings[key] = value;
-  const existing = await sb.query('settings', { filter: `key=eq.${key}` });
+  const existing = await sb.query('settings', { filter:`key=eq.${key}` });
   if (Array.isArray(existing) && existing.length > 0) {
-    await sb.update('settings', `key=eq.${key}`, { value, updated_at: new Date().toISOString() });
+    await sb.update('settings', `key=eq.${key}`, { value, updated_at:new Date().toISOString() });
   } else {
     await sb.insert('settings', { key, value });
   }
-  toast('Einstellung gespeichert', 'success');
+  toast('Einstellung gespeichert','success');
 }
 
-// Per-Worker Schedule
 async function loadWorkerSchedule() {
   const workerId = document.getElementById('schedule-worker-select')?.value;
   if (!workerId) return;
 
   const days = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
-  const data = await sb.query('worker_schedule', {
-    filter: `worker_id=eq.${workerId}`, order: 'day_of_week.asc'
-  });
+  const data = await sb.query('worker_schedule', { filter:`worker_id=eq.${workerId}`, order:'day_of_week.asc' });
   const sched = Array.isArray(data) ? data : [];
 
   document.getElementById('schedule-grid').innerHTML = days.map((d, i) => {
     const s = sched.find(x => x.day_of_week === i);
-    const isOpen = s ? s.is_open !== false : (i < 6); // Mon–Sat open by default
+    const isOpen = s ? s.is_open !== false : (i < 6);
     return `<div class="schedule-row">
       <span class="schedule-day">${d}</span>
-      <input type="time" class="form-input" value="${s?.open_time || '09:00'}" id="ws-${i}-open" ${!isOpen ? 'disabled' : ''}>
-      <input type="time" class="form-input" value="${s?.close_time || '18:00'}" id="ws-${i}-close" ${!isOpen ? 'disabled' : ''}>
-      <input type="time" class="form-input" value="${s?.break_start || ''}" id="ws-${i}-bstart" placeholder="Pause" ${!isOpen ? 'disabled' : ''} title="Pause von">
-      <input type="time" class="form-input" value="${s?.break_end || ''}" id="ws-${i}-bend" placeholder="Pause bis" ${!isOpen ? 'disabled' : ''} title="Pause bis">
-      <button class="toggle ${isOpen ? 'on' : ''}" id="ws-${i}-toggle"
-        onclick="toggleWorkerDay(${i})"></button>
+      <input type="time" class="form-input" value="${s?.open_time||'09:00'}" id="ws-${i}-open" ${!isOpen?'disabled':''}>
+      <input type="time" class="form-input" value="${s?.close_time||'18:00'}" id="ws-${i}-close" ${!isOpen?'disabled':''}>
+      <input type="time" class="form-input" value="${s?.break_start||''}" id="ws-${i}-bstart" placeholder="Pause" ${!isOpen?'disabled':''} title="Pause von">
+      <input type="time" class="form-input" value="${s?.break_end||''}" id="ws-${i}-bend" placeholder="Pause bis" ${!isOpen?'disabled':''} title="Pause bis">
+      <button class="toggle ${isOpen?'on':''}" id="ws-${i}-toggle" onclick="toggleWorkerDay(${i})"></button>
     </div>`;
   }).join('');
 }
@@ -2116,41 +1532,32 @@ function toggleWorkerDay(i) {
 
 async function saveWorkerSchedule() {
   const workerId = document.getElementById('schedule-worker-select')?.value;
-  if (!workerId) { toast('Bitte Worker wählen', 'error'); return; }
+  if (!workerId) { toast('Bitte Worker wählen','error'); return; }
 
   for (let i = 0; i < 7; i++) {
     const isOpen     = document.getElementById(`ws-${i}-toggle`)?.classList.contains('on');
     const openTime   = document.getElementById(`ws-${i}-open`)?.value;
     const closeTime  = document.getElementById(`ws-${i}-close`)?.value;
-    const breakStart = document.getElementById(`ws-${i}-bstart`)?.value || null;
-    const breakEnd   = document.getElementById(`ws-${i}-bend`)?.value || null;
+    const breakStart = document.getElementById(`ws-${i}-bstart`)?.value||null;
+    const breakEnd   = document.getElementById(`ws-${i}-bend`)?.value||null;
 
-    const existing = await sb.query('worker_schedule', {
-      filter: `worker_id=eq.${workerId}&day_of_week=eq.${i}`
-    });
-
-    const payload = {
-      open_time: openTime, close_time: closeTime,
-      is_open: isOpen, break_start: breakStart || null, break_end: breakEnd || null
-    };
+    const existing = await sb.query('worker_schedule', { filter:`worker_id=eq.${workerId}&day_of_week=eq.${i}` });
+    const payload = { open_time:openTime, close_time:closeTime, is_open:isOpen, break_start:breakStart||null, break_end:breakEnd||null };
 
     if (Array.isArray(existing) && existing.length > 0) {
       await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, payload);
     } else {
-      await sb.insert('worker_schedule', { worker_id: workerId, day_of_week: i, ...payload });
+      await sb.insert('worker_schedule', { worker_id:workerId, day_of_week:i, ...payload });
     }
   }
-  toast('Öffnungszeiten gespeichert', 'success');
+  toast('Öffnungszeiten gespeichert','success');
 }
 
-// Holidays
 async function loadHolidays() {
   const workerId = document.getElementById('holiday-worker-select')?.value;
   if (!workerId) return;
 
-  const data = await sb.query('holidays', {
-    filter: `worker_id=eq.${workerId}`, order: 'date_from.asc'
-  });
+  const data = await sb.query('holidays', { filter:`worker_id=eq.${workerId}`, order:'date_from.asc' });
   const holidays = Array.isArray(data) ? data : [];
   const el = document.getElementById('holidays-list');
 
@@ -2161,7 +1568,7 @@ async function loadHolidays() {
   el.innerHTML = holidays.map(h => `
     <div class="due-item">
       <div>
-        <div class="due-name">${h.label || 'Urlaub'}</div>
+        <div class="due-name">${h.label||'Urlaub'}</div>
         <div class="due-date">
           ${new Date(h.date_from+'T12:00:00').toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'})}
           → ${new Date(h.date_to+'T12:00:00').toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'})}
@@ -2177,42 +1584,35 @@ async function saveHoliday() {
   const dateTo   = document.getElementById('holiday-to')?.value;
   const label    = document.getElementById('holiday-label')?.value.trim();
 
-  if (!workerId) { toast('Bitte Worker wählen', 'error'); return; }
-  if (!dateFrom || !dateTo) { toast('Bitte Von/Bis Datum wählen', 'error'); return; }
-  if (dateTo < dateFrom)    { toast('Bis-Datum muss nach Von-Datum liegen', 'error'); return; }
+  if (!workerId)          { toast('Bitte Worker wählen','error'); return; }
+  if (!dateFrom||!dateTo) { toast('Bitte Von/Bis Datum wählen','error'); return; }
+  if (dateTo < dateFrom)  { toast('Bis-Datum muss nach Von-Datum liegen','error'); return; }
 
-  await sb.insert('holidays', {
-    worker_id: workerId, date_from: dateFrom, date_to: dateTo,
-    label: label || null
-  });
+  await sb.insert('holidays', { worker_id:workerId, date_from:dateFrom, date_to:dateTo, label:label||null });
 
-  // Sync selected worker in list dropdown
   const listSel = document.getElementById('holiday-worker-select');
   if (listSel) listSel.value = workerId;
 
   closeModal('modal-holiday');
   loadHolidays();
-  toast('Urlaub gespeichert', 'success');
+  toast('Urlaub gespeichert','success');
 }
 
 async function deleteHoliday(id) {
   if (!confirm('Urlaub wirklich löschen?')) return;
-  await sb.delete('holidays', `id=eq.${id}`);
+  await sb.delete('holidays',`id=eq.${id}`);
   loadHolidays();
-  toast('Urlaub gelöscht', 'info');
+  toast('Urlaub gelöscht','info');
 }
 
-// Date Overrides
 async function loadOverrides() {
   const workerId = document.getElementById('override-worker-select')?.value;
-  // workerId = '' means all workers (global), otherwise filter by worker
+  const filter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
 
-  let filter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
-  const data = await sb.query('schedule_overrides', {
-    select: '*,workers(name)', filter, order: 'specific_date.asc'
-  });
+  const data = await sb.query('schedule_overrides', { select:'*,workers(name)', filter, order:'specific_date.asc' });
   const overrides = Array.isArray(data) ? data : [];
   const el = document.getElementById('overrides-list');
+
   if (!overrides.length) {
     el.innerHTML = `<div class="empty-state" style="padding:20px;"><div class="empty-desc">Keine Datum-Overrides gesetzt</div></div>`;
     return;
@@ -2222,9 +1622,9 @@ async function loadOverrides() {
       <div>
         <div class="due-name">
           ${new Date(o.specific_date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'long'})}
-          ${o.workers?.name ? `<span style="font-size:12px;color:var(--text-muted);margin-left:6px;">(${o.workers.name})</span>` : ''}
+          ${o.workers?.name?`<span style="font-size:12px;color:var(--text-muted);margin-left:6px;">(${o.workers.name})</span>`:''}
         </div>
-        <div class="due-date">${o.is_closed ? 'Geschlossen' : `${o.open_time} – ${o.close_time}`}${o.reason ? ` · ${o.reason}` : ''}</div>
+        <div class="due-date">${o.is_closed?'Geschlossen':`${o.open_time} – ${o.close_time}`}${o.reason?` · ${o.reason}`:''}</div>
       </div>
       <button class="btn btn-danger btn-sm" onclick="deleteOverride('${o.id}')">Löschen</button>
     </div>`).join('');
@@ -2243,37 +1643,44 @@ async function saveOverride() {
   const close  = document.getElementById('override-close').value;
   const reason = document.getElementById('override-reason').value.trim();
 
-  if (!date) { toast('Bitte Datum wählen', 'error'); return; }
+  if (!date) { toast('Bitte Datum wählen','error'); return; }
 
   await sb.insert('schedule_overrides', {
-    worker_id: workerId || null, specific_date: date,
-    open_time: closed ? null : open, close_time: closed ? null : close,
-    is_closed: closed, reason: reason || null
+    worker_id:workerId||null, specific_date:date,
+    open_time:closed?null:open, close_time:closed?null:close,
+    is_closed:closed, reason:reason||null
   });
 
-  // Sync filter dropdown to match what was saved
   const ovSel = document.getElementById('override-worker-select');
-  if (ovSel) ovSel.value = workerId || '';
+  if (ovSel) ovSel.value = workerId||'';
 
   closeModal('modal-override');
   loadOverrides();
-  toast('Override gespeichert', 'success');
+  toast('Override gespeichert','success');
 }
 
 async function deleteOverride(id) {
-  await sb.delete('schedule_overrides', `id=eq.${id}`);
+  await sb.delete('schedule_overrides',`id=eq.${id}`);
   loadOverrides();
-  toast('Override gelöscht', 'info');
+  toast('Override gelöscht','info');
 }
 
 // ============================================================
-// MANUAL BOOKING
+// MANUAL BOOKING — default worker from client's assignment
 // ============================================================
 async function populateBookingModal() {
   const clientSel = document.getElementById('booking-client');
   clientSel.innerHTML = '<option value="">Client wählen...</option>' +
     state.allClients.filter(c=>c.account_status==='active').map(c =>
-      `<option value="${c.id}">${c.full_name}</option>`).join('');
+      `<option value="${c.id}" data-worker="${c.worker_id||''}">${c.full_name}</option>`).join('');
+
+  // Auto-select assigned worker when client is chosen
+  clientSel.onchange = function() {
+    const opt = this.options[this.selectedIndex];
+    const assignedWorker = opt?.dataset?.worker || '';
+    const workerSel = document.getElementById('booking-worker');
+    if (assignedWorker && workerSel) workerSel.value = assignedWorker;
+  };
 
   const serviceSel = document.getElementById('booking-service');
   serviceSel.innerHTML = '<option value="">Service wählen...</option>' +
@@ -2287,17 +1694,17 @@ async function populateBookingModal() {
 }
 
 function updateBookingEnd() {
-  const date     = document.getElementById('booking-date').value;
-  const time     = document.getElementById('booking-time').value;
-  const sel      = document.getElementById('booking-service');
-  const option   = sel.options[sel.selectedIndex];
+  const date   = document.getElementById('booking-date').value;
+  const time   = document.getElementById('booking-time').value;
+  const sel    = document.getElementById('booking-service');
+  const option = sel.options[sel.selectedIndex];
   const duration = option ? parseInt(option.dataset.duration) : 0;
 
   if (date && time && duration) {
     const start = new Date(`${date}T${time}`);
     const end   = new Date(start.getTime() + duration * 60000);
     document.getElementById('booking-endtime').value =
-      end.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      end.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
   }
 }
 
@@ -2309,22 +1716,22 @@ async function saveManualBooking() {
   const workerId  = document.getElementById('booking-worker').value;
   const notes     = document.getElementById('booking-notes').value;
 
-  if (!clientId || !serviceId || !date || !time) { toast('Bitte alle Pflichtfelder ausfüllen', 'error'); return; }
+  if (!clientId||!serviceId||!date||!time) { toast('Bitte alle Pflichtfelder ausfüllen','error'); return; }
 
-  const service  = state.services.find(s => s.id === serviceId);
-  const start    = new Date(`${date}T${time}`);
-  const end      = new Date(start.getTime() + service.duration_minutes * 60000);
+  const service = state.services.find(s => s.id === serviceId);
+  const start   = new Date(`${date}T${time}`);
+  const end     = new Date(start.getTime() + service.duration_minutes * 60000);
 
   await sb.insert('bookings', {
-    client_id: clientId, service_id: serviceId,
-    worker_id: workerId || null,
-    start_time: start.toISOString(), end_time: end.toISOString(),
-    status: 'confirmed', notes: notes || null, booked_by_admin: true
+    client_id:clientId, service_id:serviceId,
+    worker_id:workerId||null,
+    start_time:start.toISOString(), end_time:end.toISOString(),
+    status:'confirmed', notes:notes||null, booked_by_admin:true
   });
 
   closeModal('modal-booking');
   renderCalendar();
-  toast('Buchung erstellt!', 'success');
+  toast('Buchung erstellt!','success');
 }
 
 // ============================================================
@@ -2335,216 +1742,138 @@ async function loadIntelligence() {
   const today  = new Date(now); today.setHours(0,0,0,0);
   const active = state.allClients.filter(c => c.account_status === 'active');
 
-  // ── Parallel data fetch ──────────────────────────────────────
   const [futureBookings, allBookings, waitData, services] = await Promise.all([
-    sb.query('bookings', {
-      select: '*,services(name,price)',
-      filter: `start_time=gte.${now.toISOString()}&status=eq.confirmed&is_block=eq.false`,
-      limit: 300
-    }),
-    sb.query('bookings', {
-      select: 'start_time,end_time,status,service_id,services(name,price)',
-      filter: `start_time=gte.${new Date(now.getFullYear(), now.getMonth(), 1).toISOString()}&is_block=eq.false`,
-      limit: 500
-    }),
-    sb.query('waiting_list', {
-      select: '*,profiles(full_name),services(name)',
-      filter: 'status=eq.waiting', order: 'joined_at.asc'
-    }),
-    sb.query('services', { select: '*', filter: 'is_active=eq.true', order: 'display_order.asc' })
+    sb.query('bookings', { select:'*,services(name,price)', filter:`start_time=gte.${now.toISOString()}&status=eq.confirmed&is_block=eq.false`, limit:300 }),
+    sb.query('bookings', { select:'start_time,end_time,status,service_id,services(name,price)', filter:`start_time=gte.${new Date(now.getFullYear(),now.getMonth(),1).toISOString()}&is_block=eq.false`, limit:500 }),
+    sb.query('waiting_list', { select:'*,profiles(full_name),services(name)', filter:'status=eq.waiting', order:'joined_at.asc' }),
+    sb.query('services', { select:'*', filter:'is_active=eq.true', order:'display_order.asc' })
   ]);
 
-  const futureBk  = Array.isArray(futureBookings) ? futureBookings : [];
-  const monthBk   = Array.isArray(allBookings)    ? allBookings    : [];
-  const waitlist  = Array.isArray(waitData)        ? waitData       : [];
-  const svcs      = Array.isArray(services)        ? services       : [];
+  const futureBk = Array.isArray(futureBookings) ? futureBookings : [];
+  const monthBk  = Array.isArray(allBookings)    ? allBookings    : [];
+  const waitlist = Array.isArray(waitData)        ? waitData       : [];
+  const svcs     = Array.isArray(services)        ? services       : [];
 
-  // ── STAT: Total clients ──────────────────────────────────────
   document.getElementById('intel-total').textContent = active.length;
 
-  // ── STAT: Revenue this month ─────────────────────────────────
-  const monthRevenue = monthBk
-    .filter(b => b.status === 'confirmed' && new Date(b.start_time) < now)
-    .reduce((sum, b) => sum + parseFloat(b.services?.price || 0), 0);
+  const monthRevenue = monthBk.filter(b=>b.status==='confirmed'&&new Date(b.start_time)<now).reduce((sum,b)=>sum+parseFloat(b.services?.price||0),0);
   document.getElementById('intel-revenue').textContent = `€${Math.round(monthRevenue)}`;
 
-  // ── STAT: Busiest day ────────────────────────────────────────
-  const dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const dayNames  = ['So','Mo','Di','Mi','Do','Fr','Sa'];
   const dayCounts = [0,0,0,0,0,0,0];
-  monthBk.filter(b => b.status === 'confirmed').forEach(b => {
-    dayCounts[new Date(b.start_time).getDay()]++;
-  });
+  monthBk.filter(b=>b.status==='confirmed').forEach(b=>{ dayCounts[new Date(b.start_time).getDay()]++; });
   const busiestDay = dayCounts.indexOf(Math.max(...dayCounts));
-  document.getElementById('intel-busyday').textContent = dayNames[busiestDay] || '—';
+  document.getElementById('intel-busyday').textContent = dayNames[busiestDay]||'—';
 
-  // ── STAT: Top service ────────────────────────────────────────
   const svcCounts = {};
-  monthBk.filter(b => b.status === 'confirmed' && b.services?.name).forEach(b => {
-    svcCounts[b.services.name] = (svcCounts[b.services.name] || 0) + 1;
-  });
-  const topSvc = Object.entries(svcCounts).sort((a,b) => b[1]-a[1])[0];
-  document.getElementById('intel-topservice').textContent = topSvc ? topSvc[0].split(' ')[0] : '—';
+  monthBk.filter(b=>b.status==='confirmed'&&b.services?.name).forEach(b=>{ svcCounts[b.services.name]=(svcCounts[b.services.name]||0)+1; });
+  const topSvc = Object.entries(svcCounts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('intel-topservice').textContent = topSvc?topSvc[0].split(' ')[0]:'—';
 
-  // ── STAT: Avg cycle ──────────────────────────────────────────
-  const cycleClients = active.filter(c => c.detected_cycle_weeks);
+  const cycleClients = active.filter(c=>c.detected_cycle_weeks);
   const avgCycle = cycleClients.length
-    ? (cycleClients.reduce((s,c) => s + (c.detected_cycle_weeks || 0), 0) / cycleClients.length).toFixed(1)
+    ? (cycleClients.reduce((s,c)=>s+(c.detected_cycle_weeks||0),0)/cycleClients.length).toFixed(1)
     : (active.filter(c=>c.preferred_cycle_weeks).length
-        ? (active.reduce((s,c)=>s+(c.preferred_cycle_weeks||0),0)/active.length).toFixed(1)
-        : '—');
+        ? (active.reduce((s,c)=>s+(c.preferred_cycle_weeks||0),0)/active.length).toFixed(1) : '—');
   document.getElementById('intel-cycle').textContent = avgCycle;
 
-  // ── STAT: Capacity 14 days ───────────────────────────────────
-  const maxPerDay  = parseInt(state.settings['max_bookings_per_day'] || '6');
+  const maxPerDay  = parseInt(state.settings['max_bookings_per_day']||'6');
   const totalSlots = maxPerDay * 14;
   const booked14   = Math.min(futureBk.length, totalSlots);
-  const pct        = Math.round((booked14 / totalSlots) * 100);
+  const pct        = Math.round((booked14/totalSlots)*100);
   document.getElementById('intel-capacity-pct').textContent = `${pct}%`;
   document.getElementById('intel-capacity-bar').style.width = `${pct}%`;
 
-  // ── STAT: Free slots today ───────────────────────────────────
   const todayStart = new Date(today);
   const todayEnd   = new Date(today); todayEnd.setHours(23,59,59);
-  const todayBooked = futureBk.filter(b => {
-    const d = new Date(b.start_time);
-    return d >= todayStart && d <= todayEnd;
-  }).length;
+  const todayBooked = futureBk.filter(b=>{ const d=new Date(b.start_time); return d>=todayStart&&d<=todayEnd; }).length;
   document.getElementById('intel-today-free').textContent = Math.max(0, maxPerDay - todayBooked);
 
-  // ── STAT: Cancel + no-show rates ─────────────────────────────
-  const allStatusBk = await sb.query('bookings', {
-    filter: 'is_block=eq.false', select: 'status', limit: 1000
-  });
-  const allSt = Array.isArray(allStatusBk) ? allStatusBk : [];
-  const total = allSt.length || 1;
-  const cancelRate  = Math.round(allSt.filter(b => b.status === 'cancelled').length / total * 100);
-  const noshowRate  = Math.round(allSt.filter(b => b.status === 'no_show').length / total * 100);
+  const allStatusBk = await sb.query('bookings', { filter:'is_block=eq.false', select:'status', limit:1000 });
+  const allSt  = Array.isArray(allStatusBk) ? allStatusBk : [];
+  const total  = allSt.length||1;
+  const cancelRate = Math.round(allSt.filter(b=>b.status==='cancelled').length/total*100);
+  const noshowRate = Math.round(allSt.filter(b=>b.status==='no_show').length/total*100);
   document.getElementById('intel-cancel-rate').textContent = `${cancelRate}%`;
   document.getElementById('intel-noshow-rate').textContent = `${noshowRate}%`;
 
-  // ── Capacity bar (detailed, per day) ────────────────────────
   const capEl = document.getElementById('intel-capacity');
   const dayBuckets = {};
-  futureBk.forEach(b => {
-    const d = new Date(b.start_time).toISOString().split('T')[0];
-    dayBuckets[d] = (dayBuckets[d] || 0) + 1;
-  });
-  const next14 = Array.from({length:14}, (_,i) => {
-    const d = new Date(today); d.setDate(d.getDate() + i);
-    return d;
-  });
-  capEl.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      ${next14.map(d => {
-        const str  = d.toISOString().split('T')[0];
-        const cnt  = dayBuckets[str] || 0;
-        const p    = Math.min(100, Math.round(cnt / maxPerDay * 100));
-        const col  = p >= 80 ? '#dc2626' : p >= 50 ? '#d97706' : '#16a34a';
-        return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;">
-          <span style="width:60px;color:var(--text-muted);flex-shrink:0;">${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric'})}</span>
-          <div style="flex:1;background:var(--border);border-radius:3px;height:8px;">
-            <div style="width:${p}%;height:100%;background:${col};border-radius:3px;transition:width 0.4s ease;"></div>
-          </div>
-          <span style="width:30px;text-align:right;color:var(--text-muted);">${cnt}/${maxPerDay}</span>
-        </div>`;
-      }).join('')}
-    </div>`;
+  futureBk.forEach(b=>{ const d=new Date(b.start_time).toISOString().split('T')[0]; dayBuckets[d]=(dayBuckets[d]||0)+1; });
+  const next14 = Array.from({length:14},(_,i)=>{ const d=new Date(today); d.setDate(d.getDate()+i); return d; });
+  capEl.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;">
+    ${next14.map(d=>{
+      const str=d.toISOString().split('T')[0]; const cnt=dayBuckets[str]||0;
+      const p=Math.min(100,Math.round(cnt/maxPerDay*100));
+      const col=p>=80?'#dc2626':p>=50?'#d97706':'#16a34a';
+      return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;">
+        <span style="width:60px;color:var(--text-muted);flex-shrink:0;">${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric'})}</span>
+        <div style="flex:1;background:var(--border);border-radius:3px;height:8px;"><div style="width:${p}%;height:100%;background:${col};border-radius:3px;transition:width 0.4s ease;"></div></div>
+        <span style="width:30px;text-align:right;color:var(--text-muted);">${cnt}/${maxPerDay}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
 
-  // ── Due soon ─────────────────────────────────────────────────
   const dueList = document.getElementById('intel-due');
-  const dueSoon = active
-    .filter(c => {
-      if (!c.next_suggested_date) return false;
-      const diff = (new Date(c.next_suggested_date).getTime() - today.getTime()) / 86400000;
-      return diff >= -3 && diff <= 10;
-    })
-    .sort((a,b) => new Date(a.next_suggested_date).getTime() - new Date(b.next_suggested_date).getTime());
+  const dueSoon = active.filter(c=>{
+    if (!c.next_suggested_date) return false;
+    const diff=(new Date(c.next_suggested_date).getTime()-today.getTime())/86400000;
+    return diff>=-3&&diff<=10;
+  }).sort((a,b)=>new Date(a.next_suggested_date).getTime()-new Date(b.next_suggested_date).getTime());
 
   const dueCount = document.getElementById('intel-due-count');
-  if (dueSoon.length) {
-    dueCount.textContent = dueSoon.length;
-    dueCount.style.display = 'inline-flex';
-  } else {
-    dueCount.style.display = 'none';
-  }
+  dueCount.textContent = dueSoon.length;
+  dueCount.style.display = dueSoon.length ? 'inline-flex' : 'none';
 
-  dueList.innerHTML = dueSoon.length ? dueSoon.map(c => {
-    const dueDate = new Date(c.next_suggested_date + 'T12:00:00');
-    const diff    = Math.round((dueDate - today) / 86400000);
-    const label   = diff < 0 ? `Überfällig seit ${Math.abs(diff)} Tagen` : diff === 0 ? 'Heute fällig' : `Fällig in ${diff} Tagen`;
-    const color   = diff < 0 ? '#dc2626' : diff <= 3 ? '#d97706' : 'var(--text-muted)';
-    // Check if already has future booking
-    const hasBooking = futureBk.some(b => b.client_id === c.id);
+  dueList.innerHTML = dueSoon.length ? dueSoon.map(c=>{
+    const dueDate=new Date(c.next_suggested_date+'T12:00:00');
+    const diff=Math.round((dueDate-today)/86400000);
+    const label=diff<0?`Überfällig seit ${Math.abs(diff)} Tagen`:diff===0?'Heute fällig':`Fällig in ${diff} Tagen`;
+    const color=diff<0?'#dc2626':diff<=3?'#d97706':'var(--text-muted)';
+    const hasBooking=futureBk.some(b=>b.client_id===c.id);
     return `<div class="due-item">
-      <div>
-        <div class="due-name">${c.full_name}</div>
-        <div class="due-date" style="color:${color};">${label}</div>
-      </div>
-      ${hasBooking
-        ? `<span style="font-size:12px;color:#16a34a;">✓ Gebucht</span>`
-        : `<button class="btn btn-outline btn-sm" onclick="sendManualNudge('${c.id}','${c.full_name}','${c.email}')">Nudge</button>`
-      }
+      <div><div class="due-name">${c.full_name}</div><div class="due-date" style="color:${color};">${label}</div></div>
+      ${hasBooking?`<span style="font-size:12px;color:#16a34a;">✓ Gebucht</span>`
+        :`<button class="btn btn-outline btn-sm" onclick="sendManualNudge('${c.id}','${c.full_name}','${c.email}')">Nudge</button>`}
     </div>`;
-  }).join('') :
-    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Niemand fällig diese Woche</div></div>`;
+  }).join('') : `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Niemand fällig diese Woche</div></div>`;
 
-  // ── At risk ──────────────────────────────────────────────────
   const riskList  = document.getElementById('intel-risk');
   const riskCount = document.getElementById('intel-risk-count');
-  const atRisk    = active.filter(c => {
+  const atRisk    = active.filter(c=>{
     if (!c.last_appointment_date) return false;
-    const weeks = (today.getTime() - new Date(c.last_appointment_date).getTime()) / (7 * 86400000);
-    return weeks > (c.preferred_cycle_weeks || 4) * 1.8;
-  }).sort((a,b) => new Date(a.last_appointment_date).getTime() - new Date(b.last_appointment_date).getTime());
+    const weeks=(today.getTime()-new Date(c.last_appointment_date).getTime())/(7*86400000);
+    return weeks>(c.preferred_cycle_weeks||4)*1.8;
+  }).sort((a,b)=>new Date(a.last_appointment_date).getTime()-new Date(b.last_appointment_date).getTime());
 
-  if (atRisk.length) {
-    riskCount.textContent = atRisk.length;
-    riskCount.style.display = 'inline-flex';
-  } else {
-    riskCount.style.display = 'none';
-  }
+  riskCount.textContent = atRisk.length;
+  riskCount.style.display = atRisk.length ? 'inline-flex' : 'none';
 
-  riskList.innerHTML = atRisk.length ? atRisk.map(c => {
-    const weeks = Math.floor((today.getTime() - new Date(c.last_appointment_date).getTime()) / (7*86400000));
-    const urgency = weeks > 10 ? '#dc2626' : '#d97706';
+  riskList.innerHTML = atRisk.length ? atRisk.map(c=>{
+    const weeks=Math.floor((today.getTime()-new Date(c.last_appointment_date).getTime())/(7*86400000));
+    const urgency=weeks>10?'#dc2626':'#d97706';
     return `<div class="due-item">
-      <div>
-        <div class="due-name">${c.full_name}</div>
-        <div class="due-date" style="color:${urgency};">Letzter Besuch: vor ${weeks} Wochen</div>
-      </div>
+      <div><div class="due-name">${c.full_name}</div><div class="due-date" style="color:${urgency};">Letzter Besuch: vor ${weeks} Wochen</div></div>
       <button class="btn btn-outline btn-sm" onclick="sendManualNudge('${c.id}','${c.full_name}','${c.email}')">Nudge</button>
     </div>`;
-  }).join('') :
-    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Keine Risiko-Clients</div></div>`;
+  }).join('') : `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Keine Risiko-Clients</div></div>`;
 
-  // ── Waitlist ─────────────────────────────────────────────────
   const waitEl = document.getElementById('intel-waitlist');
-  waitEl.innerHTML = waitlist.length ? waitlist.map(w => `
+  waitEl.innerHTML = waitlist.length ? waitlist.map(w=>`
     <div class="due-item">
-      <div>
-        <div class="due-name">${w.profiles?.full_name || '—'}</div>
-        <div class="due-date">${w.services?.name || '—'} · seit ${new Date(w.joined_at).toLocaleDateString('de-DE')}</div>
-      </div>
-    </div>`).join('') :
-    `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Warteliste leer</div></div>`;
+      <div><div class="due-name">${w.profiles?.full_name||'—'}</div><div class="due-date">${w.services?.name||'—'} · seit ${new Date(w.joined_at).toLocaleDateString('de-DE')}</div></div>
+    </div>`).join('') : `<div class="empty-state" style="padding:16px;"><div class="empty-desc">Warteliste leer</div></div>`;
 
-  // ── AI ANALYSIS ──────────────────────────────────────────────
-  // Build compact data snapshot and ask Claude for insights
+  // AI analysis
   try {
     const aiSnapshot = {
-      active_clients: active.length,
-      capacity_pct: pct,
-      busiest_day: dayNames[busiestDay],
-      top_service: topSvc ? topSvc[0] : null,
-      avg_cycle_weeks: avgCycle,
-      due_soon_count: dueSoon.filter(c => !futureBk.some(b => b.client_id === c.id)).length,
-      at_risk_count: atRisk.length,
-      waitlist_count: waitlist.length,
-      cancel_rate_pct: cancelRate,
-      noshow_rate_pct: noshowRate,
-      month_revenue_eur: Math.round(monthRevenue),
-      free_slots_today: Math.max(0, maxPerDay - todayBooked),
-      services: svcs.map(s => s.name)
+      active_clients:active.length, capacity_pct:pct,
+      busiest_day:dayNames[busiestDay], top_service:topSvc?topSvc[0]:null,
+      avg_cycle_weeks:avgCycle, due_soon_count:dueSoon.filter(c=>!futureBk.some(b=>b.client_id===c.id)).length,
+      at_risk_count:atRisk.length, waitlist_count:waitlist.length,
+      cancel_rate_pct:cancelRate, noshow_rate_pct:noshowRate,
+      month_revenue_eur:Math.round(monthRevenue),
+      free_slots_today:Math.max(0,maxPerDay-todayBooked), services:svcs.map(s=>s.name)
     };
 
     const banner = document.getElementById('intel-ai-banner');
@@ -2553,60 +1882,36 @@ async function loadIntelligence() {
     aiText.innerHTML = '<span style="opacity:0.6;">KI analysiert Daten...</span>';
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        messages: [{
-          role: 'user',
-          content: `Du bist der Business-Analyst für Sharon Zuccaro's Nail Design Studio in Bonn. 
-Analysiere diese aktuellen Geschäftsdaten und gib eine prägnante, umsetzbare Empfehlung auf Deutsch (max. 2 Sätze):
-
-${JSON.stringify(aiSnapshot)}
-
-Fokus auf die wichtigste Aktion die Sharon HEUTE tun sollte. Sei direkt und konkret.`
-        }]
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:200,
+        messages:[{ role:'user', content:`Du bist der Business-Analyst für Sharon Zuccaros Nail Design Studio in Bonn. Analysiere diese aktuellen Geschäftsdaten und gib eine prägnante, umsetzbare Empfehlung auf Deutsch (max. 2 Sätze):\n\n${JSON.stringify(aiSnapshot)}\n\nFokus auf die wichtigste Aktion die Sharon HEUTE tun sollte. Sei direkt und konkret.` }]
       })
     });
 
     if (res.ok) {
       const data = await res.json();
-      const insight = data.content?.[0]?.text || '';
-      if (insight) {
-        aiText.textContent = insight;
-      } else {
-        banner.style.display = 'none';
-      }
-    } else {
-      banner.style.display = 'none';
-    }
-  } catch(e) {
-    document.getElementById('intel-ai-banner').style.display = 'none';
-  }
+      const insight = data.content?.[0]?.text||'';
+      if (insight) aiText.textContent = insight;
+      else banner.style.display = 'none';
+    } else { banner.style.display = 'none'; }
+  } catch(e) { document.getElementById('intel-ai-banner').style.display = 'none'; }
 }
 
-// ── Manual nudge from Intelligence dashboard ─────────────────
 async function sendManualNudge(clientId, clientName, clientEmail) {
-  if (!clientEmail) { toast('Keine E-Mail für diesen Client', 'error'); return; }
-
+  if (!clientEmail) { toast('Keine E-Mail für diesen Client','error'); return; }
   try {
-    await adminTriggerEmail('rebooking_nudge', {
-      clientName,
-      clientEmail,
-      nextSuggestedDate: null
-    });
-    toast(`Nudge gesendet an ${clientName} ✓`, 'success');
-  } catch(e) {
-    toast('Fehler beim Senden', 'error');
-  }
+    await adminTriggerEmail('rebooking_nudge', { clientName, clientEmail, nextSuggestedDate:null });
+    toast(`Nudge gesendet an ${clientName} ✓`,'success');
+  } catch(e) { toast('Fehler beim Senden','error'); }
 }
 
 // ============================================================
 // HELPERS
 // ============================================================
 function statusLabel(s) {
-  return { active: 'Aktiv', pending: 'Ausstehend', blocked: 'Gesperrt' }[s] || s;
+  return {active:'Aktiv',pending:'Ausstehend',blocked:'Gesperrt'}[s]||s;
 }
 
 // ============================================================
