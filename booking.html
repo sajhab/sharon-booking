@@ -6,9 +6,6 @@
 <title>Toki — Sharon Zuccaro</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   TOKENS
-============================================================ */
 :root {
   --burgundy:        #7D1535;
   --burgundy-dark:   #5a0e25;
@@ -31,9 +28,6 @@
   --radius-bubble:   18px;
 }
 
-/* ============================================================
-   RESET
-============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   height: 100%;
@@ -43,22 +37,16 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ============================================================
-   FULL SCREEN WRAPPER
-============================================================ */
 #app {
   display: flex;
   flex-direction: column;
-  height: 100dvh; /* dynamic viewport height — fixes mobile keyboard */
+  height: 100dvh;
   max-width: 540px;
   margin: 0 auto;
   background: var(--bg-chat);
   position: relative;
 }
 
-/* ============================================================
-   HEADER
-============================================================ */
 .chat-header {
   height: var(--header-h);
   background: var(--black);
@@ -71,483 +59,89 @@ html, body {
   z-index: 10;
 }
 
-.avatar-wrap {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  border: 2px solid rgba(255,255,255,0.15);
-}
-
-.avatar-fallback {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--burgundy);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-head);
-  color: var(--white);
-  font-size: 18px;
-  border: 2px solid rgba(255,255,255,0.15);
-}
-
-.online-dot {
-  position: absolute;
-  bottom: 1px;
-  right: 1px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--online);
-  border: 2px solid var(--black);
-}
-
+.avatar-wrap { position: relative; flex-shrink: 0; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; display: block; border: 2px solid rgba(255,255,255,0.15); }
+.avatar-fallback { width: 42px; height: 42px; border-radius: 50%; background: var(--burgundy); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); color: var(--white); font-size: 18px; border: 2px solid rgba(255,255,255,0.15); }
+.online-dot { position: absolute; bottom: 1px; right: 1px; width: 10px; height: 10px; border-radius: 50%; background: var(--online); border: 2px solid var(--black); }
 .header-info { flex: 1; }
-
-.header-name {
-  font-family: var(--font-head);
-  color: var(--white);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  line-height: 1.2;
-}
-
-.header-status {
-  font-size: 12px;
-  color: rgba(255,255,255,0.45);
-  margin-top: 1px;
-}
-
+.header-name { font-family: var(--font-head); color: var(--white); font-size: 16px; font-weight: 600; letter-spacing: 0.3px; line-height: 1.2; }
+.header-status { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 1px; }
 .header-actions { display: flex; gap: 8px; }
-
-.header-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: rgba(255,255,255,0.55);
-  padding: 8px;
-  border-radius: 50%;
-  transition: var(--transition);
-  font-size: 18px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+.header-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.55); padding: 8px; border-radius: 50%; transition: var(--transition); font-size: 18px; line-height: 1; display: flex; align-items: center; justify-content: center; }
 .header-btn:hover { background: rgba(255,255,255,0.08); color: white; }
 
-/* ============================================================
-   MESSAGES AREA
-============================================================ */
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 12px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
+.messages { flex: 1; overflow-y: auto; padding: 16px 12px 8px; display: flex; flex-direction: column; gap: 4px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
 .messages::-webkit-scrollbar { width: 0; }
 
-/* Date separator */
-.date-sep {
-  text-align: center;
-  margin: 12px 0 8px;
-}
+.date-sep { text-align: center; margin: 12px 0 8px; }
+.date-sep span { font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.7); padding: 4px 12px; border-radius: 10px; backdrop-filter: blur(4px); }
 
-.date-sep span {
-  font-size: 12px;
-  color: var(--text-muted);
-  background: rgba(255,255,255,0.7);
-  padding: 4px 12px;
-  border-radius: 10px;
-  backdrop-filter: blur(4px);
-}
-
-/* Message rows */
-.msg-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  max-width: 86%;
-  animation: msgIn 0.25s ease;
-}
-
-@keyframes msgIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
+.msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 86%; animation: msgIn 0.25s ease; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .msg-row.bot  { align-self: flex-start; }
 .msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
 
-.msg-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  margin-bottom: 2px;
-}
+.msg-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; margin-bottom: 2px; }
+.msg-avatar-fallback { width: 28px; height: 28px; border-radius: 50%; background: var(--burgundy); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-bottom: 2px; }
 
-.msg-avatar-fallback {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--burgundy);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  flex-shrink: 0;
-  margin-bottom: 2px;
-}
+.bubble { padding: 10px 14px; border-radius: var(--radius-bubble); font-size: 15px; line-height: 1.5; max-width: 100%; word-break: break-word; position: relative; }
+.bubble.bot  { background: var(--bot-bubble); color: var(--text); border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.bubble.user { background: var(--user-bubble); color: var(--white); border-bottom-right-radius: 4px; }
 
-.bubble {
-  padding: 10px 14px;
-  border-radius: var(--radius-bubble);
-  font-size: 15px;
-  line-height: 1.5;
-  max-width: 100%;
-  word-break: break-word;
-  position: relative;
-}
-
-.bubble.bot {
-  background: var(--bot-bubble);
-  color: var(--text);
-  border-bottom-left-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.bubble.user {
-  background: var(--user-bubble);
-  color: var(--white);
-  border-bottom-right-radius: 4px;
-}
-
-.bubble-time {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-  text-align: right;
-  padding: 0 4px;
-}
-
+.bubble-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; text-align: right; padding: 0 4px; }
 .bubble-time.user-time { color: rgba(255,255,255,0.55); text-align: right; }
 
-/* Typing indicator */
-.typing-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0;
-  animation: msgIn 0.25s ease;
-}
-
-.typing-dots {
-  background: var(--bot-bubble);
-  border-radius: 18px;
-  border-bottom-left-radius: 4px;
-  padding: 12px 16px;
-  display: flex;
-  gap: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--text-muted);
-  animation: bounce 1.2s ease-in-out infinite;
-}
-
+.typing-indicator { display: flex; align-items: center; gap: 8px; padding: 8px 0; animation: msgIn 0.25s ease; }
+.typing-dots { background: var(--bot-bubble); border-radius: 18px; border-bottom-left-radius: 4px; padding: 12px 16px; display: flex; gap: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); animation: bounce 1.2s ease-in-out infinite; }
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
 
-@keyframes bounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
-}
-
-/* ============================================================
-   QUICK REPLY BUTTONS
-============================================================ */
-.quick-replies {
-  padding: 8px 12px 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  animation: msgIn 0.3s ease;
-}
-
-.qr-btn {
-  width: 100%;
-  padding: 13px 18px;
-  background: var(--white);
-  color: var(--burgundy);
-  border: 1.5px solid var(--burgundy);
-  border-radius: 12px;
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-  line-height: 1.3;
-}
-
-.qr-btn:hover, .qr-btn:active {
-  background: var(--burgundy);
-  color: var(--white);
-}
-
-.qr-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-  background: var(--white);
-  color: var(--text-muted);
-  border-color: var(--border);
-}
-
-.qr-btn.secondary {
-  background: transparent;
-  color: var(--text-muted);
-  border-color: var(--border);
-  font-size: 14px;
-}
-
+.quick-replies { padding: 8px 12px 4px; display: flex; flex-direction: column; gap: 8px; animation: msgIn 0.3s ease; }
+.qr-btn { width: 100%; padding: 13px 18px; background: var(--white); color: var(--burgundy); border: 1.5px solid var(--burgundy); border-radius: 12px; font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; transition: var(--transition); text-align: left; line-height: 1.3; }
+.qr-btn:hover, .qr-btn:active { background: var(--burgundy); color: var(--white); }
+.qr-btn:disabled { opacity: 0.4; cursor: default; background: var(--white); color: var(--text-muted); border-color: var(--border); }
+.qr-btn.secondary { background: transparent; color: var(--text-muted); border-color: var(--border); font-size: 14px; }
 .qr-btn.secondary:hover { background: var(--bg-chat); color: var(--text); }
 
-/* ============================================================
-   INPUT BAR
-============================================================ */
-.input-bar {
-  height: var(--input-h);
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  gap: 10px;
-  flex-shrink: 0;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.chat-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-family: var(--font-body);
-  font-size: 16px;
-  color: var(--text);
-  background: transparent;
-  padding: 8px 4px;
-  resize: none;
-  height: 40px;
-  line-height: 1.4;
-}
-
+.input-bar { height: var(--input-h); background: var(--white); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 12px; gap: 10px; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
+.chat-input { flex: 1; border: none; outline: none; font-family: var(--font-body); font-size: 16px; color: var(--text); background: transparent; padding: 8px 4px; resize: none; height: 40px; line-height: 1.4; }
 .chat-input::placeholder { color: #c0b0b5; }
-
-.send-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--burgundy);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: var(--transition);
-  color: white;
-  font-size: 18px;
-}
-
+.send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--burgundy); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: var(--transition); color: white; font-size: 18px; }
 .send-btn:hover { background: var(--burgundy-dark); }
 .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ============================================================
-   FOOTER
-============================================================ */
-.chat-footer {
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-muted);
-  padding: 6px 0 max(8px, env(safe-area-inset-bottom));
-  background: var(--bg-chat);
-  flex-shrink: 0;
-}
-
+.chat-footer { text-align: center; font-size: 11px; color: var(--text-muted); padding: 6px 0 max(8px, env(safe-area-inset-bottom)); background: var(--bg-chat); flex-shrink: 0; }
 .chat-footer a { color: var(--burgundy); text-decoration: none; }
 
-/* ============================================================
-   LOADING SCREEN
-============================================================ */
-#loading-screen {
-  position: fixed;
-  inset: 0;
-  background: var(--black);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  gap: 16px;
-}
+#loading-screen { position: fixed; inset: 0; background: var(--black); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; gap: 16px; }
+.loading-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--burgundy); animation: pulse-load 1.5s ease-in-out infinite; }
+.loading-avatar-fallback { width: 72px; height: 72px; border-radius: 50%; background: var(--burgundy); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); color: white; font-size: 28px; border: 3px solid rgba(255,255,255,0.2); animation: pulse-load 1.5s ease-in-out infinite; }
+@keyframes pulse-load { 0%, 100% { box-shadow: 0 0 0 0 rgba(125,21,53,0.6); } 50% { box-shadow: 0 0 0 16px rgba(125,21,53,0); } }
+.loading-name { font-family: var(--font-head); color: var(--white); font-size: 20px; letter-spacing: 0.5px; }
+.loading-sub { color: rgba(255,255,255,0.35); font-size: 13px; }
 
-.loading-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--burgundy);
-  animation: pulse-load 1.5s ease-in-out infinite;
-}
-
-.loading-avatar-fallback {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--burgundy);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-head);
-  color: white;
-  font-size: 28px;
-  border: 3px solid rgba(255,255,255,0.2);
-  animation: pulse-load 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse-load {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(125,21,53,0.6); }
-  50% { box-shadow: 0 0 0 16px rgba(125,21,53,0); }
-}
-
-.loading-name {
-  font-family: var(--font-head);
-  color: var(--white);
-  font-size: 20px;
-  letter-spacing: 0.5px;
-}
-
-.loading-sub {
-  color: rgba(255,255,255,0.35);
-  font-size: 13px;
-}
-
-/* ============================================================
-   PROFILE MENU (slide-up)
-============================================================ */
-.menu-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
-.menu-overlay.open {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.side-menu {
-  position: fixed;
-  top: 0;
-  right: -300px;
-  width: 280px;
-  height: 100%;
-  background: var(--white);
-  z-index: 101;
-  transition: right 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  padding: 48px 0 32px;
-}
-
+.menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+.menu-overlay.open { opacity: 1; pointer-events: all; }
+.side-menu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--white); z-index: 101; transition: right 0.3s ease; display: flex; flex-direction: column; padding: 48px 0 32px; }
 .side-menu.open { right: 0; }
-
-.menu-header {
-  padding: 0 24px 24px;
-  border-bottom: 1px solid var(--border);
-}
-
-.menu-name {
-  font-family: var(--font-head);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--black);
-}
-
-.menu-email {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
+.menu-header { padding: 0 24px 24px; border-bottom: 1px solid var(--border); }
+.menu-name { font-family: var(--font-head); font-size: 18px; font-weight: 600; color: var(--black); }
+.menu-email { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 .menu-items { flex: 1; padding: 16px 0; }
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 24px;
-  font-size: 15px;
-  color: var(--text);
-  cursor: pointer;
-  transition: var(--transition);
-  text-decoration: none;
-  border: none;
-  background: none;
-  width: 100%;
-  font-family: var(--font-body);
-}
-
+.menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 24px; font-size: 15px; color: var(--text); cursor: pointer; transition: var(--transition); text-decoration: none; border: none; background: none; width: 100%; font-family: var(--font-body); }
 .menu-item:hover { background: var(--burgundy-light); color: var(--burgundy); }
 .menu-item span { font-size: 20px; }
+.menu-footer { padding: 0 24px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 
-.menu-footer {
-  padding: 0 24px;
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-/* ============================================================
-   RESPONSIVE — desktop feels nice too
-============================================================ */
 @media (min-width: 540px) {
-  #app {
-    box-shadow: 0 0 60px rgba(0,0,0,0.5);
-    height: 100vh;
-  }
+  #app { box-shadow: 0 0 60px rgba(0,0,0,0.5); height: 100vh; }
 }
 </style>
 </head>
 <body>
 
-<!-- ============================================================
-     LOADING SCREEN
-============================================================ -->
 <div id="loading-screen">
   <img src="toki.jpeg" class="loading-avatar" alt="Toki"
     onerror="this.style.display='none';document.getElementById('loading-fallback').style.display='flex'">
@@ -556,12 +150,7 @@ html, body {
   <div class="loading-sub">Sharon Zuccaro · Nail Design</div>
 </div>
 
-<!-- ============================================================
-     MAIN APP
-============================================================ -->
 <div id="app" style="display:none;">
-
-  <!-- HEADER -->
   <div class="chat-header">
     <div class="avatar-wrap">
       <img src="toki.jpeg" class="avatar" alt="Toki"
@@ -578,13 +167,9 @@ html, body {
     </div>
   </div>
 
-  <!-- MESSAGES -->
   <div class="messages" id="messages"></div>
-
-  <!-- QUICK REPLIES -->
   <div class="quick-replies" id="quick-replies"></div>
 
-  <!-- INPUT BAR -->
   <div class="input-bar">
     <input type="text" class="chat-input" id="chat-input"
       placeholder="Nachricht eingeben..."
@@ -598,14 +183,11 @@ html, body {
     </button>
   </div>
 
-  <!-- FOOTER -->
   <div class="chat-footer">
     Built by <a href="https://aigentii.io" target="_blank">Aigentii AI Limited</a>
   </div>
-
 </div>
 
-<!-- SIDE MENU OVERLAY -->
 <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
 <div class="side-menu" id="side-menu">
   <div class="menu-header">
@@ -629,42 +211,29 @@ html, body {
 // ============================================================
 const SUPABASE_URL  = 'https://utkzbelpvlhpyrtmesdg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0a3piZWxwdmxocHlydG1lc2RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDQxNzksImV4cCI6MjA5NTYyMDE3OX0.W58LwRpgnJc4ZvSBIQx0nBRt_IebQFUxhsjTamTtEvE';
-
-// Edge function URLs
 const CHAT_FUNCTION_URL  = `${SUPABASE_URL}/functions/v1/chat`;
 const EMAIL_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-email`;
 
-// ── Email helper ─────────────────────────────────────────────
 async function triggerEmail(type, data) {
   try {
     await fetch(EMAIL_FUNCTION_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${state.token}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.token}` },
       body: JSON.stringify({ type, data })
     });
-  } catch(e) {
-    console.warn('Email trigger failed (non-blocking):', type, e);
-  }
+  } catch(e) { console.warn('Email trigger failed (non-blocking):', type, e); }
 }
 
 // ============================================================
 // STATE
 // ============================================================
 let state = {
-  user: null,
-  profile: null,
-  token: null,
-  services: [],
-  settings: {},
-  conversation: [],   // OpenAI message history for this session
-  flow: null,         // current flow: 'booking'|'reschedule'|'mybookings'|'cancel'
-  flowStep: null,     // step within flow
-  flowData: {},       // data being collected in current flow
-  pendingSlots: [],   // slots shown to user
-  upcomingBooking: null, // client's next booking
+  user: null, profile: null, token: null,
+  services: [], settings: {},
+  conversation: [],
+  flow: null, flowStep: null, flowData: {},
+  pendingSlots: [],
+  upcomingBooking: null,
   isLoading: false
 };
 
@@ -674,15 +243,9 @@ let state = {
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('sz_token');
   const uid   = localStorage.getItem('sz_uid');
-
-  if (!token || !uid) {
-    window.location.href = 'index.html';
-    return;
-  }
-
+  if (!token || !uid) { window.location.href = 'index.html'; return; }
   state.token = token;
 
-  // Safety timeout — if loading takes more than 5 seconds, redirect to login
   setTimeout(() => {
     if (document.getElementById('loading-screen').style.display !== 'none') {
       localStorage.removeItem('sz_token');
@@ -692,36 +255,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   }, 5000);
 
   try {
-    // Load profile
     const pRes = await sbGet(`profiles?id=eq.${uid}&select=*`);
     if (!pRes.length) { window.location.href = 'index.html'; return; }
-
     const profile = pRes[0];
     state.profile = profile;
 
-    if (profile.is_admin) { window.location.href = 'admin.html'; return; }
-    if (profile.account_status !== 'active') { window.location.href = 'pending.html'; return; }
+    if (profile.is_admin)                     { window.location.href = 'admin.html'; return; }
+    if (profile.account_status !== 'active')  { window.location.href = 'pending.html'; return; }
 
-    // Load services & settings
     const [services, settings] = await Promise.all([
       sbGet('services?is_active=eq.true&order=display_order.asc'),
       sbGet('settings')
     ]);
 
     state.services = Array.isArray(services) ? services : [];
-    if (Array.isArray(settings)) {
-      settings.forEach(s => { state.settings[s.key] = s.value; });
-    }
+    if (Array.isArray(settings)) settings.forEach(s => { state.settings[s.key] = s.value; });
 
-    // Load upcoming booking
     await loadUpcomingBooking();
 
-    // Update side menu
     const firstName = (profile.full_name || '').split(' ')[0];
-    document.getElementById('menu-name').textContent = profile.full_name || '';
+    document.getElementById('menu-name').textContent  = profile.full_name || '';
     document.getElementById('menu-email').textContent = profile.email || '';
 
-    // Hide loading, show app
     setTimeout(() => {
       document.getElementById('loading-screen').style.display = 'none';
       document.getElementById('app').style.display = 'flex';
@@ -752,12 +307,10 @@ function sbHeaders() {
     'Authorization': `Bearer ${state.token || SUPABASE_ANON}`
   };
 }
-
 async function sbGet(path) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: sbHeaders() });
   return res.json();
 }
-
 async function sbPost(table, data) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
     method: 'POST',
@@ -766,7 +319,6 @@ async function sbPost(table, data) {
   });
   return res.json();
 }
-
 async function sbPatch(table, filter, data) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
     method: 'PATCH',
@@ -777,18 +329,18 @@ async function sbPatch(table, filter, data) {
 }
 
 // ============================================================
-// SLOT CALCULATOR (client-side, pure)
+// SLOT CALCULATOR — respects worker schedule, holidays, breaks
 // ============================================================
 async function getAvailableSlots(serviceId, dateFrom, dateTo) {
   const service = state.services.find(s => s.id === serviceId);
   if (!service) return [];
 
-  const duration = service.duration_minutes;
-  const buffer   = service.buffer_override ?? parseInt(state.settings.global_buffer_minutes || 15);
-  const interval = parseInt(state.settings.slot_interval_minutes || 30);
+  const duration   = service.duration_minutes;
+  const buffer     = service.buffer_override ?? parseInt(state.settings.global_buffer_minutes || 15);
+  const interval   = parseInt(state.settings.slot_interval_minutes || 30);
   const windowDays = parseInt(state.settings.booking_window_days || 30);
 
-  // ── Get the assigned worker ──────────────────────────────────
+  // Use the client's assigned worker
   const workerId = state.profile?.worker_id || null;
 
   const slots = [];
@@ -798,74 +350,81 @@ async function getAvailableSlots(serviceId, dateFrom, dateTo) {
   let from = new Date(dateFrom + 'T00:00:00');
   let to   = new Date(dateTo   + 'T23:59:59');
   if (from < today) from = new Date(today);
-  if (to > maxDate) to = new Date(maxDate);
+  if (to > maxDate) to   = new Date(maxDate);
 
-  // Fetch existing bookings for the range (filter by worker if assigned)
-  let bookingFilter = `start_time=gte.${from.toISOString()}&end_time=lte.${to.toISOString()}&status=neq.cancelled&status=neq.rescheduled`;
-  if (workerId) bookingFilter += `&worker_id=eq.${workerId}`;
-  const bookings = await sbGet(bookingFilter.startsWith('bookings') ? bookingFilter : `bookings?${bookingFilter}`);
+  const fromIso = from.toISOString();
+  const toIso   = to.toISOString();
+  const fromDate = from.toISOString().split('T')[0];
+  const toDate   = to.toISOString().split('T')[0];
 
-  // Fix: sbGet prepends table, so build correctly:
-   const existingBookingsRaw = await sbGet(
-     `bookings?start_time=gte.${from.toISOString()}&end_time=lte.${to.toISOString()}&status=neq.cancelled&status=neq.rescheduled${workerId ? '&worker_id=eq.' + workerId : ''}`
-   );
-   const existingBookings = Array.isArray(existingBookingsRaw) ? existingBookingsRaw : [];
+  // Fetch existing bookings scoped to this worker
+  const bookingFilter = workerId
+    ? `bookings?worker_id=eq.${workerId}&start_time=gte.${fromIso}&start_time=lte.${toIso}&status=neq.cancelled&status=neq.rescheduled`
+    : `bookings?start_time=gte.${fromIso}&start_time=lte.${toIso}&status=neq.cancelled&status=neq.rescheduled`;
+  const bookingsRaw = await sbGet(bookingFilter);
+  const existingBookings = Array.isArray(bookingsRaw) ? bookingsRaw : [];
 
-  // Fetch schedule overrides for this worker (or global if no worker)
-  const overrideWorkerFilter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
-  const overridesRaw = await sbGet(
-    `schedule_overrides?${overrideWorkerFilter}&specific_date=gte.${from.toISOString().split('T')[0]}&specific_date=lte.${to.toISOString().split('T')[0]}`
-  );
+  // Fetch schedule overrides scoped to this worker
+  const overrideFilter = workerId
+    ? `schedule_overrides?worker_id=eq.${workerId}&specific_date=gte.${fromDate}&specific_date=lte.${toDate}`
+    : `schedule_overrides?worker_id=is.null&specific_date=gte.${fromDate}&specific_date=lte.${toDate}`;
+  const overridesRaw = await sbGet(overrideFilter);
   const overrides = Array.isArray(overridesRaw) ? overridesRaw : [];
 
-  // Fetch holidays for this worker
-  const holidayWorkerFilter = workerId ? `worker_id=eq.${workerId}` : `worker_id=is.null`;
-  const holidaysRaw = await sbGet(
-    `holidays?${holidayWorkerFilter}&date_from=lte.${to.toISOString().split('T')[0]}&date_to=gte.${from.toISOString().split('T')[0]}`
-  );
+  // Fetch holidays scoped to this worker
+  const holidayFilter = workerId
+    ? `holidays?worker_id=eq.${workerId}&date_from=lte.${toDate}&date_to=gte.${fromDate}`
+    : `holidays?worker_id=is.null&date_from=lte.${toDate}&date_to=gte.${fromDate}`;
+  const holidaysRaw = await sbGet(holidayFilter);
   const holidays = Array.isArray(holidaysRaw) ? holidaysRaw : [];
 
-  // Iterate each day
+  // Cache worker schedule for the week (avoid repeated queries per day)
+  const scheduleCache = {};
+  if (workerId) {
+    const schedRaw = await sbGet(`worker_schedule?worker_id=eq.${workerId}`);
+    if (Array.isArray(schedRaw)) schedRaw.forEach(s => { scheduleCache[s.day_of_week] = s; });
+  } else {
+    const schedRaw = await sbGet(`worker_schedule?worker_id=is.null`);
+    if (Array.isArray(schedRaw)) schedRaw.forEach(s => { scheduleCache[s.day_of_week] = s; });
+  }
+
+  // Iterate each day in range
   const cur = new Date(from);
   while (cur <= to) {
     const dateStr = cur.toISOString().split('T')[0];
-    const dow = cur.getDay(); // 0=Sun
+    const dow     = cur.getDay(); // 0=Sun
 
-    // Check holiday
+    // Skip holidays
     const onHoliday = holidays.some(h => dateStr >= h.date_from && dateStr <= h.date_to);
-    if (onHoliday) { cur.setDate(cur.getDate()+1); continue; }
+    if (onHoliday) { cur.setDate(cur.getDate() + 1); continue; }
 
-    // Check override (worker-specific first, then global)
+    // Resolve open/close from override or schedule
+    let dayOpen = null, dayClose = null;
+    let breakStart = null, breakEnd = null;
+
     const override = overrides.find(o => o.specific_date === dateStr);
-    let dayOpen, dayClose, breakStart = null, breakEnd = null;
-
     if (override) {
-      if (override.is_closed) { cur.setDate(cur.getDate()+1); continue; }
+      if (override.is_closed) { cur.setDate(cur.getDate() + 1); continue; }
       dayOpen  = override.open_time;
       dayClose = override.close_time;
     } else {
-      // Load this worker's schedule for this day
-      const schedFilter = workerId
-        ? `worker_schedule?worker_id=eq.${workerId}&day_of_week=eq.${dow}`
-        : `worker_schedule?worker_id=is.null&day_of_week=eq.${dow}`;
-      const schedRaw = await sbGet(schedFilter);
-      const sched = Array.isArray(schedRaw) ? schedRaw[0] : null;
-      if (!sched || sched.is_open === false) { cur.setDate(cur.getDate()+1); continue; }
-      dayOpen     = sched.open_time;
-      dayClose    = sched.close_time;
-      breakStart  = sched.break_start || null;
-      breakEnd    = sched.break_end   || null;
+      const sched = scheduleCache[dow];
+      if (!sched || sched.is_open === false) { cur.setDate(cur.getDate() + 1); continue; }
+      dayOpen    = sched.open_time;
+      dayClose   = sched.close_time;
+      breakStart = sched.break_start || null;
+      breakEnd   = sched.break_end   || null;
     }
 
-    if (!dayOpen || !dayClose) { cur.setDate(cur.getDate()+1); continue; }
+    if (!dayOpen || !dayClose) { cur.setDate(cur.getDate() + 1); continue; }
 
-    // Generate slots for this day
+    // Parse day boundaries
     const [oh, om] = dayOpen.split(':').map(Number);
     const [ch, cm] = dayClose.split(':').map(Number);
     let slotStart  = new Date(cur); slotStart.setHours(oh, om, 0, 0);
     const dayEnd   = new Date(cur); dayEnd.setHours(ch, cm, 0, 0);
 
-    // Parse break window if set
+    // Parse break window
     let breakStartMs = null, breakEndMs = null;
     if (breakStart && breakEnd) {
       const [bsh, bsm] = breakStart.split(':').map(Number);
@@ -874,27 +433,28 @@ async function getAvailableSlots(serviceId, dateFrom, dateTo) {
       breakEndMs   = new Date(cur); breakEndMs.setHours(beh, bem, 0, 0);
     }
 
+    // Generate slots
     while (true) {
       const actualEnd = new Date(slotStart.getTime() + duration * 60000);
       if (actualEnd > dayEnd) break;
 
-      // Skip past slots (15 min buffer from now for same-day)
+      // Skip past slots (15 min same-day buffer)
       const nowPlusPad = new Date(Date.now() + 15 * 60000);
       if (slotStart <= nowPlusPad) {
         slotStart = new Date(slotStart.getTime() + interval * 60000);
         continue;
       }
 
-      // Skip if slot falls inside break
+      // Skip if slot overlaps break
       if (breakStartMs && breakEndMs) {
-        const slotEnd = new Date(slotStart.getTime() + duration * 60000);
-        if (slotStart < breakEndMs && slotEnd > breakStartMs) {
+        const slotEndForBreak = new Date(slotStart.getTime() + duration * 60000);
+        if (slotStart < breakEndMs && slotEndForBreak > breakStartMs) {
           slotStart = new Date(slotStart.getTime() + interval * 60000);
           continue;
         }
       }
 
-      // Check collision with existing bookings (include buffer)
+      // Check collision with existing bookings (+ buffer)
       const slotEnd = new Date(slotStart.getTime() + (duration + buffer) * 60000);
       const collision = existingBookings.some(b => {
         const bStart  = new Date(b.start_time);
@@ -924,12 +484,10 @@ async function getAvailableSlots(serviceId, dateFrom, dateTo) {
 // MAIN MENU
 // ============================================================
 function showMainMenu(name) {
-  state.flow = null;
-  state.flowStep = null;
-  state.flowData = {};
+  state.flow = null; state.flowStep = null; state.flowData = {};
 
-  const firstName = name || (state.profile?.full_name || '').split(' ')[0];
-  const lastVisit = state.profile?.last_appointment_date
+  const firstName  = name || (state.profile?.full_name || '').split(' ')[0];
+  const lastVisit  = state.profile?.last_appointment_date
     ? `Dein letzter Besuch war am ${new Date(state.profile.last_appointment_date).toLocaleDateString('de-DE',{day:'numeric',month:'long'})}.`
     : '';
   const hasBooking = state.upcomingBooking
@@ -950,10 +508,7 @@ function showMainMenu(name) {
 // BOOKING FLOW
 // ============================================================
 function startBookingFlow() {
-  state.flow = 'booking';
-  state.flowStep = 'service';
-  state.flowData = {};
-
+  state.flow = 'booking'; state.flowStep = 'service'; state.flowData = {};
   addUserMessage('📅 Termin buchen');
   addBotMessage('Welchen Service möchtest du buchen?');
 
@@ -961,7 +516,6 @@ function startBookingFlow() {
     label: `${s.name} · ${s.duration_minutes} Min${s.price ? ` · €${parseFloat(s.price).toFixed(0)}` : ''}`,
     action: () => selectService(s)
   }));
-
   serviceButtons.push({ label: '← Zurück', action: () => resetToMain(), secondary: true });
   showQuickReplies(serviceButtons);
 }
@@ -969,18 +523,16 @@ function startBookingFlow() {
 function selectService(service) {
   state.flowData.service = service;
   state.flowStep = 'slot';
-
   addUserMessage(service.name);
   addBotMessage(`Ich suche die nächsten verfügbaren Termine für ${service.name}...`);
   showTyping();
-
   loadSlotsForService(service.id, 0);
 }
 
 async function loadSlotsForService(serviceId, offset) {
   const today = new Date();
   const from  = new Date(today); from.setDate(from.getDate() + offset);
-  const to    = new Date(from);  to.setDate(to.getDate() + 13); // 2 weeks window
+  const to    = new Date(from);  to.setDate(to.getDate() + 13);
 
   const fromStr = from.toISOString().split('T')[0];
   const toStr   = to.toISOString().split('T')[0];
@@ -990,22 +542,20 @@ async function loadSlotsForService(serviceId, offset) {
 
   if (!slots.length) {
     if (offset === 0) {
-      // Try next 3 weeks
       addBotMessage('In den nächsten 2 Wochen habe ich keine freien Termine. Ich schaue weiter...');
       showTyping();
       await new Promise(r => setTimeout(r, 800));
       hideTyping();
       loadSlotsForService(serviceId, 14);
     } else {
-      // Nothing found — ask preferred day/time, then offer waitlist
       addBotMessage('Leider sind derzeit keine Termine verfügbar. 😔\n\nAn welchem Wochentag würdest du am liebsten kommen?');
       showQuickReplies([
-        { label: 'Montag',     action: () => suggestDaySearch('Montag', 1) },
-        { label: 'Dienstag',   action: () => suggestDaySearch('Dienstag', 2) },
-        { label: 'Mittwoch',   action: () => suggestDaySearch('Mittwoch', 3) },
-        { label: 'Donnerstag', action: () => suggestDaySearch('Donnerstag', 4) },
-        { label: 'Freitag',    action: () => suggestDaySearch('Freitag', 5) },
-        { label: 'Samstag',    action: () => suggestDaySearch('Samstag', 6) },
+        { label: 'Montag',        action: () => suggestDaySearch('Montag', 1) },
+        { label: 'Dienstag',      action: () => suggestDaySearch('Dienstag', 2) },
+        { label: 'Mittwoch',      action: () => suggestDaySearch('Mittwoch', 3) },
+        { label: 'Donnerstag',    action: () => suggestDaySearch('Donnerstag', 4) },
+        { label: 'Freitag',       action: () => suggestDaySearch('Freitag', 5) },
+        { label: 'Samstag',       action: () => suggestDaySearch('Samstag', 6) },
         { label: '📋 Warteliste', action: () => joinWaitlist(), secondary: true },
         { label: '← Zurück zum Menü', action: () => resetToMain(), secondary: true },
       ]);
@@ -1013,34 +563,20 @@ async function loadSlotsForService(serviceId, offset) {
     return;
   }
 
-  // Show up to 4 slots
   state.pendingSlots = slots;
   const shown = slots.slice(0, 4);
-
   addBotMessage(`Hier sind die nächsten freien Termine für ${state.flowData.service?.name || ''}:`);
 
-  const btns = shown.map(slot => ({
-    label: slot.label,
-    action: () => confirmSlot(slot)
-  }));
-
-  if (slots.length > 4) {
-    btns.push({ label: 'Mehr anzeigen →', action: () => showMoreSlots(4), secondary: true });
-  }
+  const btns = shown.map(slot => ({ label: slot.label, action: () => confirmSlot(slot) }));
+  if (slots.length > 4) btns.push({ label: 'Mehr anzeigen →', action: () => showMoreSlots(4), secondary: true });
   btns.push({ label: '← Zurück', action: () => startBookingFlow(), secondary: true });
-
   showQuickReplies(btns);
 }
 
 function showMoreSlots(offset) {
   const shown = state.pendingSlots.slice(offset, offset + 4);
-  const btns = shown.map(slot => ({
-    label: slot.label,
-    action: () => confirmSlot(slot)
-  }));
-  if (state.pendingSlots.length > offset + 4) {
-    btns.push({ label: 'Mehr anzeigen →', action: () => showMoreSlots(offset + 4), secondary: true });
-  }
+  const btns  = shown.map(slot => ({ label: slot.label, action: () => confirmSlot(slot) }));
+  if (state.pendingSlots.length > offset + 4) btns.push({ label: 'Mehr anzeigen →', action: () => showMoreSlots(offset + 4), secondary: true });
   btns.push({ label: '← Zurück', action: () => loadSlotsForService(state.flowData.service.id, 0), secondary: true });
   showQuickReplies(btns);
 }
@@ -1057,8 +593,8 @@ function confirmSlot(slot) {
   addBotMessage(`Soll ich das so buchen?\n\n📅 ${dateLabel} um ${timeLabel} Uhr\n✂️ ${state.flowData.service.name} (${state.flowData.service.duration_minutes} Min)`);
 
   showQuickReplies([
-    { label: '✅ Ja, buchen',  action: () => createBooking() },
-    { label: '← Zurück',      action: () => loadSlotsForService(state.flowData.service.id, 0), secondary: true },
+    { label: '✅ Ja, buchen', action: () => createBooking() },
+    { label: '← Zurück',     action: () => loadSlotsForService(state.flowData.service.id, 0), secondary: true },
   ]);
 }
 
@@ -1071,17 +607,16 @@ async function createBooking() {
   const endTime = new Date(new Date(slot.start).getTime() + service.duration_minutes * 60000).toISOString();
 
   try {
-// In createBooking(), replace the sbPost line:
-   const result = await sbPost('bookings', {
-     client_id:    state.profile.id,
-     service_id:   service.id,
-     worker_id:    state.profile.worker_id || null,   // ← ADD THIS
-     start_time:   slot.start,
-     end_time:     endTime,
-     status:       'confirmed',
-     booked_by_admin: false,
-     is_block:     false
-   });
+    const result = await sbPost('bookings', {
+      client_id:       state.profile.id,
+      service_id:      service.id,
+      worker_id:       state.profile.worker_id || null,
+      start_time:      slot.start,
+      end_time:        endTime,
+      status:          'confirmed',
+      booked_by_admin: false,
+      is_block:        false
+    });
 
     hideTyping();
 
@@ -1091,14 +626,13 @@ async function createBooking() {
       return;
     }
 
-    // Update upcoming booking
     await loadUpcomingBooking();
 
-    const d = new Date(slot.start);
+    const d         = new Date(slot.start);
     const dateLabel = d.toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
     const timeLabel = d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
 
-    // ── Send emails (non-blocking) ────────────────────────────
+    // Trigger confirmation emails (non-blocking)
     const emailData = {
       clientName:  state.profile.full_name,
       clientEmail: state.profile.email,
@@ -1111,8 +645,8 @@ async function createBooking() {
     triggerEmail('booking_confirmed_client', emailData);
     triggerEmail('booking_confirmed_admin',  emailData);
 
-    // Replace the addBotMessage success line with:
-      addBotMessage(`Super! 🎉 Dein Termin ist gebucht!\n\n📅 ${dateLabel} um ${timeLabel} Uhr\n✂️ ${state.flowData.service.name}\n\nEine Bestätigung wurde an deine E-Mail gesendet.`);
+    // Simple confirmation — no worker info shown to client
+    addBotMessage(`Super! 🎉 Dein Termin ist gebucht!\n\n📅 ${dateLabel} um ${timeLabel} Uhr\n✂️ ${service.name}\n\nEine Bestätigung wurde an deine E-Mail gesendet.`);
 
     // Rebooking prompt based on cycle
     const cycle = state.profile.preferred_cycle_weeks;
@@ -1142,7 +676,6 @@ async function preBookNext(targetDate, service) {
   addUserMessage('Ja, vorbuchen →');
   const from = new Date(targetDate); from.setDate(from.getDate() - 3);
   const to   = new Date(targetDate); to.setDate(to.getDate() + 3);
-
   state.flowData.service = service;
 
   addBotMessage('Ich schaue nach freien Terminen in dieser Woche...');
@@ -1153,7 +686,6 @@ async function preBookNext(targetDate, service) {
     from.toISOString().split('T')[0],
     to.toISOString().split('T')[0]
   );
-
   hideTyping();
 
   if (!slots.length) {
@@ -1163,9 +695,8 @@ async function preBookNext(targetDate, service) {
   }
 
   state.pendingSlots = slots;
-  const shown = slots.slice(0, 4);
   addBotMessage('Hier sind die verfügbaren Termine:');
-  const btns = shown.map(slot => ({ label: slot.label, action: () => confirmSlot(slot) }));
+  const btns = slots.slice(0, 4).map(slot => ({ label: slot.label, action: () => confirmSlot(slot) }));
   btns.push({ label: 'Nein, danke', action: () => showEndMenu(), secondary: true });
   showQuickReplies(btns);
 }
@@ -1176,7 +707,6 @@ async function preBookNext(targetDate, service) {
 async function startRescheduleFlow() {
   state.flow = 'reschedule';
   addUserMessage('🔄 Termin verschieben');
-
   await loadUpcomingBooking();
 
   if (!state.upcomingBooking) {
@@ -1188,7 +718,6 @@ async function startRescheduleFlow() {
     return;
   }
 
-  // Check cancellation cutoff
   const cutoffHours = parseInt(state.settings.cancellation_cutoff_hours || 48);
   const bookingTime = new Date(state.upcomingBooking.start_time);
   const cutoffTime  = new Date(bookingTime.getTime() - cutoffHours * 3600000);
@@ -1197,9 +726,7 @@ async function startRescheduleFlow() {
     const d = bookingTime.toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
     const t = bookingTime.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
     addBotMessage(`Leider ist eine Verschiebung weniger als ${cutoffHours} Stunden vor dem Termin nicht mehr möglich.\n\nDein Termin: ${d} um ${t} Uhr`);
-    showQuickReplies([
-      { label: '← Zurück zum Menü', action: () => resetToMain(), secondary: true },
-    ]);
+    showQuickReplies([{ label: '← Zurück zum Menü', action: () => resetToMain(), secondary: true }]);
     return;
   }
 
@@ -1210,13 +737,13 @@ async function startRescheduleFlow() {
 
   addBotMessage(`Dein aktueller Termin:\n📅 ${dateLabel} um ${timeLabel} Uhr\n✂️ ${b.services?.name || ''}\n\nWann passt es dir besser?`);
   state.flowData.oldBooking = b;
-  state.flowData.service = state.services.find(s => s.id === b.service_id) || b.services;
+  state.flowData.service    = state.services.find(s => s.id === b.service_id) || b.services;
 
   showQuickReplies([
-    { label: 'Diese Woche',        action: () => rescheduleShowSlots(0, 6) },
-    { label: 'Nächste Woche',      action: () => rescheduleShowSlots(7, 13) },
-    { label: 'Anderen Termin wählen', action: () => rescheduleDayPicker() },
-    { label: '← Zurück zum Menü', action: () => resetToMain(), secondary: true },
+    { label: 'Diese Woche',              action: () => rescheduleShowSlots(0, 6) },
+    { label: 'Nächste Woche',            action: () => rescheduleShowSlots(7, 13) },
+    { label: 'Anderen Termin wählen',    action: () => rescheduleDayPicker() },
+    { label: '← Zurück zum Menü',       action: () => resetToMain(), secondary: true },
   ]);
 }
 
@@ -1232,7 +759,6 @@ async function rescheduleShowSlots(offsetFrom, offsetTo) {
     from.toISOString().split('T')[0],
     to.toISOString().split('T')[0]
   );
-
   hideTyping();
 
   if (!slots.length) {
@@ -1245,9 +771,8 @@ async function rescheduleShowSlots(offsetFrom, offsetTo) {
   }
 
   state.pendingSlots = slots;
-  const shown = slots.slice(0, 4);
   addBotMessage('Hier sind die freien Termine:');
-  const btns = shown.map(slot => ({ label: slot.label, action: () => confirmReschedule(slot) }));
+  const btns = slots.slice(0, 4).map(slot => ({ label: slot.label, action: () => confirmReschedule(slot) }));
   if (slots.length > 4) btns.push({ label: 'Mehr anzeigen →', action: () => showMoreRescheduleSlots(4), secondary: true });
   btns.push({ label: '← Zurück', action: () => startRescheduleFlow(), secondary: true });
   showQuickReplies(btns);
@@ -1278,7 +803,7 @@ function confirmReschedule(slot) {
   state.flowData.newSlot = slot;
   state.flowStep = 'confirm-reschedule';
 
-  const d = new Date(slot.start);
+  const d         = new Date(slot.start);
   const dateLabel = d.toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
   const timeLabel = d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
 
@@ -1301,33 +826,26 @@ async function executeReschedule() {
   const newEnd  = new Date(new Date(newSlot.start).getTime() + service.duration_minutes * 60000).toISOString();
 
   try {
-    // Create new booking
     const newBooking = await sbPost('bookings', {
-      client_id: state.profile.id,
-      service_id: old.service_id,
-      start_time: newSlot.start,
-      end_time: newEnd,
-      status: 'confirmed',
+      client_id:       state.profile.id,
+      service_id:      old.service_id,
+      worker_id:       state.profile.worker_id || null,
+      start_time:      newSlot.start,
+      end_time:        newEnd,
+      status:          'confirmed',
       rescheduled_from: old.id,
       booked_by_admin: false,
-      is_block: false
+      is_block:        false
     });
 
     const newId = Array.isArray(newBooking) ? newBooking[0]?.id : null;
-
-    // Update old booking
-    await sbPatch('bookings', `id=eq.${old.id}`, {
-      status: 'rescheduled',
-      rescheduled_to: newId
-    });
-
+    await sbPatch('bookings', `id=eq.${old.id}`, { status: 'rescheduled', rescheduled_to: newId });
     await loadUpcomingBooking();
     hideTyping();
 
     const d = new Date(newSlot.start);
     addBotMessage(`Erledigt! 🎉\n\nDein Termin wurde verschoben auf:\n📅 ${d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})} um ${d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr\n\nEine Bestätigung wurde an deine E-Mail gesendet.`);
 
-    // ── Send reschedule email ─────────────────────────────────
     const oldD = new Date(old.start_time);
     triggerEmail('booking_rescheduled', {
       clientName:   state.profile.full_name,
@@ -1363,16 +881,15 @@ async function showMyBookings() {
 
   hideTyping();
 
-  let msg = '';
-
   const upArr = Array.isArray(upcoming) ? upcoming.filter(b => b.status !== 'rescheduled') : [];
   const paArr = Array.isArray(past)     ? past.filter(b => b.status !== 'rescheduled') : [];
 
+  let msg = '';
   if (upArr.length) {
     msg += '📅 **Kommende Termine:**\n';
     upArr.forEach(b => {
       const d = new Date(b.start_time);
-      msg += `• ${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'})} um ${d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr — ${b.services?.name || ''}\n`;
+      msg += `• ${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'})} um ${d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr — ${b.services?.name||''}\n`;
     });
   } else {
     msg += 'Du hast keine bevorstehenden Termine.\n';
@@ -1382,7 +899,7 @@ async function showMyBookings() {
     msg += '\n📋 **Letzte Besuche:**\n';
     paArr.forEach(b => {
       const d = new Date(b.start_time);
-      msg += `• ${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'})} — ${b.services?.name || ''} ✓\n`;
+      msg += `• ${d.toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'})} — ${b.services?.name||''} ✓\n`;
     });
   }
 
@@ -1390,8 +907,8 @@ async function showMyBookings() {
 
   const btns = [];
   if (upArr.length) {
-    btns.push({ label: '🔄 Verschieben',  action: () => startRescheduleFlow() });
-    btns.push({ label: '❌ Stornieren',   action: () => startCancelFlow() });
+    btns.push({ label: '🔄 Verschieben', action: () => startRescheduleFlow() });
+    btns.push({ label: '❌ Stornieren',  action: () => startCancelFlow() });
   } else {
     btns.push({ label: '📅 Termin buchen', action: () => startBookingFlow() });
   }
@@ -1405,7 +922,6 @@ async function showMyBookings() {
 async function startCancelFlow() {
   state.flow = 'cancel';
   addUserMessage('❌ Termin stornieren');
-
   await loadUpcomingBooking();
 
   if (!state.upcomingBooking) {
@@ -1422,22 +938,19 @@ async function startCancelFlow() {
   const dateLabel = d.toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
   const timeLabel = d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
 
-  // Warning if within cutoff
   const cutoffHours = parseInt(state.settings.cancellation_cutoff_hours || 48);
   const cutoffTime  = new Date(d.getTime() - cutoffHours * 3600000);
   const lateCancel  = new Date() > cutoffTime;
-
-  const warning = lateCancel
+  const warning     = lateCancel
     ? `\n\n⚠️ Hinweis: Stornierungen weniger als ${cutoffHours} Stunden vor dem Termin werden notiert.`
     : '';
 
   addBotMessage(`Bist du sicher, dass du folgendes stornieren möchtest?\n\n📅 ${dateLabel} um ${timeLabel} Uhr\n✂️ ${b.services?.name || ''}${warning}`);
-
   state.flowData.bookingToCancel = b;
 
   showQuickReplies([
-    { label: '✅ Ja, stornieren',    action: () => executeCancel() },
-    { label: '← Nein, behalten',    action: () => resetToMain(), secondary: true },
+    { label: '✅ Ja, stornieren', action: () => executeCancel() },
+    { label: '← Nein, behalten', action: () => resetToMain(), secondary: true },
   ]);
 }
 
@@ -1446,13 +959,11 @@ async function executeCancel() {
   showTyping();
 
   const booking = state.flowData.bookingToCancel;
-
   try {
     await sbPatch('bookings', `id=eq.${booking.id}`, { status: 'cancelled' });
     await loadUpcomingBooking();
     hideTyping();
 
-    // ── Send cancellation email ───────────────────────────────
     const bD = new Date(booking.start_time);
     triggerEmail('booking_cancelled', {
       clientName:  state.profile.full_name,
@@ -1481,13 +992,12 @@ async function executeCancel() {
 async function joinWaitlist() {
   addUserMessage('📋 Warteliste');
   showTyping();
-
   try {
     await sbPost('waiting_list', {
-      client_id: state.profile.id,
+      client_id:  state.profile.id,
       service_id: state.flowData.service?.id || null,
-      status: 'waiting',
-      joined_at: new Date().toISOString()
+      status:     'waiting',
+      joined_at:  new Date().toISOString()
     });
     hideTyping();
     addBotMessage('Du wurdest auf die Warteliste gesetzt. 📋\n\n⚠️ Bitte beachte: Dies ist keine Garantie für einen Termin. Wir benachrichtigen dich per E-Mail, sobald ein Platz frei wird.');
@@ -1495,7 +1005,6 @@ async function joinWaitlist() {
     hideTyping();
     addBotMessage('Du bist bereits auf der Warteliste oder ein Fehler ist aufgetreten.');
   }
-
   showEndMenu();
 }
 
@@ -1504,32 +1013,28 @@ function suggestDaySearch(dayName, dow) {
   addBotMessage(`Ich suche freie ${dayName}s-Termine...`);
   showTyping();
 
-  // Search next 4 weeks for that day
-  const slots = [];
   const today = new Date();
+  const days  = [];
   for (let i = 1; i <= 28; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() + i);
-    if (d.getDay() === dow) slots.push(d);
+    const d = new Date(today); d.setDate(d.getDate() + i);
+    if (d.getDay() === dow) days.push(d);
   }
 
   setTimeout(async () => {
     let foundSlots = [];
-    for (const day of slots.slice(0, 4)) {
+    for (const day of days.slice(0, 4)) {
       const fromStr = day.toISOString().split('T')[0];
-      const toStr   = fromStr;
-      const s = await getAvailableSlots(state.flowData.service?.id, fromStr, toStr);
+      const s = await getAvailableSlots(state.flowData.service?.id, fromStr, fromStr);
       foundSlots = foundSlots.concat(s);
       if (foundSlots.length >= 4) break;
     }
-
     hideTyping();
 
     if (!foundSlots.length) {
       addBotMessage(`Leider gibt es keine freien ${dayName}s-Termine in den nächsten 4 Wochen. Möchtest du auf die Warteliste?`);
       showQuickReplies([
         { label: '📋 Ja, Warteliste',    action: () => joinWaitlist() },
-        { label: '← Zurück zum Menü', action: () => resetToMain(), secondary: true },
+        { label: '← Zurück zum Menü',   action: () => resetToMain(), secondary: true },
       ]);
       return;
     }
@@ -1548,30 +1053,17 @@ function suggestDaySearch(dayName, dow) {
 async function handleFreeText(text) {
   addUserMessage(text);
 
-  // Check for simple keywords first (no API call needed)
   const lower = text.toLowerCase();
-  if (lower.includes('buchen') || lower.includes('termin') && lower.includes('buch')) {
-    startBookingFlow(); return;
-  }
-  if (lower.includes('verschieben') || lower.includes('umbuchen') || lower.includes('verlegen')) {
-    startRescheduleFlow(); return;
-  }
-  if (lower.includes('stornieren') || lower.includes('absagen') || lower.includes('cancel')) {
-    startCancelFlow(); return;
-  }
-  if (lower.includes('meine termine') || lower.includes('mein termin') || lower.includes('was hab ich')) {
-    showMyBookings(); return;
-  }
-  if (lower.includes('hauptmenü') || lower.includes('menü') || lower.includes('menu')) {
-    resetToMain(); return;
-  }
+  if (lower.includes('buchen') || lower.includes('termin') && lower.includes('buch')) { startBookingFlow(); return; }
+  if (lower.includes('verschieben') || lower.includes('umbuchen') || lower.includes('verlegen')) { startRescheduleFlow(); return; }
+  if (lower.includes('stornieren') || lower.includes('absagen') || lower.includes('cancel')) { startCancelFlow(); return; }
+  if (lower.includes('meine termine') || lower.includes('mein termin') || lower.includes('was hab ich')) { showMyBookings(); return; }
+  if (lower.includes('hauptmenü') || lower.includes('menü') || lower.includes('menu')) { resetToMain(); return; }
 
-  // Try to extract day/time intent
   const dayMap = { 'montag':1,'dienstag':2,'mittwoch':3,'donnerstag':4,'freitag':5,'samstag':6,'sonntag':0 };
   for (const [dayName, dow] of Object.entries(dayMap)) {
     if (lower.includes(dayName)) {
       if (!state.flowData.service && state.services.length) {
-        // Ask which service first
         addBotMessage(`Für welchen Service soll ich ${dayName.charAt(0).toUpperCase()+dayName.slice(1)}-Termine suchen?`);
         const btns = state.services.map(s => ({
           label: s.name,
@@ -1585,7 +1077,6 @@ async function handleFreeText(text) {
     }
   }
 
-  // OpenAI fallback — via Supabase Edge Function
   await callTokiAI(text);
 }
 
@@ -1594,49 +1085,42 @@ async function callTokiAI(userMessage) {
   state.isLoading = true;
   showTyping();
 
-  // Build minimal context
-  const profile = state.profile;
+  const profile      = state.profile;
   const upcomingInfo = state.upcomingBooking
-    ? `Nächster Termin: ${new Date(state.upcomingBooking.start_time).toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})} um ${new Date(state.upcomingBooking.start_time).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr, Service: ${state.upcomingBooking.services?.name || ''}`
+    ? `Nächster Termin: ${new Date(state.upcomingBooking.start_time).toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})} um ${new Date(state.upcomingBooking.start_time).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr, Service: ${state.upcomingBooking.services?.name||''}`
     : 'Kein bevorstehender Termin';
 
   const systemPrompt = `Du bist Toki, der freundliche Buchungsassistent für Sharon Zuccaros Nail Design Studio in Bonn.
 Du antwortest immer auf Deutsch. Sei kurz, freundlich und hilfreich.
-Verfügbare Services: ${state.services.map(s => `${s.name} (${s.duration_minutes} Min, €${s.price})`).join(', ')}.
-Client: ${profile.full_name}. Buchungszyklus: alle ${profile.preferred_cycle_weeks || '?'} Wochen.
+Verfügbare Services: ${state.services.map(s=>`${s.name} (${s.duration_minutes} Min, €${s.price})`).join(', ')}.
+Client: ${profile.full_name}. Buchungszyklus: alle ${profile.preferred_cycle_weeks||'?'} Wochen.
 ${upcomingInfo}.
 Wenn der Client buchen, verschieben oder stornieren möchte, sage: "Ich helfe dir dabei! Tippe einfach was du möchtest oder nutze die Buttons."
 Gib maximal 3 Sätze zurück. Keine Listen. Kein Markdown.`;
 
-  // Add to conversation
   state.conversation.push({ role: 'user', content: userMessage });
 
   try {
     const res = await fetch(CHAT_FUNCTION_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${state.token}`
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.token}` },
       body: JSON.stringify({
         messages: [
           { role: 'system', content: systemPrompt },
-          ...state.conversation.slice(-6) // last 6 messages only
+          ...state.conversation.slice(-6)
         ]
       })
     });
 
     if (!res.ok) throw new Error('Edge function error');
 
-    const data = await res.json();
+    const data  = await res.json();
     const reply = data.content?.[0]?.text || data.reply || 'Ich bin gerade nicht erreichbar. Bitte nutze die Buttons.';
 
     state.conversation.push({ role: 'assistant', content: reply });
-
     hideTyping();
     addBotMessage(reply);
 
-    // Always show main menu buttons as fallback
     showQuickReplies([
       { label: '📅 Termin buchen',      action: () => startBookingFlow() },
       { label: '🔄 Termin verschieben', action: () => startRescheduleFlow() },
@@ -1645,7 +1129,6 @@ Gib maximal 3 Sätze zurück. Keine Listen. Kein Markdown.`;
 
   } catch(e) {
     hideTyping();
-    // Graceful degradation — show menu buttons
     addBotMessage('Ich bin gerade kurz offline. 😅 Nutze einfach die Buttons unten!');
     showQuickReplies([
       { label: '📅 Termin buchen',      action: () => startBookingFlow() },
@@ -1663,9 +1146,7 @@ Gib maximal 3 Sätze zurück. Keine Listen. Kein Markdown.`;
 // ============================================================
 function showEndMenu() {
   setTimeout(() => {
-    showQuickReplies([
-      { label: '🏠 Hauptmenü', action: () => resetToMain(), secondary: true },
-    ]);
+    showQuickReplies([{ label: '🏠 Hauptmenü', action: () => resetToMain(), secondary: true }]);
   }, 400);
 }
 
@@ -1694,32 +1175,27 @@ function addBotMessage(text) {
   const row = document.createElement('div');
   row.className = 'msg-row bot';
 
-  // Avatar
   const avatarWrap = document.createElement('div');
   avatarWrap.style.flexShrink = '0';
   const img = document.createElement('img');
-  img.src = 'toki.jpeg';
-  img.className = 'msg-avatar';
-  img.alt = 'Toki';
+  img.src = 'toki.jpeg'; img.className = 'msg-avatar'; img.alt = 'Toki';
   img.onerror = function() {
-    this.style.display='none';
+    this.style.display = 'none';
     const fb = document.createElement('div');
-    fb.className = 'msg-avatar-fallback';
-    fb.textContent = '🐾';
+    fb.className = 'msg-avatar-fallback'; fb.textContent = '🐾';
     avatarWrap.appendChild(fb);
   };
   avatarWrap.appendChild(img);
 
   const content = document.createElement('div');
-  // Convert **bold** and newlines
-  const bubble = document.createElement('div');
+  const bubble  = document.createElement('div');
   bubble.className = 'bubble bot';
   bubble.innerHTML = text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
 
   const time = document.createElement('div');
-  time.className = 'bubble-time';
+  time.className   = 'bubble-time';
   time.textContent = new Date().toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
 
   content.appendChild(bubble);
@@ -1738,11 +1214,11 @@ function addUserMessage(text) {
 
   const content = document.createElement('div');
   const bubble  = document.createElement('div');
-  bubble.className = 'bubble user';
+  bubble.className   = 'bubble user';
   bubble.textContent = text;
 
   const time = document.createElement('div');
-  time.className = 'bubble-time user-time';
+  time.className   = 'bubble-time user-time';
   time.textContent = new Date().toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' }) + ' ✓';
 
   content.appendChild(bubble);
@@ -1759,45 +1235,30 @@ function showQuickReplies(buttons) {
     const el = document.createElement('button');
     el.className = `qr-btn${btn.secondary ? ' secondary' : ''}`;
     el.textContent = btn.label;
-    el.onclick = () => {
-      disableAllButtons();
-      btn.action();
-    };
+    el.onclick = () => { disableAllButtons(); btn.action(); };
     container.appendChild(el);
   });
   scrollToBottom();
 }
 
-function clearQuickReplies() {
-  document.getElementById('quick-replies').innerHTML = '';
-}
-
-function disableAllButtons() {
-  document.querySelectorAll('.qr-btn').forEach(b => b.disabled = true);
-}
+function clearQuickReplies()  { document.getElementById('quick-replies').innerHTML = ''; }
+function disableAllButtons()  { document.querySelectorAll('.qr-btn').forEach(b => b.disabled = true); }
 
 function showTyping() {
   const messages = document.getElementById('messages');
-  const existing = document.getElementById('typing-indicator');
-  if (existing) return;
+  if (document.getElementById('typing-indicator')) return;
 
   const row = document.createElement('div');
-  row.className = 'typing-indicator';
-  row.id = 'typing-indicator';
+  row.className = 'typing-indicator'; row.id = 'typing-indicator';
 
   const avatarWrap = document.createElement('div');
   const img = document.createElement('img');
-  img.src = 'toki.jpeg';
-  img.className = 'msg-avatar';
+  img.src = 'toki.jpeg'; img.className = 'msg-avatar';
   avatarWrap.appendChild(img);
 
   const dots = document.createElement('div');
   dots.className = 'typing-dots';
-  [1,2,3].forEach(() => {
-    const d = document.createElement('div');
-    d.className = 'dot';
-    dots.appendChild(d);
-  });
+  [1,2,3].forEach(() => { const d = document.createElement('div'); d.className = 'dot'; dots.appendChild(d); });
 
   row.appendChild(avatarWrap);
   row.appendChild(dots);
@@ -1805,31 +1266,19 @@ function showTyping() {
   scrollToBottom();
 }
 
-function hideTyping() {
-  const el = document.getElementById('typing-indicator');
-  if (el) el.remove();
-}
-
-function clearMessages() {
-  document.getElementById('messages').innerHTML = '';
-  clearQuickReplies();
-}
-
+function hideTyping()  { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
+function clearMessages() { document.getElementById('messages').innerHTML = ''; clearQuickReplies(); }
 function scrollToBottom() {
   const messages = document.getElementById('messages');
-  setTimeout(() => {
-    messages.scrollTop = messages.scrollHeight;
-  }, 50);
+  setTimeout(() => { messages.scrollTop = messages.scrollHeight; }, 50);
 }
 
 // ============================================================
 // MENU
 // ============================================================
 function toggleMenu() {
-  const overlay = document.getElementById('menu-overlay');
-  const menu    = document.getElementById('side-menu');
-  overlay.classList.toggle('open');
-  menu.classList.toggle('open');
+  document.getElementById('menu-overlay').classList.toggle('open');
+  document.getElementById('side-menu').classList.toggle('open');
 }
 
 // ============================================================
@@ -1838,10 +1287,7 @@ function toggleMenu() {
 function handleLogout() {
   fetch(`${SUPABASE_URL}/auth/v1/logout`, {
     method: 'POST',
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${state.token}`
-    }
+    headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${state.token}` }
   }).finally(() => {
     localStorage.removeItem('sz_token');
     localStorage.removeItem('sz_uid');
