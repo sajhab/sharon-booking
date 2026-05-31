@@ -1532,25 +1532,44 @@ function toggleWorkerDay(i) {
 
 async function saveWorkerSchedule() {
   const workerId = document.getElementById('schedule-worker-select')?.value;
-  if (!workerId) { toast('Bitte Worker wählen','error'); return; }
+  if (!workerId) { toast('Bitte Worker wählen', 'error'); return; }
 
   for (let i = 0; i < 7; i++) {
     const isOpen     = document.getElementById(`ws-${i}-toggle`)?.classList.contains('on');
     const openTime   = document.getElementById(`ws-${i}-open`)?.value;
     const closeTime  = document.getElementById(`ws-${i}-close`)?.value;
-    const breakStart = document.getElementById(`ws-${i}-bstart`)?.value||null;
-    const breakEnd   = document.getElementById(`ws-${i}-bend`)?.value||null;
+    const breakStart = document.getElementById(`ws-${i}-bstart`)?.value || null;
+    const breakEnd   = document.getElementById(`ws-${i}-bend`)?.value || null;
 
-    const existing = await sb.query('worker_schedule', { filter:`worker_id=eq.${workerId}&day_of_week=eq.${i}` });
-    const payload = { open_time:openTime, close_time:closeTime, is_open:isOpen, break_start:breakStart||null, break_end:breakEnd||null };
+    const payload = {
+      open_time:   openTime,
+      close_time:  closeTime,
+      is_open:     isOpen,
+      break_start: breakStart || null,
+      break_end:   breakEnd   || null
+    };
 
-    if (Array.isArray(existing) && existing.length > 0) {
-      await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, payload);
-    } else {
-      await sb.insert('worker_schedule', { worker_id:workerId, day_of_week:i, ...payload });
+    // Use upsert — inserts if not exists, updates if exists
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/worker_schedule?worker_id=eq.${workerId}&day_of_week=eq.${i}`,
+      {
+        method: 'POST',
+        headers: {
+          ...sbHeaders(),
+          'Prefer': 'resolution=merge-duplicates,return=minimal'
+        },
+        body: JSON.stringify({ worker_id: workerId, day_of_week: i, ...payload })
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error(`Day ${i} save error:`, err);
+      toast(`Fehler bei Tag ${i}`, 'error');
+      return;
     }
   }
-  toast('Öffnungszeiten gespeichert','success');
+  toast('Öffnungszeiten gespeichert', 'success');
 }
 
 async function loadHolidays() {
