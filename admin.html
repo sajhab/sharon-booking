@@ -1377,23 +1377,54 @@ function toggleWorkerDayInline(wId, day) {
   close.disabled = !isOn;
 }
 
-async function saveWorkerScheduleInline(workerId) {
+async function saveWorkerSchedule() {
+  const workerId = document.getElementById('schedule-worker-select')?.value;
+  if (!workerId) { toast('Bitte Worker wählen', 'error'); return; }
+
+  // Delete all existing rows for this worker first
+  await fetch(
+    `${SUPABASE_URL}/rest/v1/worker_schedule?worker_id=eq.${workerId}`,
+    { method: 'DELETE', headers: sbHeaders() }
+  );
+
+  // Insert all 7 days fresh
+  const rows = [];
   for (let i = 0; i < 7; i++) {
-    const isOpen    = document.getElementById(`ws-${workerId}-${i}-toggle`)?.classList.contains('on');
-    const openTime  = document.getElementById(`ws-${workerId}-${i}-open`)?.value;
-    const closeTime = document.getElementById(`ws-${workerId}-${i}-close`)?.value;
+    const isOpen     = document.getElementById(`ws-${i}-toggle`)?.classList.contains('on');
+    const openTime   = document.getElementById(`ws-${i}-open`)?.value;
+    const closeTime  = document.getElementById(`ws-${i}-close`)?.value;
+    const breakStart = document.getElementById(`ws-${i}-bstart`)?.value || null;
+    const breakEnd   = document.getElementById(`ws-${i}-bend`)?.value || null;
 
-    const existing = await sb.query('worker_schedule', { filter:`worker_id=eq.${workerId}&day_of_week=eq.${i}` });
-
-    if (Array.isArray(existing) && existing.length > 0) {
-      await sb.update('worker_schedule', `worker_id=eq.${workerId}&day_of_week=eq.${i}`, { open_time:openTime, close_time:closeTime, is_open:isOpen });
-    } else {
-      await sb.insert('worker_schedule', { worker_id:workerId, day_of_week:i, open_time:openTime, close_time:closeTime, is_open:isOpen });
-    }
+    rows.push({
+      worker_id:   workerId,
+      day_of_week: i,
+      open_time:   openTime,
+      close_time:  closeTime,
+      is_open:     isOpen,
+      break_start: breakStart || null,
+      break_end:   breakEnd   || null
+    });
   }
-  toast('Zeiten gespeichert','success');
-}
 
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/worker_schedule`,
+    {
+      method: 'POST',
+      headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
+      body: JSON.stringify(rows)
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('Schedule save error:', err);
+    toast('Fehler beim Speichern', 'error');
+    return;
+  }
+
+  toast('Öffnungszeiten gespeichert', 'success');
+}
 // ============================================================
 // SETTINGS
 // ============================================================
